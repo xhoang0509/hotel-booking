@@ -38,6 +38,9 @@ module.exports = (sequelize, DataTypes) => {
         genius: {
             type: DataTypes.INTEGER(11),
         },
+        images: {
+            type: DataTypes.TEXT,
+        }
     });
     return User;
 };
