@@ -6,7 +6,7 @@ export default function Header() {
     return (
         <div className="bg-primary text-[#fff] flex justify-center items-center">
             <nav className="w-full md:w-3/5 flex justify-between p-3">
-                <div>
+                <div className="flex items-center">
                     <span className="text-xl text-bold cursor-pointer">
                         <Link href="/">BOOKING.COM</Link>                                
                     </span>
