@@ -5,28 +5,27 @@ module.exports = {
     async up(queryInterface, Sequelize) {
         return queryInterface.sequelize.transaction((t) => {
             return Promise.all([
-                queryInterface.createTable('photos',
-                    {
-                        id: {
-                            allowNull: false,
-                            primaryKey: true,
-                            autoIncrement: true,
-                            type: Sequelize.INTEGER(11),
-                        },
-                        href: {
-                            type: Sequelize.TEXT,
-                        },
-                        createdAt: {
-                            allowNull: false,
-                            type: Sequelize.DATE,
-                        },
-                        updatedAt: {
-                            allowNull: true,
-                            type: Sequelize.DATE,
-                        },
-                    }
-                ),
-                queryInterface.createTable('users',
+                queryInterface.createTable('photos', {
+                    id: {
+                        allowNull: false,
+                        primaryKey: true,
+                        autoIncrement: true,
+                        type: Sequelize.INTEGER(11),
+                    },
+                    href: {
+                        type: Sequelize.TEXT,
+                    },
+                    createdAt: {
+                        allowNull: false,
+                        type: Sequelize.DATE,
+                    },
+                    updatedAt: {
+                        allowNull: true,
+                        type: Sequelize.DATE,
+                    },
+                }),
+                queryInterface.createTable(
+                    'users',
                     {
                         id: {
                             allowNull: false,
@@ -82,7 +81,8 @@ module.exports = {
                         transaction: t,
                     }
                 ),
-                queryInterface.createTable('categories',
+                queryInterface.createTable(
+                    'categories',
                     {
                         id: {
                             allowNull: false,
@@ -107,7 +107,8 @@ module.exports = {
                         transaction: t,
                     }
                 ),
-                queryInterface.createTable('countries',
+                queryInterface.createTable(
+                    'countries',
                     {
                         id: {
                             allowNull: false,
@@ -127,11 +128,11 @@ module.exports = {
                             type: Sequelize.INTEGER(11),
                             references: {
                                 model: {
-                                    tableName: "categories"
+                                    tableName: 'categories',
                                 },
-                                key: "id"
+                                key: 'id',
                             },
-                            allowNull: false
+                            allowNull: false,
                         },
                         createdAt: {
                             allowNull: false,
@@ -143,10 +144,11 @@ module.exports = {
                         },
                     },
                     {
-                        transaction: t
+                        transaction: t,
                     }
                 ),
-                queryInterface.createTable('cities',
+                queryInterface.createTable(
+                    'cities',
                     {
                         id: {
                             allowNull: false,
@@ -170,7 +172,7 @@ module.exports = {
                                     tableName: 'countries',
                                 },
                                 key: 'id',
-                            }
+                            },
                         },
                         createdAt: {
                             allowNull: false,
@@ -182,9 +184,89 @@ module.exports = {
                         },
                     },
                     {
-                        transaction: t
+                        transaction: t,
                     }
-                )
+                ),
+                queryInterface.createTable(
+                    'locations',
+                    {
+                        id: {
+                            allowNull: false,
+                            primaryKey: true,
+                            autoIncrement: true,
+                            type: Sequelize.INTEGER(11),
+                        },
+                        name: {
+                            type: Sequelize.TEXT,
+                        },
+                        address: {
+                            type: Sequelize.TEXT,
+                        },
+                        image: {
+                            type: Sequelize.TEXT,
+                        },
+                        description: {
+                            type: Sequelize.TEXT,
+                        },
+                        phone: {
+                            type: Sequelize.STRING(100),
+                        },
+                        createdAt: {
+                            allowNull: false,
+                            type: Sequelize.DATE,
+                        },
+                        updatedAt: {
+                            allowNull: true,
+                            type: Sequelize.DATE,
+                        },
+                    },
+                    {
+                        transaction: t,
+                    }
+                ),
+                queryInterface.createTable(
+                    'rooms',
+                    {
+                        id: {
+                            allowNull: false,
+                            primaryKey: true,
+                            autoIncrement: true,
+                            type: Sequelize.INTEGER(11),
+                        },
+                        name: {
+                            type: Sequelize.TEXT,
+                        },
+                        bed: {
+                            type: Sequelize.INTEGER,
+                        },
+                        bedDetal: {
+                            type: Sequelize.TEXT,
+                        },
+                        description: {
+                            type: Sequelize.TEXT,
+                        },
+                        price: {
+                            type: Sequelize.FLOAT,
+                        },
+                        fromUseTime: {
+                            type: Sequelize.DATE,
+                        },
+                        toUseTime: {
+                            type: Sequelize.DATE,
+                        },
+                        createdAt: {
+                            allowNull: false,
+                            type: Sequelize.DATE,
+                        },
+                        updatedAt: {
+                            allowNull: true,
+                            type: Sequelize.DATE,
+                        },
+                    },
+                    {
+                        transaction: t,
+                    }
+                ),
             ]);
         });
     },

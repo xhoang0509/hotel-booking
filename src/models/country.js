@@ -19,8 +19,8 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             references: {
                 model: 'categories',
-                key: 'id'
-            }
+                key: 'id',
+            },
         },
     });
     return Country;

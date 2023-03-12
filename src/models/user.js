@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         images: {
             type: DataTypes.TEXT,
-        }
+        },
     });
     return User;
 };

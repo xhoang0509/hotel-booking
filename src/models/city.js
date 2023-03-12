@@ -18,8 +18,8 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             references: {
                 model: 'countries',
-                key: 'id'
-            }
+                key: 'id',
+            },
         },
     });
     return City;

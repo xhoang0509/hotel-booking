@@ -125,7 +125,7 @@ async function login(req, res) {
             },
         };
     } catch (e) {
-        writeLog(__filename, 'user.controller.register', e.message);
+        writeLog(__filename, 'user.controller.login', e.message);
         result = {
             code: 500,
             data: {
