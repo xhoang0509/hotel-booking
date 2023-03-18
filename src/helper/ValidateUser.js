@@ -1,4 +1,4 @@
-const { emailRegex } = require('../constant/regex');
+const { emailRegex } = require('../constant/regex.const');
 
 function validateUserRegister(email, password, firstName, lastName) {
     let result;

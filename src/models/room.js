@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         toUseTime: {
             type: DataTypes.DATE,
-        }
+        },
     });
     return Room;
 };

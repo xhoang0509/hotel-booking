@@ -2,10 +2,12 @@ require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const path = require('path');
+const { welcomeCustomer } = require('../constant/email.const');
 const { validateUserRegister, validateUserLogin } = require('../helper/ValidateUser');
 
 const users = require('../models').users;
 const writeLog = require('../logger');
+const { sendEmail } = require('../services/email.service');
 
 const { JWT_SECRET_KEY } = process.env;
 
@@ -43,6 +45,15 @@ async function register(req, res) {
         user = await users.create({ email, password: passwordHash, firstName, lastName });
         const token = jwt.sign({ id: user.id }, JWT_SECRET_KEY);
         delete user.password;
+
+        let bodyEmail = welcomeCustomer
+            .split('{{customer_name}}')
+            .join(`${firstName} ${lastName}`)
+            .split('{{company_name}}')
+            .join('Booking.com')
+            .split('{{your_name}}')
+            .join('Xuan Hoang');
+        sendEmail(email, 'Welcome to Boooking.com', bodyEmail);
         result = {
             code: 200,
             data: {
@@ -52,6 +63,9 @@ async function register(req, res) {
                 token,
             },
         };
+        writeLog(__filename, 'user.controller.login', 'Send email welcome to: ' + email);
+        res.cookie('token', token);
+        req.session.user = user;
     } catch (e) {
         writeLog(__filename, 'user.controller.login', e.message);
         result = {
