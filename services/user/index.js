@@ -8,6 +8,10 @@ const userApi = {
 
     login(data) {
         return axiosClient.post('/user/login', data);
+    },
+
+    update(data, id) {
+        return axiosClient.put(`/user/update/${id}`, data);
     }
 }
 
