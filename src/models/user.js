@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
         },
         phone: {
-            type: DataTypes.INTEGER(11),
+            type: DataTypes.STRING(100),
         },
         birthday: {
             type: DataTypes.DATE,
@@ -34,6 +34,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         gender: {
             type: DataTypes.STRING(20),
+        },
+        address: {
+            type: DataTypes.STRING(300),
         },
         genius: {
             type: DataTypes.INTEGER(11),

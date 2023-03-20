@@ -51,7 +51,7 @@ module.exports = {
                             allowNull: false,
                         },
                         phone: {
-                            type: Sequelize.INTEGER(11),
+                            type: Sequelize.STRING(300),
                         },
                         birthday: {
                             type: Sequelize.DATE,
@@ -61,6 +61,9 @@ module.exports = {
                         },
                         gender: {
                             type: Sequelize.STRING(20),
+                        },
+                        address: {
+                            type: Sequelize.STRING(300),
                         },
                         genius: {
                             type: Sequelize.INTEGER(11),

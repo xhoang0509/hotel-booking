@@ -152,7 +152,37 @@ async function login(req, res) {
     }
 }
 
+
+async function update(req, res) {
+    try {
+        const { id } = req.params;
+        const { firstName, lastName, phone, birthday, nationality, gender } = req.body;
+        if (!id) {
+            res.status(400).json({ status: false, message: 'Missing id' })
+        } else {
+            const user = await users.findOne({ where: { id: id } });
+            if (user && user.id) {
+                const user = await users.update({ firstName, lastName, phone, birthday, nationality, gender }, { where: { id: id } });
+                res.status(200).json({
+                    status: true,
+                    message: 'Updated user',
+                    user: user,
+                })
+            } else {
+                res.status(400).json({
+                    status: false,
+                    message: "User not found!"
+                })
+            }
+        }
+    } catch (e) {
+        writeLog(__filename, 'user.controller.update', e.message);
+        res.status(500).json({ status: false, nessage: e.message })
+    }
+}
+
 module.exports = {
     register,
     login,
+    update
 };
