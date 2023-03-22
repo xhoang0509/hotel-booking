@@ -18,9 +18,13 @@ export const optionsGender = [
 ];
 
 export const getGenderName = (genderCode) => {
-    const gender = optionsGender.find(gender => gender.value === genderCode);
-    if(gender) {
-        return gender.label;
+    if(genderCode) {
+        const gender = optionsGender.find(gender => gender.value === genderCode);
+        if(gender) {
+            return gender.label;
+        } else {
+            return "";
+        }
     } else {
         return "";
     }

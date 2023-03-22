@@ -40,7 +40,6 @@ export default function Gender({isEdit, setIsEdit}) {
         setActive(!active);
         setIsEdit(false);
     }
-
     return (
         <div className="py-2 px-6 flex">
             <Typography.Text className="w-40">Giới tinh</Typography.Text>
@@ -48,7 +47,7 @@ export default function Gender({isEdit, setIsEdit}) {
                 <div className="w-3/4">
                     {active &&
                         <div>
-                            <Typography.Text>{user.gender ?  getGender(user.gender) : 'Chọn giới tính'}</Typography.Text>
+                            <Typography.Text>{user.gender ?  user.gender : 'Chọn giới tính'}</Typography.Text>
                         </div>
                     }
 
