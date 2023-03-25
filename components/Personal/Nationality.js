@@ -50,7 +50,7 @@ export default function Nationality({ isEdit, setIsEdit, jwt }) {
 
     return (
         <div className="py-2 px-6 flex">
-            <Typography.Text className="w-40">Quốc tịch</Typography.Text>
+            <Typography.Text className="w-40 text-bold">Quốc tịch</Typography.Text>
             <div className="flex flex-1 justify-between">
                 <div className="w-3/4">
                     {active && (

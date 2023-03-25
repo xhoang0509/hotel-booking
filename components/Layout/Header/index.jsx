@@ -6,20 +6,24 @@ import { Dropdown } from 'antd';
 import Link from 'next/link';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
+import { removeUser } from '@/redux/reducers/user.reducer';
 
 export default function Header() {
-    const dispath = useDispatch();
+    const dispatch = useDispatch();
+    const router = useRouter();
     const user = useSelector((state) => state.user);
+
     const handleLogout = useCallback(async () => {
-        console.log('handle logout');
         await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/logout`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
         });
-        router.push('/');
-    }, []);
+        dispatch(removeUser());
+        router.push('/account/login');
+    }, [router, dispatch]);
 
     const items = [
         {

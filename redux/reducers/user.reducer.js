@@ -4,7 +4,6 @@ import { SAGA_GET_USER_DATA_SUCCESS } from '../actions/user.action';
 import { SAGA_GET_USER_DATA_FAILED } from './../actions/user.action';
 
 const initialState = () => {
-    // const user = JSON.parse(localStorage.getItem(LocalStorage.user));
     return {
         id: '',
         email: '',
@@ -16,6 +15,7 @@ const initialState = () => {
         gender: '',
         genius: '',
         images: '',
+        address: '',
     };
 };
 
@@ -26,7 +26,6 @@ export const userSlice = createSlice({
     reducers: {
         saveUser: (state, action) => {
             if (action.payload !== null) {
-                localStorage.setItem(LocalStorage.user, JSON.stringify(action.payload));
                 return {
                     ...state,
                     ...action.payload,
@@ -35,16 +34,16 @@ export const userSlice = createSlice({
                 return state;
             }
         },
-        removeUser: (state, action) => {
-            localStorage.removeItem(LocalStorage.user);
-            return initialState;
+        removeUser: (state) => {
+            return {
+                ...state,
+                ...initialState,
+            };
         },
     },
     // server side
     extraReducers: {
         [SAGA_GET_USER_DATA_SUCCESS]: (state, action) => {
-            console.log('state: ', state);
-            console.log('action: ', JSON.stringify(action));
             return {
                 ...state,
                 id: action.payload.id,
@@ -57,6 +56,7 @@ export const userSlice = createSlice({
                 gender: action.payload.gender,
                 genius: action.payload.genius,
                 images: action.payload.images,
+                address: action.payload.address,
             };
         },
         [SAGA_GET_USER_DATA_FAILED]: (state) => {

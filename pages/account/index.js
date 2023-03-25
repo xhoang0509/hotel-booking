@@ -64,7 +64,15 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
             store.dispatch(END);
             await store.sagaTask.toPromise();
         }
+    } else {
+        return {
+            redirect: {
+                destination: '/account/login',
+                permanent: false,
+            },
+        };
     }
+
     return {
         props: {
             jwt,

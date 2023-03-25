@@ -44,7 +44,7 @@ export default function Phone({ isEdit, setIsEdit, jwt }) {
     };
     return (
         <div className="py-2 px-6 flex">
-            <Typography.Text className="w-40">Số điện thoại</Typography.Text>
+            <Typography.Text className="w-40 text-bold">Số điện thoại</Typography.Text>
             <div className="flex flex-1 justify-between">
                 <div className="w-3/4">
                     {active && (

@@ -23,6 +23,8 @@ import { storage } from './../../../firebase/storage';
 import { wrapper } from '@/redux/store';
 import { SAGA_GET_USER_DATA_ASYNC } from './../../../redux/actions/user.action';
 import { END } from 'redux-saga';
+import { saveUser } from '@/redux/reducers/user.reducer';
+import UploadAvatar from './../../../components/Personal/UploadAvatar';
 
 const gridStyle = {
     width: '100%',
@@ -61,7 +63,6 @@ const beforeUpload = (file) => {
     if (!isLt2M) {
         message.error('Image must smaller than 2MB!');
     }
-    console.log('isJpgOrPng && isLt2M: ', isJpgOrPng && isLt2M);
     return isJpgOrPng && isLt2M;
 };
 
@@ -70,42 +71,6 @@ export default function Personal({ jwt }) {
     const user = useSelector((state) => state.user);
     const [isEdit, setIsEdit] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [imageUrl, setImageUrl] = useState('');
-
-    const handleChange = (info) => {
-        console.log('handle Change');
-        console.log('info.file.status: ', info.file.status);
-        if (info.file.status === 'uploading') {
-            setLoading(true);
-            return;
-        }
-        if (info.file.status === 'done') {
-            console.log({ info });
-            // Get this url from response in real world.
-            const imageRef = ref(storage, `images/${info.file.name + v4()}`);
-            uploadBytes(imageRef, info.file.originFileObj).then((snapshot) => {
-                getDownloadURL(snapshot.ref).then((url) => {
-                    setImageUrl(url);
-                });
-            });
-            setLoading(false);
-            //     setImageUrl(url);
-            //   });
-        }
-    };
-
-    const uploadButton = (
-        <div>
-            {loading ? <LoadingOutlined /> : <PlusOutlined />}
-            <div
-                style={{
-                    marginTop: 8,
-                }}
-            >
-                Upload
-            </div>
-        </div>
-    );
 
     return (
         <WebLayout>
@@ -132,43 +97,57 @@ export default function Personal({ jwt }) {
                             </Typography.Text>
                         </div>
                         <div>
-                            <Upload
-                                name="avatar"
-                                listType="picture-circle"
-                                className="avatar-uploader"
-                                showUploadList={false}
-                                action=""
-                                accept="image/*"
-                                // beforeUpload={beforeUpload}
-                                onChange={handleChange}
-                            >
-                                {imageUrl ? (
-                                    // eslint-disable-next-line @next/next/no-img-element
-                                    <img
-                                        src={imageUrl}
-                                        alt="avatar"
-                                        style={{
-                                            width: '100%',
-                                        }}
-                                    />
-                                ) : (
-                                    uploadButton
-                                )}
-                            </Upload>
+                            <UploadAvatar jwt={jwt} dispatch={dispatch} user={user} />
                         </div>
                     </div>
                     <Divider />
-                    <Name isEdit={isEdit} setIsEdit={setIsEdit} jwt={jwt} />
+                    <Name
+                        isEdit={isEdit}
+                        setIsEdit={setIsEdit}
+                        jwt={jwt}
+                        user={user}
+                        dispatch={dispatch}
+                    />
                     <Divider />
-                    <Phone isEdit={isEdit} setIsEdit={setIsEdit} jwt={jwt} />
+                    <Phone
+                        isEdit={isEdit}
+                        setIsEdit={setIsEdit}
+                        jwt={jwt}
+                        user={user}
+                        dispatch={dispatch}
+                    />
                     <Divider />
-                    <Birthday isEdit={isEdit} setIsEdit={setIsEdit} jwt={jwt} />
+                    <Birthday
+                        isEdit={isEdit}
+                        setIsEdit={setIsEdit}
+                        jwt={jwt}
+                        user={user}
+                        dispatch={dispatch}
+                    />
                     <Divider />
-                    <Nationality isEdit={isEdit} setIsEdit={setIsEdit} jwt={jwt} />
+                    <Nationality
+                        isEdit={isEdit}
+                        setIsEdit={setIsEdit}
+                        jwt={jwt}
+                        user={user}
+                        dispatch={dispatch}
+                    />
                     <Divider />
-                    <Gender isEdit={isEdit} setIsEdit={setIsEdit} jwt={jwt} />
+                    <Gender
+                        isEdit={isEdit}
+                        setIsEdit={setIsEdit}
+                        jwt={jwt}
+                        user={user}
+                        dispatch={dispatch}
+                    />
                     <Divider />
-                    <Address isEdit={isEdit} setIsEdit={setIsEdit} jwt={jwt} />
+                    <Address
+                        isEdit={isEdit}
+                        setIsEdit={setIsEdit}
+                        jwt={jwt}
+                        user={user}
+                        dispatch={dispatch}
+                    />
                 </div>
             </div>
         </WebLayout>
@@ -184,7 +163,15 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
             store.dispatch(END);
             await store.sagaTask.toPromise();
         }
+    } else {
+        return {
+            redirect: {
+                destination: '/account/login',
+                permanent: false,
+            },
+        };
     }
+
     return {
         props: {
             jwt,

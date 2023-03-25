@@ -1,7 +1,6 @@
 import userApi from '@/services/user';
 import { Button, Form, Input, notification, Typography } from 'antd';
 import Link from 'next/link';
-import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import WebLayout from '@/components/Layout/WebLayout';
 
@@ -19,7 +18,7 @@ export default function Register() {
                         placement: 'topRight',
                         type: 'success',
                     });
-                    router.push('/account');
+                    router.push('/account/login');
                 } else {
                     notification.open({
                         message: 'Registration Failed',
@@ -29,7 +28,9 @@ export default function Register() {
                     });
                 }
             }
-        } catch (e) {}
+        } catch (e) {
+            console.log(e);
+        }
     };
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);

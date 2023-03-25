@@ -1,13 +1,11 @@
+import { getDateDetail } from '@/helpers/date.helper';
 import { Button, Col, DatePicker, Form, Row, Typography } from 'antd';
 import dayjs from 'dayjs';
 import { useCallback, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { saveUser } from './../../redux/reducers/user.reducer';
 import userApi from './../../services/user/index';
 
-export default function Birthday({ isEdit, setIsEdit }) {
-    const user = useSelector((state) => state.user);
-    const dispatch = useDispatch();
+export default function Birthday({ isEdit, setIsEdit, jwt, user, dispatch }) {
     const [form] = Form.useForm();
     const [active, setActive] = useState(true);
     const [loading, setLoading] = useState(false);
@@ -18,7 +16,7 @@ export default function Birthday({ isEdit, setIsEdit }) {
         if (user && user.birthday) {
             return dayjs(user.birthday, dateFormat);
         } else {
-            return '2000-01-01';
+            return dayjs('2000-01-01', dateFormat);
         }
     }, [user]);
 
@@ -27,15 +25,16 @@ export default function Birthday({ isEdit, setIsEdit }) {
             try {
                 setLoading(true);
                 await new Promise((resolve) => setTimeout(resolve, 1500));
-                const res = await userApi.update({ birthday }, user.id);
+                const res = await userApi.update({ birthday }, user.id, jwt);
                 dispatch(saveUser({ birthday }));
             } catch (e) {
                 console.log(e);
             }
             setLoading(false);
             setActive(!active);
+            setIsEdit(false);
         },
-        [user, active, dispatch, birthday]
+        [user, active, dispatch, birthday, setIsEdit, jwt]
     );
 
     const onChange = (date, dateString) => {
@@ -56,13 +55,15 @@ export default function Birthday({ isEdit, setIsEdit }) {
 
     return (
         <div className="py-2 px-6 flex">
-            <Typography.Text className="w-40">Ngày sinh</Typography.Text>
+            <Typography.Text className="w-40 text-bold">Ngày sinh</Typography.Text>
             <div className="flex flex-1 justify-between">
                 <div className="w-3/4">
                     {active && (
                         <div>
                             <Typography.Text>
-                                {user.birthday ? user.birthday : 'Nhập ngày sinh của bạn'}
+                                {user.birthday
+                                    ? getDateDetail(user.birthday)
+                                    : 'Nhập ngày sinh của bạn'}
                             </Typography.Text>
                         </div>
                     )}

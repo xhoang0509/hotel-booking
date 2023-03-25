@@ -46,7 +46,7 @@ export default function Name({ isEdit, setIsEdit, jwt }) {
 
     return (
         <div className="py-2 px-6 flex">
-            <Typography.Text className="w-40">Tên</Typography.Text>
+            <Typography.Text className="w-40 text-bold">Tên</Typography.Text>
             <div className="flex flex-1 justify-between">
                 <div className="w-3/4">
                     {active && (

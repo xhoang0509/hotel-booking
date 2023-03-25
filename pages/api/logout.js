@@ -1,14 +1,10 @@
-import { withIronSession } from 'next-iron-session';
+import Cookies from 'cookies';
 
-function handler(req, res, session) {
-    req.session.destroy();
-    res.send('Logged out');
+export default async function handler(req, res) {
+    const cookies = new Cookies(req, res);
+    cookies.set('bookingJWT', '', { expires: new Date(0) });
+    res.status(200).json({
+        status: true,
+        message: 'Logout successfully!',
+    });
 }
-
-export default withIronSession(handler, {
-    password: process.env.SESSION_SECRET,
-    cookieName: process.env.SESSION_COOKIE_NAME,
-    cookieOptions: {
-        secure: process.env.NODE_ENV === 'production',
-    },
-});

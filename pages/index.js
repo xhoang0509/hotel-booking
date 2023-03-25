@@ -1,4 +1,3 @@
-import AvatarUser from '@/components/AvatarUser';
 import WebLayout from '@/components/Layout/WebLayout';
 import { wrapper } from '@/redux/store';
 import { Layout, Typography } from 'antd';

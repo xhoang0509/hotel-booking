@@ -107,7 +107,7 @@ export default function Login({ user }) {
     );
 }
 
-export async function getServerSideProps({ req, res }) {
+export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ req, res }) => {
     const jwt = req.cookies['bookingJWT'];
     if (jwt) {
         return {
@@ -117,8 +117,7 @@ export async function getServerSideProps({ req, res }) {
             },
         };
     }
-
     return {
         props: {},
     };
-}
+});

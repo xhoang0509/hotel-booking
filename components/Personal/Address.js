@@ -1,36 +1,36 @@
 import { saveUser } from '@/redux/reducers/user.reducer';
 import { Button, Col, Form, Row, Select, Typography, Input } from 'antd';
 import { useCallback, useState, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import userApi from './../../services/user/index';
 import { contries } from './../../constants/contries.const';
+import { getAddressDetail } from './../../helpers/address.helper';
 
-export default function Address({ isEdit, setIsEdit, jwt }) {
-    const user = useSelector((state) => state.user);
-    const dispatch = useDispatch();
+export default function Address({ isEdit, setIsEdit, jwt, user, dispatch }) {
     const [form] = Form.useForm();
     const [active, setActive] = useState(true);
     const [loading, setLoading] = useState(false);
-    const [country, setcountry] = useState('');
+
+    const initialValue = useMemo(() => {
+        return user.address.split(' | ');
+    }, [user]);
+
     const onFinish = useCallback(
         async (values) => {
-            console.log({ values });
+            const body = `${values.address} | ${values.city} | ${values.code} | ${values.country}`;
             try {
                 setLoading(true);
                 await new Promise((resolve) => setTimeout(resolve, 500));
-                const res = await userApi.update({ country }, user.id, jwt);
-                dispatch(saveUser({ country }));
+                const res = await userApi.update({ address: body }, user.id, jwt);
+                dispatch(saveUser({ address: body }));
             } catch (e) {
                 console.log(e);
             }
             setLoading(false);
             setActive(!active);
+            setIsEdit(false);
         },
-        [user, active, dispatch, country]
+        [active, setIsEdit, jwt, user, dispatch]
     );
-    const onChange = (value) => {
-        setcountry(value);
-    };
 
     const options = contries.map((country) => {
         return { value: country.code, label: country.name };
@@ -50,13 +50,13 @@ export default function Address({ isEdit, setIsEdit, jwt }) {
 
     return (
         <div className="py-2 px-6 flex">
-            <Typography.Text className="w-40">Địa chỉ</Typography.Text>
+            <Typography.Text className="w-40 text-bold">Địa chỉ</Typography.Text>
             <div className="flex flex-1 justify-between">
                 <div className="w-3/4">
                     {active && (
                         <div>
                             <Typography.Text>
-                                {user.address ? user.address : 'Nhập địa chỉ'}
+                                {user.address ? getAddressDetail(user.address) : 'Nhập địa chỉ'}
                             </Typography.Text>
                         </div>
                     )}
@@ -74,6 +74,7 @@ export default function Address({ isEdit, setIsEdit, jwt }) {
                                                 message: 'Vui lòng nhập địa chỉ của bạn',
                                             },
                                         ]}
+                                        initialValue={initialValue[0] ? initialValue[0] : ''}
                                     >
                                         <Input placeholder="Tên đường và số nhà/căn hộ" />
                                     </Form.Item>
@@ -90,12 +91,17 @@ export default function Address({ isEdit, setIsEdit, jwt }) {
                                                 message: 'Vui lòng nhập thị trấn/thành phố',
                                             },
                                         ]}
+                                        initialValue={initialValue[1] ? initialValue[1] : ''}
                                     >
                                         <Input />
                                     </Form.Item>
                                 </Col>
                                 <Col span={9}>
-                                    <Form.Item label="Mã bưu điện" name="code">
+                                    <Form.Item
+                                        label="Mã bưu điện"
+                                        name="code"
+                                        initialValue={initialValue[2] ? initialValue[2] : ''}
+                                    >
                                         <Input />
                                     </Form.Item>
                                 </Col>
@@ -111,12 +117,12 @@ export default function Address({ isEdit, setIsEdit, jwt }) {
                                                 message: 'Vui lòng nhập vùng/quốc gia của bạn',
                                             },
                                         ]}
+                                        initialValue={initialValue[3] ? initialValue[3] : ''}
                                     >
                                         <Select
                                             showSearch
                                             placeholder="Chọn vùng/quốc gia của bạn"
                                             optionFilterProp="children"
-                                            onChange={onChange}
                                             filterOption={(input, option) =>
                                                 (option?.label ?? '')
                                                     .toLowerCase()
