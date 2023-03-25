@@ -1,19 +1,34 @@
-import cookie from 'cookie';
-import { withIronSession } from 'next-iron-session';
+import Cookies from 'cookies';
+import userApi from './../../services/user/index';
 
-const handler = async (req, res) => {
-    const { user } = req.body;
-    req.session.set('user', user);
-    await req.session.save();
-    cookie.serialize('auth', user.token);
-    res.send({ ok: true });
-};
+export default async function handler(req, res) {
+    const cookies = new Cookies(req, res);
+    if (!req.body) {
+        res.statusCode = 404;
+        res.end('Error');
+        return;
+    }
+    const { email, password } = req.body;
 
-export default withIronSession(handler, {
-    password: process.env.SESSION_PASSWORD,
-    cookieName: process.env.SESSION_COOKIE_NAME,
-    ttl: 60 * 60 * 24 * 7,
-    cookieOptions: {
-        secure: process.env.NODE_ENV === 'production' ? true : false,
-    },
-});
+    // call API to server
+    const response = await userApi.login({ email, password });
+    const { status } = response.data;
+
+    // login success
+    if (status) {
+        const { token } = response.data;
+        cookies.set('bookingJWT', token, { httpOnly: true, maxAge: Date.now() + 360000 });
+
+        res.status(200).json({
+            status,
+            token: response.data.token,
+            user: response.data.user,
+        });
+        // login failed
+    } else {
+        res.status(400).json({
+            status,
+            message: response.data.message,
+        });
+    }
+}

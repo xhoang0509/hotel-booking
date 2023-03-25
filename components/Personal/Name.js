@@ -1,25 +1,23 @@
 import { saveUser } from '@/redux/reducers/user.reducer';
-import { Button, Col, Form, Row, Select, Typography } from 'antd';
+import { Button, Col, Form, Input, Row, Typography } from 'antd';
 import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { contries, getContry } from '../../constants/contries.const';
 import userApi from './../../services/user/index';
 
-export default function Nationality({ isEdit, setIsEdit, jwt }) {
+export default function Name({ isEdit, setIsEdit, jwt }) {
     const user = useSelector((state) => state.user);
     const dispatch = useDispatch();
     const [form] = Form.useForm();
     const [active, setActive] = useState(true);
     const [loading, setLoading] = useState(false);
-    const [nationality, setNationality] = useState('');
 
     const onFinish = useCallback(
         async (values) => {
             try {
                 setLoading(true);
                 await new Promise((resolve) => setTimeout(resolve, 500));
-                const res = await userApi.update({ nationality }, user.id, jwt);
-                dispatch(saveUser({ nationality }));
+                const res = await userApi.update(values, user.id, jwt);
+                dispatch(saveUser({ ...values }));
             } catch (e) {
                 console.log(e);
             }
@@ -27,14 +25,12 @@ export default function Nationality({ isEdit, setIsEdit, jwt }) {
             setActive(!active);
             setIsEdit(false);
         },
-        [user, active, dispatch, nationality, jwt, setIsEdit]
+        [user, active, dispatch, jwt, setIsEdit]
     );
-    const onChange = (value) => {
-        setNationality(value);
+
+    const onFinishFailed = (errorInfo) => {
+        console.log('Failed:', errorInfo);
     };
-    const options = contries.map((contry) => {
-        return { value: contry.code, label: contry.name };
-    });
 
     const handleEditClick = () => {
         if (!isEdit) {
@@ -50,45 +46,47 @@ export default function Nationality({ isEdit, setIsEdit, jwt }) {
 
     return (
         <div className="py-2 px-6 flex">
-            <Typography.Text className="w-40">Quốc tịch</Typography.Text>
+            <Typography.Text className="w-40">Tên</Typography.Text>
             <div className="flex flex-1 justify-between">
                 <div className="w-3/4">
                     {active && (
-                        <div>
-                            <Typography.Text>
-                                {user.nationality
-                                    ? getContry(user.nationality).name
-                                    : 'Chọn vùng/quốc gia của bạn'}
-                            </Typography.Text>
-                        </div>
+                        <Typography.Text>{`${user.firstName} ${user.lastName}`}</Typography.Text>
                     )}
-
                     {!active && (
-                        <Form layout="vertical" form={form} onFinish={onFinish}>
+                        <Form
+                            layout="vertical"
+                            form={form}
+                            onFinish={onFinish}
+                            onFinishFailed={onFinishFailed}
+                            initialValues={{ firstName: user.firstName, lastName: user.lastName }}
+                        >
                             <Row gutter={24}>
                                 <Col span={12}>
                                     <Form.Item
-                                        label="Quốc tịch"
-                                        name="nationality"
+                                        label="Tên"
+                                        name="firstName"
                                         rules={[
                                             {
                                                 required: true,
-                                                message: 'Vui lòng chọn vùng/quốc gia của bạn',
+                                                message: 'Vui lòng nhập tên của bạn',
                                             },
                                         ]}
                                     >
-                                        <Select
-                                            showSearch
-                                            placeholder="Chọn vùng/quốc gia của bạn"
-                                            optionFilterProp="children"
-                                            onChange={onChange}
-                                            filterOption={(input, option) =>
-                                                (option?.label ?? '')
-                                                    .toLowerCase()
-                                                    .includes(input.toLowerCase())
-                                            }
-                                            options={options}
-                                        />
+                                        <Input />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={12}>
+                                    <Form.Item
+                                        label="Họ"
+                                        name="lastName"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Vui lòng nhập tên của bạn',
+                                            },
+                                        ]}
+                                    >
+                                        <Input />
                                     </Form.Item>
                                 </Col>
                             </Row>

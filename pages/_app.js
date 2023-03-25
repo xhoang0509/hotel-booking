@@ -1,12 +1,12 @@
-import Footer from '@/components/Footer';
-import Header from '@/components/Header';
+import Footer from '@/components/Layout/Footer';
+import Header from '@/components/Layout/Header';
 import '@/styles/globals.css';
 import Head from 'next/head';
 import React from 'react';
-import "tailwindcss/tailwind.css";
+import 'tailwindcss/tailwind.css';
 import { wrapper } from '@/redux/store';
 
-const App = ({ Component, pageProps: { session, ...pageProps } }) => {
+const App = ({ Component, pageProps: { ...pageProps } }) => {
     return (
         <React.Fragment>
             <Head>
@@ -22,6 +22,6 @@ const App = ({ Component, pageProps: { session, ...pageProps } }) => {
             </>
         </React.Fragment>
     );
-}
+};
 
 export default wrapper.withRedux(App);

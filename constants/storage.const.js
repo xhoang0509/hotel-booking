@@ -1,3 +1,3 @@
 export const LocalStorage = {
-    user: 'USER'
-}
+    user: 'USER',
+};

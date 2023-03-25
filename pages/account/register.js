@@ -17,7 +17,7 @@ export default function Register() {
                         message: 'Registration Successful',
                         description: 'Your account has been created successfully!',
                         placement: 'topRight',
-                        type: 'success'
+                        type: 'success',
                     });
                     router.push('/account');
                 } else {
@@ -25,19 +25,18 @@ export default function Register() {
                         message: 'Registration Failed',
                         description: res.data.message,
                         placement: 'topRight',
-                        type: 'error'
-                    })
+                        type: 'error',
+                    });
                 }
             }
-        } catch (e) {
-        }
+        } catch (e) {}
     };
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
     return (
         <WebLayout>
-            <div className='flex flex-col items-center mt-12'>
+            <div className="flex flex-col items-center mt-12">
                 <Typography.Title level={4}>Đăng nhập hoặc tạo tài khoản</Typography.Title>
                 <Form
                     name="basic"
@@ -56,7 +55,7 @@ export default function Register() {
                     layout="vertical"
                 >
                     <Form.Item
-                        className='mt-4'
+                        className="mt-4"
                         label="Email"
                         name="email"
                         rules={[
@@ -79,7 +78,7 @@ export default function Register() {
                             },
                         ]}
                     >
-                        <Input.Password className='w-80' />
+                        <Input.Password className="w-80" />
                     </Form.Item>
 
                     <Form.Item
@@ -92,7 +91,7 @@ export default function Register() {
                             },
                         ]}
                     >
-                        <Input className='w-80' />
+                        <Input className="w-80" />
                     </Form.Item>
 
                     <Form.Item
@@ -105,17 +104,39 @@ export default function Register() {
                             },
                         ]}
                     >
-                        <Input className='w-80' />
+                        <Input className="w-80" />
                     </Form.Item>
 
                     <Form.Item>
-                        <Button type="primary" htmlType="submit" className='mt-4 w-80 bg-[#4096FF] h-8 px-4'>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            className="mt-4 w-80 bg-[#4096FF] h-8 px-4"
+                        >
                             Register
                         </Button>
                     </Form.Item>
                 </Form>
-                <Typography>Already account ? <Link href="/account/login">Login</Link></Typography>
+                <Typography>
+                    Already account ? <Link href="/account/login">Login</Link>
+                </Typography>
             </div>
         </WebLayout>
-    )
+    );
+}
+
+export async function getServerSideProps({ req, res }) {
+    const jwt = req.cookies['bookingJWT'];
+    if (jwt) {
+        return {
+            redirect: {
+                destination: '/account',
+                permanent: false,
+            },
+        };
+    }
+
+    return {
+        props: {},
+    };
 }
