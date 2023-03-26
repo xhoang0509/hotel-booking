@@ -1,3 +1,7 @@
 # DATN-API
 
-npx sequelize-cli db:drop;npx sequelize-cli db:create;npx sequelize-cli db:migrate;npx sequelize-cli db:seed:all;
+
+### Create Database for new developer:
+```bash
+$ npx sequelize-cli db:drop;npx sequelize-cli db:create;npx sequelize-cli db:migrate;npx sequelize-cli db:seed:all;
+```

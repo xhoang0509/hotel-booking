@@ -43,7 +43,6 @@ async function register(req, res) {
         }
         let passwordHash = await bcrypt.hash(password, 10);
         user = await users.create({ email, password: passwordHash, firstName, lastName });
-        const token = jwt.sign({ id: user.id }, JWT_SECRET_KEY);
         delete user.password;
 
         let bodyEmail = welcomeCustomer
@@ -60,12 +59,9 @@ async function register(req, res) {
                 status: true,
                 message: 'User create successfully!',
                 user: user,
-                token,
             },
         };
         writeLog(__filename, 'user.controller.login', 'Send email welcome to: ' + email);
-        res.cookie('token', token);
-        req.session.user = user;
     } catch (e) {
         writeLog(__filename, 'user.controller.login', e.message);
         result = {
@@ -126,8 +122,14 @@ async function login(req, res) {
         }
 
         const token = jwt.sign({ email: user.email, id: user.id }, JWT_SECRET_KEY, {
-            expiresIn: '7d',
+            expiresIn: '1d',
         });
+
+        res.cookie('jwt', token, {
+            httpOnly: true,
+            maxAge: 24 * 60 * 60 * 1000,  // 1 day
+        })
+
         const { password: newPassword, ...userData } = user.toJSON();
         result = {
             code: 200,
@@ -156,13 +158,13 @@ async function login(req, res) {
 async function update(req, res) {
     try {
         const { id } = req.params;
-        const { firstName, lastName, phone, birthday, nationality, gender } = req.body;
+        const { firstName, lastName, phone, birthday, nationality, gender, address, images } = req.body;
         if (!id) {
             res.status(400).json({ status: false, message: 'Missing id' })
         } else {
             const user = await users.findOne({ where: { id: id } });
             if (user && user.id) {
-                const user = await users.update({ firstName, lastName, phone, birthday, nationality, gender }, { where: { id: id } });
+                const user = await users.update({ firstName, lastName, phone, birthday, nationality, gender, address, images }, { where: { id: id } });
                 res.status(200).json({
                     status: true,
                     message: 'Updated user',
@@ -181,8 +183,31 @@ async function update(req, res) {
     }
 }
 
+
+async function getOne(req, res) {
+    try {
+        const { id } = req.params;
+        let user = await users.findOne({ where: { id: id } });
+        user = user.toJSON();
+        let { password, ...newUser } = user;
+        if (user) {
+            res.status(200).json({
+                status: true,
+                user: newUser,
+            })
+        }
+    } catch (e) {
+        writeLog(__filename, 'user.controller.getOne', e.message);
+        res.status(500).json({
+            status: false,
+            message: "INTERNAL_SERVER_ERROR"
+        })
+    }
+}
+
 module.exports = {
     register,
     login,
-    update
+    update,
+    getOne,
 };

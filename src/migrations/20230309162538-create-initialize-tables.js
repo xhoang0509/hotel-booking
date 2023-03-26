@@ -270,6 +270,96 @@ module.exports = {
                         transaction: t,
                     }
                 ),
+                queryInterface.createTable(
+                    'rules',
+                    {
+                        id: {
+                            allowNull: false,
+                            primaryKey: true,
+                            autoIncrement: true,
+                            type: Sequelize.INTEGER(11),
+                        },
+                        name: {
+                            type: Sequelize.TEXT,
+                        },
+                        description: {
+                            type: Sequelize.TEXT,
+                        },
+                        createdAt: {
+                            type: Sequelize.DATE,
+                        },
+                        updatedAt: {
+                            type: Sequelize.DATE,
+                        },
+                    },
+                    {
+                        transaction: t,
+                    }
+                ),
+                queryInterface.createTable(
+                    'users',
+                    {
+                        id: {
+                            allowNull: false,
+                            primaryKey: true,
+                            autoIncrement: true,
+                            type: Sequelize.INTEGER(11),
+                        },
+                        email: {
+                            allowNull: false,
+                            unique: true,
+                            type: Sequelize.STRING(100),
+                        },
+                        password: {
+                            allowNull: false,
+                            type: Sequelize.STRING(100),
+                        },
+                        firstName: {
+                            type: Sequelize.STRING(300),
+                            allowNull: true,
+                        },
+                        lastName: {
+                            type: Sequelize.STRING(300),
+                            allowNull: false,
+                        },
+                        phone: {
+                            type: Sequelize.STRING(300),
+                        },
+                        birthday: {
+                            type: Sequelize.DATE,
+                        },
+                        gender: {
+                            type: Sequelize.STRING(20),
+                        },
+                        address: {
+                            type: Sequelize.STRING(300),
+                        },
+                        image: {
+                            type: Sequelize.TEXT,
+                        },
+                        ruleId: {
+                            type: Sequelize.INTEGER(11),
+                            references: {
+                                model: {
+                                    tableName: 'rules',
+                                },
+                                key: 'id',
+                            },
+                            allowNull: false,
+                        },
+                        createdAt: {
+                            allowNull: false,
+                            type: Sequelize.DATE,
+                        },
+                        updatedAt: {
+                            allowNull: true,
+                            type: Sequelize.DATE,
+                        },
+                    },
+                    {
+                        transaction: t,
+                    }
+                ),
             ]);
         });
     },

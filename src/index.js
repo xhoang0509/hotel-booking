@@ -11,7 +11,8 @@ const port = process.env.PORT || 6969;
 
 app.use(
     cors({
-        origin: ['http://localhost:3000'],
+        credentials: true,
+        origin: ['http://localhost:3000', 'http://localhost:6969'],
     })
 );
 app.use(bodyParser.urlencoded({ extended: false }));
