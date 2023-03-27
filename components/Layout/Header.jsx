@@ -29,7 +29,7 @@ export default function HeaderLayout() {
     const items = [
         {
             key: '1',
-            label: <Link href="/account">Thông tin tài khoản</Link>,
+            label: <Link href="/profile">Thông tin tài khoản</Link>,
             icon: <UserOutlined />,
         },
         {
@@ -54,10 +54,11 @@ export default function HeaderLayout() {
                     menu={{
                         items,
                     }}
+                    className="border rounded-lg p-2 border-secondary cursor-pointer"
                 >
                     <div className="flex justify-between items-center">
                         <Avatar size="large" icon={<UserOutlined />} className="mr-4" />
-                        <div className="mr-4 text-bold text-base">{`${admin.firstName} ${admin.lastName}`}</div>
+                        <div className="mr-4 font-bold text-base">{`${admin.firstName} ${admin.lastName}`}</div>
                     </div>
                 </Dropdown>
             </div>

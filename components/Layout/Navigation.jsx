@@ -18,35 +18,38 @@ import { Layout, Button, Menu } from 'antd';
 import Link from 'next/link';
 const { Sider } = Layout;
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 export default function Navigation() {
-    function getItem(label, key, icon, children, type) {
-        return {
-            key,
-            icon,
-            children,
-            label,
-            type,
-        };
-    }
+    const router = useRouter();
     const items = [
-        getItem('Tổng quan', '1', <PieChartOutlined />),
-        getItem('Thông tin tài khoản', '2', <DesktopOutlined />),
-        getItem('Option 3', '3', <ContainerOutlined />),
-        getItem('Navigation One', 'sub1', <MailOutlined />, [
-            getItem('Option 5', '5'),
-            getItem('Option 6', '6'),
-            getItem('Option 7', '7'),
-            getItem('Option 8', '8'),
-        ]),
-        getItem('Navigation Two', 'sub2', <AppstoreOutlined />, [
-            getItem('Option 9', '9'),
-            getItem('Option 10', '10'),
-            getItem('Submenu', 'sub3', null, [
-                getItem('Option 11', '11'),
-                getItem('Option 12', '12'),
-            ]),
-        ]),
+        {
+            key: 1,
+            label: <Link href="/">Tổng quan</Link>,
+            icon: <PieChartOutlined />,
+        },
+        {
+            key: 2,
+            label: <Link href="/profile">Thông tin tài khoản</Link>,
+            icon: <DesktopOutlined />,
+        },
+        {
+            key: 3,
+            label: <span>Quản lý nhân viên</span>,
+            icon: <PieChartOutlined />,
+            children: [
+                {
+                    key: 4,
+                    label: <Link href="/account">Tất cả nhân viên</Link>,
+                    icon: <PieChartOutlined />,
+                },
+                {
+                    key: 5,
+                    label: <Link href="/account/add">Thêm nhân viên mới</Link>,
+                    icon: <PieChartOutlined />,
+                },
+            ],
+        },
     ];
 
     return (

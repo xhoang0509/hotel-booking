@@ -36,7 +36,7 @@ export default function LayoutApp({ children }) {
                     <Layout
                         className="site-layout min-h-screen h-auto"
                         style={{
-                            marginLeft: 200,
+                            marginLeft: 250,
                         }}
                     >
                         <HeaderLayout />
