@@ -297,7 +297,7 @@ module.exports = {
                     }
                 ),
                 queryInterface.createTable(
-                    'users',
+                    'admins',
                     {
                         id: {
                             allowNull: false,

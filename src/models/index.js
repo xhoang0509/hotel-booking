@@ -39,4 +39,7 @@ db['categories'].hasMany(db['countries'], { foreignKey: 'categoryId' });
 db['cities'].belongsTo(db['countries'], { foreignKey: 'countryId' });
 db['countries'].hasMany(db['cities'], { foreignKey: 'countryId' });
 
+db['admins'].belongsTo(db['rules'], { foreignKey: 'ruleId' });
+db['rules'].hasMany(db['admins'], { foreignKey: 'ruleId' });
+
 module.exports = db;

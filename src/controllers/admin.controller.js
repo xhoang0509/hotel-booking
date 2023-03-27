@@ -3,11 +3,12 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const { welcomeCustomer } = require('../constant/email.const');
-const { validateUserRegister, validateUserLogin } = require('../helper/ValidateUser');
+const { validateAdminRegister, validateAdminLogin } = require('../helper/ValidateAdmin');
 
 const users = require('../models').users;
+const admins = require('../models').admins;
+const rules = require('../models').rules;
 const writeLog = require('../logger');
-const { sendEmail } = require('../services/email.service');
 
 const { JWT_SECRET_KEY } = process.env;
 
@@ -19,19 +20,19 @@ async function register(req, res) {
             message: 'INTERNAL_SERVER_ERROR',
         },
     };
-    let user = {};
+    let admin = {};
     try {
-        const { email, password, firstName, lastName } = req.body;
+        const { email, password, firstName, lastName, phone, birthday,gender,address, image, ruleId } = req.body;
 
         // veryfiy field
-        const [status, resultVal] = validateUserRegister(email, password, firstName, lastName);
+        const [status, resultVal] = validateAdminRegister(email, password, firstName, lastName, ruleId);
         if (!status) {
             result = resultVal;
             return;
         }
 
-        let userExit = await users.findOne({ where: { email: email } });
-        if (userExit && userExit.id) {
+        let adminExit = await admins.findOne({ where: { email: email } });
+        if (adminExit && adminExit.id) {
             result = {
                 code: 400,
                 data: {
@@ -42,28 +43,18 @@ async function register(req, res) {
             return;
         }
         let passwordHash = await bcrypt.hash(password, 10);
-        user = await users.create({ email, password: passwordHash, firstName, lastName });
-        delete user.password;
-
-        let bodyEmail = welcomeCustomer
-            .split('{{customer_name}}')
-            .join(`${firstName} ${lastName}`)
-            .split('{{company_name}}')
-            .join('Booking.com')
-            .split('{{your_name}}')
-            .join('Xuan Hoang');
-        sendEmail(email, 'Welcome to Boooking.com', bodyEmail);
+        admin = await admins.create({ email, password: passwordHash, firstName, lastName,phone, birthday,gender,address, image, ruleId });
+        delete admin.password;
         result = {
             code: 200,
             data: {
                 status: true,
-                message: 'User create successfully!',
-                user: user,
+                message: 'Admin create successfully!',
+                admin: admin,
             },
         };
-        writeLog(__filename, 'user.controller.login', 'Send email welcome to: ' + email);
     } catch (e) {
-        writeLog(__filename, 'user.controller.login', e.message);
+        writeLog(__filename, 'admin.controller.login', e.message);
         result = {
             code: 500,
             data: {
@@ -84,31 +75,37 @@ async function login(req, res) {
             message: 'INTERNAL_SERVER_ERROR',
         },
     };
-    let user = {};
+    let admin = {};
     try {
         const { email, password } = req.body;
 
         // veryfiy field
-        const [status, resultVal] = validateUserLogin(email, password);
+        const [status, resultVal] = validateAdminLogin(email, password);
         if (!status) {
             result = resultVal;
             return;
         }
 
-        user = await users.findOne({ where: { email, email } });
+        admin = await admins.findOne({ 
+            where: { email, email },
+            include: {
+                model: rules, 
+                attributes: ['id', 'name', 'description'] 
+            }
+        });
 
-        if (!user) {
+        if (!admin) {
             result = {
                 code: 404,
                 data: {
                     status: false,
-                    message: 'User not found!',
+                    message: 'Admin not found!',
                 },
             };
             return;
         }
 
-        const isPasswordMatch = await bcrypt.compare(password, user.password);
+        const isPasswordMatch = await bcrypt.compare(password, admin.password);
 
         if (!isPasswordMatch) {
             result = {
@@ -120,23 +117,23 @@ async function login(req, res) {
             };
             return;
         }
-
-        const token = jwt.sign({ email: user.email, id: user.id, type: 'user' }, JWT_SECRET_KEY, {
+        writeLog(__filename, 'admin.controller.login', `Admin: ${admin.email} login successfully` );
+        const token = jwt.sign({ email: admin.email, id: admin.id, type: 'admin' }, JWT_SECRET_KEY, {
             expiresIn: '1d',
         });
 
-        const { password: newPassword, ...userData } = user.toJSON();
+        const { password: newPassword, ...adminData } = admin.toJSON();
         result = {
             code: 200,
             data: {
                 status: true,
                 message: 'Login successful!',
-                user: userData,
+                admin: adminData,
                 token,
             },
         };
     } catch (e) {
-        writeLog(__filename, 'user.controller.login', e.message);
+        writeLog(__filename, 'admin.controller.login', e.message);
         result = {
             code: 500,
             data: {
@@ -173,7 +170,7 @@ async function update(req, res) {
             }
         }
     } catch (e) {
-        writeLog(__filename, 'user.controller.update', e.message);
+        writeLog(__filename, 'admin.controller.update', e.message);
         res.status(500).json({ status: false, nessage: e.message })
     }
 }
@@ -182,17 +179,17 @@ async function update(req, res) {
 async function getOne(req, res) {
     try {
         const { id } = req.params;
-        let user = await users.findOne({ where: { id: id } });
-        user = user.toJSON();
-        let { password, ...newUser } = user;
-        if (user) {
+        let admin = await admins.findOne({ where: { id: id } });
+        admin = admin.toJSON();
+        let { password, ...newAdmin } = admin;
+        if (admin) {
             res.status(200).json({
                 status: true,
-                user: newUser,
+                admin: newAdmin,
             })
         }
     } catch (e) {
-        writeLog(__filename, 'user.controller.getOne', e.message);
+        writeLog(__filename, 'admin.controller.getOne', e.message);
         res.status(500).json({
             status: false,
             message: "INTERNAL_SERVER_ERROR"
