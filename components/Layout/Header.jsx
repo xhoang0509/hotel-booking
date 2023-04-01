@@ -54,7 +54,7 @@ export default function HeaderLayout() {
                     menu={{
                         items,
                     }}
-                    className="border rounded-lg p-2 border-secondary cursor-pointer"
+                    className="cursor-pointer"
                 >
                     <div className="flex justify-between items-center">
                         <Avatar size="large" icon={<UserOutlined />} className="mr-4" />

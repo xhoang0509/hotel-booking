@@ -12,7 +12,7 @@ import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { END } from 'redux-saga';
 
-export default function AccountId({ jwt }) {
+export default function UserId({ jwt }) {
     const router = useRouter();
     const { id } = router.query;
     const isEdit = useMemo(() => {
@@ -112,9 +112,9 @@ export default function AccountId({ jwt }) {
             {fetching && <div>Fetching</div>}
             {!fetching && (
                 <>
-                    <BackPage href="/account" />
+                    <BackPage href="/user" />
                     <Typography.Title level={4} className="pb-4">
-                        {id !== 'add' ? 'Chỉnh sửa nhân viên' : 'Thêm nhân viên mới'}
+                        Thông tin khách hàng
                     </Typography.Title>
                     <Form
                         name="basic"

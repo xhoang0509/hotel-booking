@@ -1,6 +1,7 @@
 import {
     DashboardOutlined,
     DesktopOutlined,
+    EnvironmentOutlined,
     UserAddOutlined,
     UserOutlined,
     UsergroupAddOutlined,
@@ -37,6 +38,33 @@ export default function Navigation() {
                     key: 5,
                     label: <Link href="/account/add">Thêm nhân viên mới</Link>,
                     icon: <UserAddOutlined />,
+                },
+            ],
+        },
+        {
+            key: 6,
+            label: <span>Quản lý khách hàng</span>,
+            icon: <UsergroupAddOutlined />,
+            children: [
+                {
+                    key: 7,
+                    label: <Link href="/user">Tất cả khách hàng</Link>,
+                    icon: <UserOutlined />,
+                },
+            ],
+        },
+        {
+            key: 7,
+            label: <span>Quản lý địa điểm</span>,
+            icon: <EnvironmentOutlined />,
+            children: [
+                {
+                    key: 8,
+                    label: <Link href="/category">Thể loại</Link>,
+                },
+                {
+                    key: 9,
+                    label: <Link href="/city">Thành phố</Link>,
                 },
             ],
         },
