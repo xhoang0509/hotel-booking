@@ -1,36 +1,48 @@
+import Category from '@/components/Category';
 import WebLayout from '@/components/Layout/WebLayout';
 import { wrapper } from '@/redux/store';
 import { Layout, Typography } from 'antd';
 import React from 'react';
 import { END } from 'redux-saga';
 import { SAGA_GET_USER_DATA_ASYNC } from './../redux/actions/user.action';
+import City from '@/components/City';
 
 export default function Index() {
     return (
         <React.Fragment>
             <WebLayout>
-                <Layout>
+                <Layout className="bg-white">
                     <div>
                         <div>
-                            <Typography.Title level={4} className="font-bold">
+                            <p level={3} className="font-bold text-2xl mb-2">
                                 Ưu đãi
-                            </Typography.Title>
+                            </p>
                             <Typography.Text>
                                 Khuyến mãi, giảm giá và ưu đãi đặc biệt dành riêng cho bạn
                             </Typography.Text>
                         </div>
                         <div>
-                            <Typography.Title level={4} className="font-bold">
+                            <p level={3} className="font-bold text-2xl mt-4 mb-2">
                                 Khám phá Việt Nam
-                            </Typography.Title>
+                            </p>
                             <Typography.Text>
                                 Các điểm đến phổ biến này có nhiều điều chờ đón bạn
                             </Typography.Text>
+                            <City />
                         </div>
                         <div>
-                            <Typography.Title level={4} className="font-bold">
+                            <p level={3} className="font-bold text-2xl mt-4 mb-2">
+                                Lên kế hoạch dễ dàng và nhanh chóng
+                            </p>
+                            <Typography.Text>
+                                Khám phá các điểm đến hàng đầu theo cách bạn thích ở Việt Nam
+                            </Typography.Text>
+                            <Category />
+                        </div>
+                        <div>
+                            <p level={3} className="font-bold text-2xl mt-4 mb-2">
                                 Tìm theo loại chỗ nghỉ
-                            </Typography.Title>
+                            </p>
                             <Typography.Text>
                                 Khuyến mãi, giảm giá và ưu đãi đặc biệt dành riêng cho bạn
                             </Typography.Text>

@@ -31,7 +31,7 @@ export default function UploadAvatar({ jwt, dispatch, user }) {
         setIsModalOpen(false);
     };
 
-    const handleChange = (info) => {
+    const handleChange = useCallback((info) => {
         if (info.file.status === 'uploading') {
             setLoading(true);
             return;
@@ -46,7 +46,7 @@ export default function UploadAvatar({ jwt, dispatch, user }) {
             });
             setLoading(false);
         }
-    };
+    }, []);
 
     const uploadButton = (
         <div>

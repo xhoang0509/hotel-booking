@@ -1,7 +1,5 @@
-import { LocalStorage } from '@/constants/Storage.const';
 import { createSlice } from '@reduxjs/toolkit';
-import { SAGA_GET_USER_DATA_SUCCESS } from '../actions/user.action';
-import { SAGA_GET_USER_DATA_FAILED } from './../actions/user.action';
+import { SAGA_GET_USER_DATA_SUCCESS, SAGA_GET_USER_DATA_FAILED } from '../actions/user.action';
 
 const initialState = () => {
     return {

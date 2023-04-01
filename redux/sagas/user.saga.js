@@ -1,4 +1,5 @@
 import { all, put, takeLatest } from 'redux-saga/effects';
+import jwt from 'jsonwebtoken';
 
 import {
     SAGA_GET_USER_DATA_ASYNC,
@@ -6,14 +7,20 @@ import {
     SAGA_GET_USER_DATA_FAILED,
 } from '../actions/user.action';
 
-const getUserById = (jwt) =>
-    fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/user/1`, {
+const getUserById = (jwt) => {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY, {
+        algorithms: process.env.JWT_ALGORITHM,
+        ignoreExpiration: true,
+    });
+    const { type, id } = decoded;
+    return fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/${type}/${id}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${jwt}`,
         },
     });
+};
 
 function* getUserData(action) {
     try {
