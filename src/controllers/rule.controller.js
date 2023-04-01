@@ -9,15 +9,15 @@ async function getAll(req, res) {
         res.status(200).json({
             status: true,
             data: {
-                rules: rulesData
-            }
-        })
+                rules: rulesData,
+            },
+        });
     } catch (e) {
         writeLog(__filename, 'rule.controller.getAll', e.message);
         res.status(200).json({
             status: false,
-            message: 'INTERNAL_SERVER_ERROR ' + e.message
-        })
+            message: 'INTERNAL_SERVER_ERROR ' + e.message,
+        });
     }
 }
 

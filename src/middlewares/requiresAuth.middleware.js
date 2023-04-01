@@ -1,5 +1,5 @@
 require('dotenv').config();
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 const writeLog = require('../logger');
 
 function authApi(req, res, next) {

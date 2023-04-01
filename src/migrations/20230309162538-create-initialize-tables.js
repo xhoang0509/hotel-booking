@@ -337,6 +337,9 @@ module.exports = {
                         image: {
                             type: Sequelize.TEXT,
                         },
+                        status: {
+                            type: Sequelize.STRING(50),
+                        },
                         ruleId: {
                             type: Sequelize.INTEGER(11),
                             references: {

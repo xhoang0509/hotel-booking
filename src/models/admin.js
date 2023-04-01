@@ -38,6 +38,9 @@ module.exports = (sequelize, DataTypes) => {
         image: {
             type: DataTypes.TEXT,
         },
+        status: {
+            type: DataTypes.STRING(50),
+        },
         ruleId: {
             type: DataTypes.INTEGER(11),
             allowNull: false,
@@ -45,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
                 model: 'rules',
                 key: 'id',
             },
-        }
+        },
     });
     return Admin;
 };

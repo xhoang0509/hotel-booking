@@ -149,35 +149,37 @@ async function login(req, res) {
     }
 }
 
-
 async function update(req, res) {
     try {
         const { id } = req.params;
-        const { firstName, lastName, phone, birthday, nationality, gender, address, images } = req.body;
+        const { firstName, lastName, phone, birthday, nationality, gender, address, images } =
+            req.body;
         if (!id) {
-            res.status(400).json({ status: false, message: 'Missing id' })
+            res.status(400).json({ status: false, message: 'Missing id' });
         } else {
             const user = await users.findOne({ where: { id: id } });
             if (user && user.id) {
-                const user = await users.update({ firstName, lastName, phone, birthday, nationality, gender, address, images }, { where: { id: id } });
+                const user = await users.update(
+                    { firstName, lastName, phone, birthday, nationality, gender, address, images },
+                    { where: { id: id } }
+                );
                 res.status(200).json({
                     status: true,
                     message: 'Updated user',
                     user: user,
-                })
+                });
             } else {
                 res.status(400).json({
                     status: false,
-                    message: "User not found!"
-                })
+                    message: 'User not found!',
+                });
             }
         }
     } catch (e) {
         writeLog(__filename, 'user.controller.update', e.message);
-        res.status(500).json({ status: false, nessage: e.message })
+        res.status(500).json({ status: false, nessage: e.message });
     }
 }
-
 
 async function getOne(req, res) {
     try {
@@ -189,14 +191,14 @@ async function getOne(req, res) {
             res.status(200).json({
                 status: true,
                 user: newUser,
-            })
+            });
         }
     } catch (e) {
         writeLog(__filename, 'user.controller.getOne', e.message);
         res.status(500).json({
             status: false,
-            message: "INTERNAL_SERVER_ERROR"
-        })
+            message: 'INTERNAL_SERVER_ERROR',
+        });
     }
 }
 

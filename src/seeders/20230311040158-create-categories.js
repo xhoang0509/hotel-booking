@@ -39,7 +39,7 @@ module.exports = {
             {
                 id: 1,
                 name: 'Việt Nam',
-                image: "",
+                image: '',
                 categoryId: 1,
                 createdAt: new Date(),
                 updatedAt: new Date(),
@@ -49,7 +49,7 @@ module.exports = {
             {
                 id: 1,
                 name: 'Hà Nội',
-                image: "",
+                image: '',
                 countryId: 1,
                 createdAt: new Date(),
                 updatedAt: new Date(),
@@ -57,7 +57,7 @@ module.exports = {
             {
                 id: 2,
                 name: 'Đà Nẵng',
-                image: "",
+                image: '',
                 countryId: 1,
                 createdAt: new Date(),
                 updatedAt: new Date(),
@@ -65,7 +65,7 @@ module.exports = {
             {
                 id: 3,
                 name: 'Huế',
-                image: "",
+                image: '',
                 countryId: 1,
                 createdAt: new Date(),
                 updatedAt: new Date(),
@@ -73,7 +73,7 @@ module.exports = {
             {
                 id: 4,
                 name: 'Nha Trang',
-                image: "",
+                image: '',
                 countryId: 1,
                 createdAt: new Date(),
                 updatedAt: new Date(),
@@ -81,7 +81,7 @@ module.exports = {
             {
                 id: 5,
                 name: 'Đà Lạt',
-                image: "",
+                image: '',
                 countryId: 1,
                 createdAt: new Date(),
                 updatedAt: new Date(),

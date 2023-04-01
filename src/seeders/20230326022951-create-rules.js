@@ -7,14 +7,14 @@ module.exports = {
             {
                 id: 1,
                 name: 'Quản lý',
-                description: "Đọc, ghi",
+                description: 'Đọc, ghi',
                 createdAt: new Date(),
                 updatedAt: new Date(),
             },
             {
                 id: 2,
                 name: 'Nhân viên',
-                description: "Đọc",
+                description: 'Đọc',
                 createdAt: new Date(),
                 updatedAt: new Date(),
             },

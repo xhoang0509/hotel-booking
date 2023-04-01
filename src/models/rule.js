@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         description: {
             type: DataTypes.STRING(300),
-        }
+        },
     });
     return Rule;
 };

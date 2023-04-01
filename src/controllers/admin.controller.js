@@ -9,6 +9,7 @@ const users = require('../models').users;
 const admins = require('../models').admins;
 const rules = require('../models').rules;
 const writeLog = require('../logger');
+const { getDateDetail } = require('../constant/date.const');
 
 const { JWT_SECRET_KEY } = process.env;
 
@@ -22,10 +23,27 @@ async function register(req, res) {
     };
     let admin = {};
     try {
-        const { email, password, firstName, lastName, phone, birthday,gender,address, image, ruleId } = req.body;
+        const {
+            email,
+            password,
+            firstName,
+            lastName,
+            phone,
+            birthday,
+            gender,
+            address,
+            image,
+            ruleId,
+        } = req.body;
 
         // veryfiy field
-        const [status, resultVal] = validateAdminRegister(email, password, firstName, lastName, ruleId);
+        const [status, resultVal] = validateAdminRegister(
+            email,
+            password,
+            firstName,
+            lastName,
+            ruleId
+        );
         if (!status) {
             result = resultVal;
             return;
@@ -43,7 +61,18 @@ async function register(req, res) {
             return;
         }
         let passwordHash = await bcrypt.hash(password, 10);
-        admin = await admins.create({ email, password: passwordHash, firstName, lastName,phone, birthday,gender,address, image, ruleId });
+        admin = await admins.create({
+            email,
+            password: passwordHash,
+            firstName,
+            lastName,
+            phone,
+            birthday,
+            gender,
+            address,
+            image,
+            ruleId,
+        });
         delete admin.password;
         result = {
             code: 200,
@@ -86,12 +115,12 @@ async function login(req, res) {
             return;
         }
 
-        admin = await admins.findOne({ 
+        admin = await admins.findOne({
             where: { email, email },
             include: {
-                model: rules, 
-                attributes: ['id', 'name', 'description'] 
-            }
+                model: rules,
+                attributes: ['id', 'name', 'description'],
+            },
         });
 
         if (!admin) {
@@ -117,10 +146,14 @@ async function login(req, res) {
             };
             return;
         }
-        writeLog(__filename, 'admin.controller.login', `Admin: ${admin.email} login successfully` );
-        const token = jwt.sign({ email: admin.email, id: admin.id, type: 'admin' }, JWT_SECRET_KEY, {
-            expiresIn: '1d',
-        });
+        writeLog(__filename, 'admin.controller.login', `Admin: ${admin.email} login successfully`);
+        const token = jwt.sign(
+            { email: admin.email, id: admin.id, type: 'admin' },
+            JWT_SECRET_KEY,
+            {
+                expiresIn: '1d',
+            }
+        );
 
         const { password: newPassword, ...adminData } = admin.toJSON();
         result = {
@@ -146,35 +179,37 @@ async function login(req, res) {
     }
 }
 
-
 async function update(req, res) {
     try {
         const { id } = req.params;
-        const { firstName, lastName, phone, birthday, nationality, gender, address, images } = req.body;
+        const { firstName, lastName, phone, birthday, nationality, gender, address, images } =
+            req.body;
         if (!id) {
-            res.status(400).json({ status: false, message: 'Missing id' })
+            res.status(400).json({ status: false, message: 'Missing id' });
         } else {
-            const user = await users.findOne({ where: { id: id } });
-            if (user && user.id) {
-                const user = await users.update({ firstName, lastName, phone, birthday, nationality, gender, address, images }, { where: { id: id } });
+            const admin = await admins.findOne({ where: { id: id } });
+            if (admin && admin.id) {
+                const admin = await admins.update(
+                    { firstName, lastName, phone, birthday, nationality, gender, address, images },
+                    { where: { id: id } }
+                );
                 res.status(200).json({
                     status: true,
-                    message: 'Updated user',
-                    user: user,
-                })
+                    message: 'Updated admin',
+                    admin: admin,
+                });
             } else {
                 res.status(400).json({
                     status: false,
-                    message: "User not found!"
-                })
+                    message: 'Admin not found!',
+                });
             }
         }
     } catch (e) {
         writeLog(__filename, 'admin.controller.update', e.message);
-        res.status(500).json({ status: false, nessage: e.message })
+        res.status(500).json({ status: false, nessage: e.message });
     }
 }
-
 
 async function getOne(req, res) {
     try {
@@ -186,14 +221,61 @@ async function getOne(req, res) {
             res.status(200).json({
                 status: true,
                 admin: newAdmin,
-            })
+            });
         }
     } catch (e) {
         writeLog(__filename, 'admin.controller.getOne', e.message);
         res.status(500).json({
             status: false,
-            message: "INTERNAL_SERVER_ERROR"
-        })
+            message: 'INTERNAL_SERVER_ERROR',
+        });
+    }
+}
+
+async function getAll(req, res) {
+    try {
+        let allAdmin = await admins.findAll({
+            include: {
+                model: rules,
+                attributes: ['id', 'name', 'description'],
+            },
+        });
+        res.status(200).json({
+            status: true,
+            admins: allAdmin,
+        });
+    } catch (error) {
+        writeLog(__filename, 'admin.controller.getAll', e.message);
+        res.status(500).json({
+            status: false,
+            message: 'INTERNAL_SERVER_ERROR',
+        });
+    }
+}
+
+async function changeStatus(req, res) {
+    try {
+        let { id, status } = req.params;
+        let admin = await admins.findOne({ where: { id: id } });
+        if (admin) {
+            const admin = await admins.update({ status });
+            res.status(200).json({
+                status: true,
+                message: 'Updated admin',
+                admin: admin,
+            });
+        } else {
+            res.status(200).json({
+                status: false,
+                message: 'Admin not found!',
+            });
+        }
+    } catch (error) {
+        writeLog(__filename, 'admin.controller.getAll', e.message);
+        res.status(500).json({
+            status: false,
+            message: 'INTERNAL_SERVER_ERROR',
+        });
     }
 }
 
@@ -202,4 +284,6 @@ module.exports = {
     login,
     update,
     getOne,
+    getAll,
+    changeStatus,
 };
