@@ -202,9 +202,26 @@ async function getOne(req, res) {
     }
 }
 
+async function getAll(req, res) {
+    try {
+        let usersData = await users.findAll();
+        res.status(200).json({
+            status: true,
+            users: usersData,
+        });
+    } catch (e) {
+        writeLog(__filename, 'user.controller.getOne', e.message);
+        res.status(500).json({
+            status: false,
+            message: 'INTERNAL_SERVER_ERROR',
+        });
+    }
+}
+
 module.exports = {
     register,
     login,
     update,
     getOne,
+    getAll,
 };

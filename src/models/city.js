@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             type: DataTypes.STRING(100),
         },
-        images: {
+        image: {
             type: DataTypes.TEXT,
         },
         countryId: {

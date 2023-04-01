@@ -183,15 +183,34 @@ async function login(req, res) {
 async function update(req, res) {
     try {
         const { id } = req.params;
-        const { firstName, lastName, phone, birthday, nationality, gender, address, images, status } =
-            req.body;
+        const {
+            firstName,
+            lastName,
+            phone,
+            birthday,
+            nationality,
+            gender,
+            address,
+            images,
+            status,
+        } = req.body;
         if (!id) {
             res.status(400).json({ status: false, message: 'Missing id' });
         } else {
             const admin = await admins.findOne({ where: { id: id } });
             if (admin && admin.id) {
                 const admin = await admins.update(
-                    { firstName, lastName, phone, birthday, nationality, gender, address, images, status },
+                    {
+                        firstName,
+                        lastName,
+                        phone,
+                        birthday,
+                        nationality,
+                        gender,
+                        address,
+                        images,
+                        status,
+                    },
                     { where: { id: id } }
                 );
                 res.status(200).json({
