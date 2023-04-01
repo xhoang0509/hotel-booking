@@ -1,6 +1,18 @@
 import axiosClient from '../axiosClient';
 
 const adminApi = {
+    getAll(token) {
+        return axiosClient.get('/admin', {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+    },
+
+    getOne(id, token) {
+        return axiosClient.get(`/admin/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+    },
+
     register(data) {
         return axiosClient.post('/admin/register', data);
     },

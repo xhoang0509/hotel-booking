@@ -1,24 +1,14 @@
 import {
-    AppstoreOutlined,
-    BarChartOutlined,
-    CloudOutlined,
-    ShopOutlined,
-    TeamOutlined,
-    UploadOutlined,
-    UserOutlined,
-    VideoCameraOutlined,
-    ContainerOutlined,
-    MenuFoldOutlined,
-    PieChartOutlined,
+    DashboardOutlined,
     DesktopOutlined,
-    MailOutlined,
+    UserAddOutlined,
+    UserOutlined,
+    UsergroupAddOutlined,
 } from '@ant-design/icons';
-import React from 'react';
-import { Layout, Button, Menu } from 'antd';
+import { Layout, Menu } from 'antd';
 import Link from 'next/link';
-const { Sider } = Layout;
-import { useState } from 'react';
 import { useRouter } from 'next/router';
+const { Sider } = Layout;
 
 export default function Navigation() {
     const router = useRouter();
@@ -26,7 +16,7 @@ export default function Navigation() {
         {
             key: 1,
             label: <Link href="/">Tổng quan</Link>,
-            icon: <PieChartOutlined />,
+            icon: <DashboardOutlined />,
         },
         {
             key: 2,
@@ -36,17 +26,17 @@ export default function Navigation() {
         {
             key: 3,
             label: <span>Quản lý nhân viên</span>,
-            icon: <PieChartOutlined />,
+            icon: <UsergroupAddOutlined />,
             children: [
                 {
                     key: 4,
                     label: <Link href="/account">Tất cả nhân viên</Link>,
-                    icon: <PieChartOutlined />,
+                    icon: <UserOutlined />,
                 },
                 {
                     key: 5,
                     label: <Link href="/account/add">Thêm nhân viên mới</Link>,
-                    icon: <PieChartOutlined />,
+                    icon: <UserAddOutlined />,
                 },
             ],
         },

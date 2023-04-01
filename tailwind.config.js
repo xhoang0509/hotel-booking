@@ -12,6 +12,7 @@ module.exports = {
             secondary: '#bdbdbd',
             white: '#ffffff',
             action: '#006ce4',
+            'btn-primary': '#1677ff',
         },
         extend: {},
     },

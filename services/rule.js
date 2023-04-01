@@ -5,7 +5,7 @@ const ruleApi = {
         return axiosClient.get(`/rule`, {
             headers: { Authorization: `Bearer ${token}` },
         });
-    }
+    },
 };
 
 export default ruleApi;

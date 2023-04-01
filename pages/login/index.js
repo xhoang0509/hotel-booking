@@ -1,7 +1,6 @@
-import { Typography, Card, Button, Checkbox, Form, Input, notification } from 'antd';
-import React from 'react';
-import { useRouter } from 'next/router';
 import { wrapper } from '@/redux/store';
+import { Button, Card, Form, Input, Typography, notification } from 'antd';
+import { useRouter } from 'next/router';
 
 export default function Login() {
     const router = useRouter();
@@ -91,7 +90,7 @@ export default function Login() {
                             span: 16,
                         }}
                     >
-                        <Button type="primary" htmlType="submit">
+                        <Button type="primary" htmlType="submit" className="bg-btn-primary">
                             Đăng nhập
                         </Button>
                     </Form.Item>
