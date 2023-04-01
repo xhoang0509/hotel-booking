@@ -71,6 +71,7 @@ async function register(req, res) {
             gender,
             address,
             image,
+            status: 'active',
             ruleId,
         });
         delete admin.password;
@@ -182,7 +183,7 @@ async function login(req, res) {
 async function update(req, res) {
     try {
         const { id } = req.params;
-        const { firstName, lastName, phone, birthday, nationality, gender, address, images } =
+        const { firstName, lastName, phone, birthday, nationality, gender, address, images, status } =
             req.body;
         if (!id) {
             res.status(400).json({ status: false, message: 'Missing id' });
@@ -190,7 +191,7 @@ async function update(req, res) {
             const admin = await admins.findOne({ where: { id: id } });
             if (admin && admin.id) {
                 const admin = await admins.update(
-                    { firstName, lastName, phone, birthday, nationality, gender, address, images },
+                    { firstName, lastName, phone, birthday, nationality, gender, address, images, status },
                     { where: { id: id } }
                 );
                 res.status(200).json({
@@ -253,37 +254,10 @@ async function getAll(req, res) {
     }
 }
 
-async function changeStatus(req, res) {
-    try {
-        let { id, status } = req.params;
-        let admin = await admins.findOne({ where: { id: id } });
-        if (admin) {
-            const admin = await admins.update({ status });
-            res.status(200).json({
-                status: true,
-                message: 'Updated admin',
-                admin: admin,
-            });
-        } else {
-            res.status(200).json({
-                status: false,
-                message: 'Admin not found!',
-            });
-        }
-    } catch (error) {
-        writeLog(__filename, 'admin.controller.getAll', e.message);
-        res.status(500).json({
-            status: false,
-            message: 'INTERNAL_SERVER_ERROR',
-        });
-    }
-}
-
 module.exports = {
     register,
     login,
     update,
     getOne,
     getAll,
-    changeStatus,
 };
