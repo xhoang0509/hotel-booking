@@ -70,6 +70,7 @@ export default function Users({ jwt }) {
 
     useEffect(() => {
         fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const fetchData = useCallback(async () => {
@@ -87,7 +88,7 @@ export default function Users({ jwt }) {
 
     const handleEditClick = useCallback((id) => {
         router.push(`/user/${id}`);
-    }, []);
+    }, [router]);
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -110,7 +111,7 @@ export default function Users({ jwt }) {
             console.log(e);
         }
         setIsModalOpen(false);
-    }, [adminId, jwt]);
+    }, [router, adminId, jwt]);
 
     const handleCancel = () => {
         setIsModalOpen(false);
@@ -136,7 +137,7 @@ export default function Users({ jwt }) {
                             <Button key="back" onClick={handleCancel}>
                                 Hủy
                             </Button>,
-                            <Button danger onClick={handleOk}>
+                            <Button key="submit" danger onClick={handleOk}>
                                 Chắc chắn
                             </Button>,
                         ]}

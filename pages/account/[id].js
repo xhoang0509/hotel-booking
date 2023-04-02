@@ -72,6 +72,7 @@ export default function AccountId({ jwt }) {
 
     useEffect(() => {
         fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [jwt]);
 
     const fetchData = useCallback(async () => {

@@ -72,7 +72,8 @@ export default function UserId({ jwt }) {
 
     useEffect(() => {
         fetchData();
-    }, [jwt]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const fetchData = useCallback(async () => {
         setLoading(true);

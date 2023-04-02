@@ -1,12 +1,15 @@
 import LayoutApp from '@/components/Layout';
+import { SAGA_GET_ADMIN_DATA_ASYNC } from '@/redux/actions/admin.action';
 import { wrapper } from '@/redux/store';
 import adminApi from '@/services/admin';
 import categoryApi from '@/services/category';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Modal, Skeleton, Space, Table, Typography, notification } from 'antd';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
+import { END } from 'redux-saga';
 
 export default function Category({ jwt }) {
     const router = useRouter();
@@ -30,7 +33,7 @@ export default function Category({ jwt }) {
             title: 'Hỉnh ảnh',
             dataIndex: 'image',
             key: 'image',
-            render: (text, record) => <img src={text} alt="" className="w-[200px] h-auto" />,
+            render: (text, record) => <Image src={text} alt="" className="w-[200px] h-auto" width={'200'} height={'300'} />,
         },
         {
             title: 'Số lượng',
@@ -50,6 +53,7 @@ export default function Category({ jwt }) {
 
     useEffect(() => {
         fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const fetchData = useCallback(async () => {
@@ -67,7 +71,7 @@ export default function Category({ jwt }) {
 
     const handleEditClick = useCallback((id) => {
         router.push(`/category/${id}`);
-    }, []);
+    }, [router]);
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -90,16 +94,11 @@ export default function Category({ jwt }) {
             console.log(e);
         }
         setIsModalOpen(false);
-    }, [adminId, jwt]);
+    }, [router, adminId, jwt]);
 
     const handleCancel = () => {
         setIsModalOpen(false);
     };
-
-    const handleDisableClick = useCallback((id) => {
-        setAdminId(id);
-        showModal();
-    }, []);
 
     return (
         <LayoutApp>
@@ -123,7 +122,7 @@ export default function Category({ jwt }) {
                             <Button key="back" onClick={handleCancel}>
                                 Hủy
                             </Button>,
-                            <Button danger onClick={handleOk}>
+                            <Button key="submit" danger onClick={handleOk}>
                                 Chắc chắn
                             </Button>,
                         ]}
@@ -139,7 +138,13 @@ export default function Category({ jwt }) {
 export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ req, res }) => {
     let jwt = req.cookies['adminJWT'] || '';
 
-    if (!jwt) {
+    if (jwt) {
+        if (!store.getState().admin.id) {
+            store.dispatch(SAGA_GET_ADMIN_DATA_ASYNC(jwt));
+            store.dispatch(END);
+            await store.sagaTask.toPromise();
+        }
+    } else {
         return {
             redirect: {
                 destination: '/login',
@@ -147,7 +152,6 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
             },
         };
     }
-
     return {
         props: {
             jwt,

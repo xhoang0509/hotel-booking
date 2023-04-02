@@ -4,6 +4,7 @@ import adminApi from '@/services/admin';
 import cityApi from '@/services/city';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Modal, Skeleton, Space, Table, Typography, notification } from 'antd';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
@@ -30,7 +31,7 @@ export default function City({ jwt }) {
             title: 'Hỉnh ảnh',
             dataIndex: 'image',
             key: 'image',
-            render: (text, record) => <img src={text} alt="" className="w-[200px] h-auto" />,
+            render: (text, record) => <Image src={text} alt="image" className="w-[200px] h-auto" width={'200'} height={'300'} />,
         },
         {
             title: 'Số lượng',
@@ -50,6 +51,7 @@ export default function City({ jwt }) {
 
     useEffect(() => {
         fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const fetchData = useCallback(async () => {
@@ -67,7 +69,7 @@ export default function City({ jwt }) {
 
     const handleEditClick = useCallback((id) => {
         router.push(`/city/${id}`);
-    }, []);
+    }, [router]);
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -90,7 +92,7 @@ export default function City({ jwt }) {
             console.log(e);
         }
         setIsModalOpen(false);
-    }, [adminId, jwt]);
+    }, [router, adminId, jwt]);
 
     const handleCancel = () => {
         setIsModalOpen(false);
@@ -123,7 +125,7 @@ export default function City({ jwt }) {
                             <Button key="back" onClick={handleCancel}>
                                 Hủy
                             </Button>,
-                            <Button danger onClick={handleOk}>
+                            <Button key="submit" danger onClick={handleOk}>
                                 Chắc chắn
                             </Button>,
                         ]}

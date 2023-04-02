@@ -9,6 +9,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { v4 } from 'uuid';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { storage } from '@/firebase/storage';
+import Image from 'next/image';
 
 export default function CityId({ jwt }) {
     const router = useRouter();
@@ -75,7 +76,8 @@ export default function CityId({ jwt }) {
 
     useEffect(() => {
         fetchData();
-    }, [jwt]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const fetchData = useCallback(async () => {
         setLoading(true);
@@ -158,9 +160,12 @@ export default function CityId({ jwt }) {
                                         ]
                                     }
                                 >
-                                    <img
+                                    <Image
                                         src={imageUrl ? imageUrl : data.image}
                                         className="w-[200px] h-auto"
+                                        width={'200'}
+                                        height={'300'}
+                                        alt='image'
                                     />
                                 </Form.Item>
                                 <Upload
