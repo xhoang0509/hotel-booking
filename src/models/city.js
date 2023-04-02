@@ -21,6 +21,14 @@ module.exports = (sequelize, DataTypes) => {
                 key: 'id',
             },
         },
+        categoryId: {
+            type: DataTypes.INTEGER(11),
+            allowNull: false,
+            references: {
+                model: 'categories',
+                key: 'id',
+            },
+        },
     });
     return City;
 };

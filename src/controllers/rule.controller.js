@@ -1,5 +1,5 @@
 require('dotenv').config();
-const path = require('path');
+const writeLog = require('../logger');
 
 const rules = require('../models').rules;
 

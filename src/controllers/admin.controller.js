@@ -1,15 +1,11 @@
 require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const path = require('path');
-const { welcomeCustomer } = require('../constant/email.const');
 const { validateAdminRegister, validateAdminLogin } = require('../helper/ValidateAdmin');
 
-const users = require('../models').users;
 const admins = require('../models').admins;
 const rules = require('../models').rules;
 const writeLog = require('../logger');
-const { getDateDetail } = require('../constant/date.const');
 
 const { JWT_SECRET_KEY } = process.env;
 
@@ -117,7 +113,7 @@ async function login(req, res) {
         }
 
         admin = await admins.findOne({
-            where: { email, email },
+            where: { email: email },
             include: {
                 model: rules,
                 attributes: ['id', 'name', 'description'],
@@ -156,7 +152,8 @@ async function login(req, res) {
             }
         );
 
-        const { password: newPassword, ...adminData } = admin.toJSON();
+        const adminData = admin.toJSON();
+        delete adminData.password;
         result = {
             code: 200,
             data: {
@@ -227,7 +224,7 @@ async function update(req, res) {
         }
     } catch (e) {
         writeLog(__filename, 'admin.controller.update', e.message);
-        res.status(500).json({ status: false, nessage: e.message });
+        res.status(500).json({ status: false, message: e.message });
     }
 }
 
@@ -235,8 +232,8 @@ async function getOne(req, res) {
     try {
         const { id } = req.params;
         let admin = await admins.findOne({ where: { id: id } });
-        admin = admin.toJSON();
-        let { password, ...newAdmin } = admin;
+        let newAdmin = admin.toJSON();
+        delete newAdmin.password;
         if (admin) {
             res.status(200).json({
                 status: true,
@@ -264,7 +261,7 @@ async function getAll(req, res) {
             status: true,
             admins: allAdmin,
         });
-    } catch (error) {
+    } catch (e) {
         writeLog(__filename, 'admin.controller.getAll', e.message);
         res.status(500).json({
             status: false,

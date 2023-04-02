@@ -1,3 +1,4 @@
+const writeLog = require('../logger');
 const { sendEmail } = require('../services/email.service');
 
 async function send(req, res) {
@@ -21,12 +22,11 @@ async function send(req, res) {
         } else {
             let res = await sendEmail(emailTo, subject, text);
             if (res.error) {
-                console.log(error);
                 result = {
                     code: 200,
                     data: {
                         status: false,
-                        message: 'Email sent : ' + emailTo + ' ERROR: ' + error,
+                        message: 'Email sent : ' + emailTo + ' ERROR: ' + res.error,
                     },
                 };
             } else {

@@ -5,7 +5,13 @@ const countries = require('../models').countries;
 
 async function getAll(req, res) {
     try {
-        const citiesData = await cities.findAll();
+        let citiesData;
+        let { categoryId } = req.query;
+        if (categoryId) {
+            citiesData = await cities.findAll({ where: { categoryId: categoryId } });
+        } else {
+            citiesData = await cities.findAll();
+        }
         res.status(200).json({
             status: true,
             cities: citiesData,

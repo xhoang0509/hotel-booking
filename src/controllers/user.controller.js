@@ -1,7 +1,6 @@
 require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const path = require('path');
 const { welcomeCustomer } = require('../constant/email.const');
 const { validateUserRegister, validateUserLogin } = require('../helper/ValidateUser');
 
@@ -43,7 +42,8 @@ async function register(req, res) {
         }
         let passwordHash = await bcrypt.hash(password, 10);
         user = await users.create({ email, password: passwordHash, firstName, lastName });
-        delete user.password;
+        const newUser = user.toJSON();
+        delete newUser.password;
 
         let bodyEmail = welcomeCustomer
             .split('{{customer_name}}')
@@ -52,13 +52,13 @@ async function register(req, res) {
             .join('Booking.com')
             .split('{{your_name}}')
             .join('Xuan Hoang');
-        sendEmail(email, 'Welcome to Boooking.com', bodyEmail);
+        sendEmail(email, 'Welcome to Datphong.com', bodyEmail);
         result = {
             code: 200,
             data: {
                 status: true,
                 message: 'User create successfully!',
-                user: user,
+                user: newUser,
             },
         };
         writeLog(__filename, 'user.controller.login', 'Send email welcome to: ' + email);
@@ -95,7 +95,7 @@ async function login(req, res) {
             return;
         }
 
-        user = await users.findOne({ where: { email, email } });
+        user = await users.findOne({ where: { email: email } });
 
         if (!user) {
             result = {
@@ -125,7 +125,8 @@ async function login(req, res) {
             expiresIn: '1d',
         });
 
-        const { password: newPassword, ...userData } = user.toJSON();
+        const userData = user.toJSON();
+        delete userData.password;
         result = {
             code: 200,
             data: {
@@ -177,7 +178,7 @@ async function update(req, res) {
         }
     } catch (e) {
         writeLog(__filename, 'user.controller.update', e.message);
-        res.status(500).json({ status: false, nessage: e.message });
+        res.status(500).json({ status: false, message: e.message });
     }
 }
 
@@ -185,14 +186,15 @@ async function getOne(req, res) {
     try {
         const { id } = req.params;
         let user = await users.findOne({ where: { id: id } });
-        user = user.toJSON();
-        let { password, ...newUser } = user;
+        let newUser = user.toJSON();
+        delete newUser.password;
         if (user) {
             res.status(200).json({
                 status: true,
                 user: newUser,
             });
         }
+        writeLog(__filename, 'user.controller.getOne', 'SUCCESS');
     } catch (e) {
         writeLog(__filename, 'user.controller.getOne', e.message);
         res.status(500).json({
