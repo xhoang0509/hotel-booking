@@ -78,7 +78,7 @@ export default function Personal({ jwt }) {
                 <Card className="w-1/4 mr-4">
                     {listNavigation.map((item, index) => {
                         return (
-                            <Card.Grid style={gridStyle} key={index}>
+                            <Card.Grid style={gridStyle} key={index} className="cursor-pointer">
                                 <span className="text-lg mr-4">{item.icon}</span>
                                 <span>{item.title}</span>
                             </Card.Grid>

@@ -3,10 +3,8 @@ import { wrapper } from '@/redux/store';
 import { Button, Form, Input, notification, Typography } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useDispatch } from 'react-redux';
 
 export default function Login({ user }) {
-    const dispatch = useDispatch();
     const router = useRouter();
 
     const onFinish = async (values) => {

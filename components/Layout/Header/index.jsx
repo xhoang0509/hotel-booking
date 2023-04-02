@@ -46,7 +46,7 @@ export default function Header() {
         <div className="bg-primary text-[#fff] flex justify-center items-center">
             <nav className="xl:w-3/5 md:w-full flex justify-between p-3">
                 <div className="flex items-center">
-                    <span className="text-xl text-bold cursor-pointer">
+                    <span className="text-xl font-bold cursor-pointer">
                         <Link href="/">BOOKING.COM</Link>
                     </span>
                 </div>
@@ -81,7 +81,7 @@ export default function Header() {
                                 items,
                             }}
                         >
-                            <div className="flex items-center">
+                            <div className="flex items-center cursor-pointer">
                                 <AvatarUser url={user.images} />
                                 <div className="ml-2">
                                     <span className="text-white block">{`${user.firstName} ${user.lastName}`}</span>

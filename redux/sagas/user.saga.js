@@ -7,7 +7,7 @@ import {
     SAGA_GET_USER_DATA_FAILED,
 } from '../actions/user.action';
 
-const getUserById = (jwt) => {
+const getUserById = (token) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY, {
         algorithms: process.env.JWT_ALGORITHM,
         ignoreExpiration: true,
@@ -17,7 +17,7 @@ const getUserById = (jwt) => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${jwt}`,
+            Authorization: `Bearer ${token}`,
         },
     });
 };

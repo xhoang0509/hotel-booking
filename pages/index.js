@@ -6,6 +6,7 @@ import React from 'react';
 import { END } from 'redux-saga';
 import { SAGA_GET_USER_DATA_ASYNC } from './../redux/actions/user.action';
 import City from '@/components/City';
+import SearchCategory from '@/components/Category/SearchCategory';
 
 export default function Index() {
     return (
@@ -37,7 +38,7 @@ export default function Index() {
                             <Typography.Text>
                                 Khám phá các điểm đến hàng đầu theo cách bạn thích ở Việt Nam
                             </Typography.Text>
-                            <Category />
+                            <SearchCategory />
                         </div>
                         <div>
                             <p level={3} className="font-bold text-2xl mt-4 mb-2">
@@ -46,6 +47,7 @@ export default function Index() {
                             <Typography.Text>
                                 Khuyến mãi, giảm giá và ưu đãi đặc biệt dành riêng cho bạn
                             </Typography.Text>
+                            <Category />
                         </div>
                     </div>
                 </Layout>

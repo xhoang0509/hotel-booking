@@ -26,8 +26,8 @@ export default function Phone({ isEdit, setIsEdit, jwt }) {
             setLoading(false);
             setActive(!active);
             setIsEdit(false);
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [user, active, dispatch]
     );
 

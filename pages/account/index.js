@@ -7,7 +7,6 @@ import { SAGA_GET_USER_DATA_ASYNC } from '@/redux/actions/user.action';
 import { END } from 'redux-saga';
 
 export default function Account({ jwt }) {
-    console.log(jwt);
     const router = useRouter();
     return (
         <WebLayout>

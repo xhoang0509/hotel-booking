@@ -1,12 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { CameraOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Form, Modal, Typography, Upload } from 'antd';
-import { useCallback, useState } from 'react';
-import { storage } from './../../firebase/storage';
-import { v4 } from 'uuid';
-import userApi from './../../services/user/index';
 import { saveUser } from '@/redux/reducers/user.reducer';
+import { CameraOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Modal, Typography, Upload } from 'antd';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { useCallback, useState } from 'react';
+import { v4 } from 'uuid';
+import { storage } from './../../firebase/storage';
+import userApi from './../../services/user/index';
 
 export default function UploadAvatar({ jwt, dispatch, user }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,22 +31,25 @@ export default function UploadAvatar({ jwt, dispatch, user }) {
         setIsModalOpen(false);
     };
 
-    const handleChange = useCallback((info) => {
-        if (info.file.status === 'uploading') {
-            setLoading(true);
-            return;
-        }
-        if (info.file.status === 'done') {
-            const imageRef = ref(storage, `images/${info.file.name + v4()}`);
-            uploadBytes(imageRef, info.file.originFileObj).then((snapshot) => {
-                getDownloadURL(snapshot.ref).then((url) => {
-                    setImageUrl(url);
-                    dispatch(saveUser({ images: url }));
+    const handleChange = useCallback(
+        (info) => {
+            if (info.file.status === 'uploading') {
+                setLoading(true);
+                return;
+            }
+            if (info.file.status === 'done') {
+                const imageRef = ref(storage, `images/${info.file.name + v4()}`);
+                uploadBytes(imageRef, info.file.originFileObj).then((snapshot) => {
+                    getDownloadURL(snapshot.ref).then((url) => {
+                        setImageUrl(url);
+                        dispatch(saveUser({ images: url }));
+                    });
                 });
-            });
-            setLoading(false);
-        }
-    }, []);
+                setLoading(false);
+            }
+        },
+        [dispatch]
+    );
 
     const uploadButton = (
         <div>

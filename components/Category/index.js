@@ -1,4 +1,5 @@
 import categoryApi from '@/services/category';
+import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 
 export default function Category() {
@@ -7,6 +8,7 @@ export default function Category() {
 
     useEffect(() => {
         fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const fetchData = useCallback(async () => {
@@ -30,15 +32,16 @@ export default function Category() {
                             key={category.id}
                             className="w-[15%] px-2 py-2 mr-2 bg-gray-200 rounded-lg cursor-pointer"
                         >
-                            <img
+                            <Image
                                 src={category.image}
                                 className="w-[170px] h-[136px] object-cover"
+                                width={'170'}
+                                height={'136'}
                                 alt={category.name}
                             />
                             <p level={5} className="text-base font-bold mt-2">
                                 {category.name}
                             </p>
-                            {/* <Typography.Text>{city.count.toLocaleString('en-US')} chỗ nghỉ</Typography.Text> */}
                         </div>
                     );
                 })}
