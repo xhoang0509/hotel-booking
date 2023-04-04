@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import cityApi from '@/services/city';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 export default function City() {
+    const router = useRouter();
     const [cities, setCities] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -22,8 +24,12 @@ export default function City() {
         }
     }, []);
 
+    const handleClick = useCallback(() => {
+        router.push('/search');
+    }, []);
+
     return (
-        <div className="flex flex-wrap justify-between">
+        <div className="flex flex-wrap">
             {loading && <span>loading...</span>}
             {!loading &&
                 cities.map((category) => {
@@ -31,6 +37,7 @@ export default function City() {
                         <div
                             key={category.id}
                             className="w-[15%] px-2 py-2 mr-2 bg-gray-200 rounded-lg cursor-pointer"
+                            onClick={handleClick}
                         >
                             <Image
                                 src={category.image}

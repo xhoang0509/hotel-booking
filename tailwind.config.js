@@ -10,6 +10,7 @@ module.exports = {
         colors: {
             primary: '#003580',
             'sub-primary': '#006CE6',
+            "t-primary": "#0071C2",
             secondary: '#bdbdbd',
             white: '#ffffff',
             action: '#006ce4',

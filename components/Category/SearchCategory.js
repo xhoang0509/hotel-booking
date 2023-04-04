@@ -2,10 +2,12 @@ import cityApi from '@/services/city';
 import { CustomerServiceOutlined, HeartOutlined, HomeOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { FaMotorcycle, FaUmbrellaBeach } from 'react-icons/fa';
 
 export default function SearchCategory() {
+    const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [cities, setCities] = useState([]);
     const [data, setData] = useState(() => [
@@ -56,6 +58,10 @@ export default function SearchCategory() {
         fetchData();
     }, [fetchData, active]);
 
+    const handleCategoryClick = useCallback(() => {
+        router.push('/search')
+    }, []);
+
     return (
         <React.Fragment>
             <div className="flex my-2">
@@ -81,6 +87,7 @@ export default function SearchCategory() {
                             <div
                                 key={category.id}
                                 className="w-[15%] px-2 py-2 mr-2 bg-gray-200 rounded-lg cursor-pointer"
+                                onClick={handleCategoryClick}
                             >
                                 <Image
                                     src={category.image}
