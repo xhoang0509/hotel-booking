@@ -215,7 +215,7 @@ module.exports = {
                         address: {
                             type: Sequelize.TEXT,
                         },
-                        image: {
+                        images: {
                             type: Sequelize.TEXT,
                         },
                         description: {

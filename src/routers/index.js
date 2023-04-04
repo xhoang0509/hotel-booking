@@ -5,6 +5,7 @@ const adminRouter = require('./admin.router');
 const categoryRouter = require('./category.router');
 const cityRouter = require('./city.router');
 const ruleRouter = require('./rule.router');
+const locationRouter = require('./location.router');
 
 const routers = new Router();
 
@@ -14,5 +15,6 @@ routers.use('/email', emailRouter);
 routers.use('/rule', ruleRouter);
 routers.use('/category', categoryRouter);
 routers.use('/city', cityRouter);
+routers.use('/location', locationRouter);
 
 module.exports = routers;
