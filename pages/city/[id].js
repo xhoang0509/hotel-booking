@@ -1,15 +1,17 @@
 import BackPage from '@/components/BackPage';
 import LayoutApp from '@/components/Layout';
+import { storage } from '@/firebase/storage';
+import { SAGA_GET_ADMIN_DATA_ASYNC } from '@/redux/actions/admin.action';
 import { wrapper } from '@/redux/store';
 import cityApi from '@/services/city';
 import { UploadOutlined } from '@ant-design/icons';
 import { Button, Col, Form, Input, Row, Typography, Upload, message, notification } from 'antd';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { END } from 'redux-saga';
 import { v4 } from 'uuid';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { storage } from '@/firebase/storage';
-import Image from 'next/image';
 
 export default function CityId({ jwt }) {
     const router = useRouter();
@@ -202,7 +204,13 @@ export default function CityId({ jwt }) {
 export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ req, res }) => {
     let jwt = req.cookies['adminJWT'] || '';
 
-    if (!jwt) {
+    if (jwt) {
+        if (!store.getState().admin.id) {
+            store.dispatch(SAGA_GET_ADMIN_DATA_ASYNC(jwt));
+            store.dispatch(END);
+            await store.sagaTask.toPromise();
+        }
+    } else {
         return {
             redirect: {
                 destination: '/login',

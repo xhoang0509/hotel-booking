@@ -13,6 +13,10 @@ const { Sider } = Layout;
 
 export default function Navigation() {
     const router = useRouter();
+
+
+    console.log(router.pathname)
+
     const items = [
         {
             key: 1,
@@ -65,6 +69,10 @@ export default function Navigation() {
                 {
                     key: 9,
                     label: <Link href="/city">Thành phố</Link>,
+                },
+                 {
+                    key: 10,
+                    label: <Link href="/location">Địa điểm</Link>,
                 },
             ],
         },

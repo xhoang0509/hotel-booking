@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { END } from 'redux-saga';
 
-export default function City({ jwt }) {
+export default function Location({ jwt }) {
     const router = useRouter();
     const [fetching, setFetching] = useState(false);
     const [cities, setCities] = useState([]);
@@ -110,13 +110,13 @@ export default function City({ jwt }) {
             {fetching && <Skeleton />}
             {!fetching && (
                 <>
-                    <Typography.Title level={4}>Tất cả thành phố</Typography.Title>
+                    <Typography.Title level={4}>Tất cả địa điểm</Typography.Title>
                     <Button
                         icon={<PlusOutlined />}
                         className="flex items-center text-white mb-4 bg-btn-primary"
                         onClick={() => router.push('/city/add')}
                     >
-                        Thêm thành phố mới
+                        Thêm địa điểm mới
                     </Button>
                     <Table columns={columns} dataSource={cities} />
                     <Modal
@@ -156,6 +156,7 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
                 permanent: false,
             },
         };
+        
     }
 
     return {
