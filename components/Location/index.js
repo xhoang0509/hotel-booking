@@ -1,22 +1,31 @@
 import Image from "next/image";
 import Star from "../Star";
 import { HeartOutlined } from "@ant-design/icons";
+import { useRouter } from "next/router";
+import { useCallback } from "react";
 
 export default function Location({ location }) {
+    const router = useRouter();
+
+    const handleRouter = useCallback((id) => {
+        router.push(`/hotel?id=${id}`)
+    }, []);
     return (
         <div>
-            <div className="p-4  mb-4 border border-[#ccc] flex">
+            <div className="p-4 mb-4 border border-[#ccc] flex">
                 <div className="mr-4 relative">
                     <Image
                         src={location.images}
                         width={200}
                         height={200}
+                        onClick={() => handleRouter(location.id)}
+                        className="cursor-pointer"
                     />
                     <HeartOutlined className="cursor-pointer absolute top-2 right-2 text-2xl font-bold text-white" />
                 </div>
                 <div className="flex flex-1 justify-between">
                     <div>
-                        <h2 className="font-bold text-lg text-t-primary cursor-pointer">{location.name} <Star number={3} /></h2>
+                        <h2 className="font-bold text-lg text-t-primary cursor-pointer" onClick={() => handleRouter(location.id)}>{location.name} <Star number={3} /></h2>
                         <div className="text-xs mb-2">
                             <span className="font-bold text-t-primary underline underline-offset-1 mr-2">{location.address}</span>
                             <span className="font-bold text-t-primary underline underline-offset-1 mr-2">Xem trên bản đồ</span>

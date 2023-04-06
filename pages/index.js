@@ -7,6 +7,7 @@ import { END } from 'redux-saga';
 import { SAGA_GET_USER_DATA_ASYNC } from './../redux/actions/user.action';
 import City from '@/components/City';
 import SearchCategory from '@/components/Category/SearchCategory';
+import { authUser } from '@/helpers/auth.helper';
 
 export default function Index() {
     return (
@@ -64,6 +65,7 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
             store.dispatch(SAGA_GET_USER_DATA_ASYNC(jwt));
             store.dispatch(END);
             await store.sagaTask.toPromise();
+            authUser(req, res, jwt);
         }
     }
     return {
