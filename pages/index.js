@@ -1,12 +1,20 @@
+import SummaryChart from '@/components/Home/Chart';
+import ProjectAndTimelint from '@/components/Home/ProjectAndTimeline';
+import Summary from '@/components/Home/Summary';
 import LayoutApp from '@/components/Layout';
-import { wrapper } from '@/redux/store';
-import { END } from 'redux-saga';
 import { SAGA_GET_ADMIN_DATA_ASYNC } from '@/redux/actions/admin.action';
+import { wrapper } from '@/redux/store';
 import jwt from 'jsonwebtoken';
+import { END } from 'redux-saga';
+
 export default function Home() {
     return (
         <>
-            <LayoutApp>HOME PAGE</LayoutApp>
+            <LayoutApp>
+                <Summary />
+                <SummaryChart />
+                <ProjectAndTimelint />
+            </LayoutApp>
         </>
     );
 }

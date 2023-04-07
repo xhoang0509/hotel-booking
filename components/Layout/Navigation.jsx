@@ -13,10 +13,6 @@ const { Sider } = Layout;
 
 export default function Navigation() {
     const router = useRouter();
-
-
-    console.log(router.pathname)
-
     const items = [
         {
             key: 1,
@@ -99,7 +95,7 @@ export default function Navigation() {
             >
                 <Link href="/">DATPHONG.COM</Link>
             </div>
-            <Menu theme="dark" mode="inline" defaultSelectedKeys={['4']} items={items} />
+            <Menu className='font-bold' theme="dark" mode="inline" defaultSelectedKeys={['4']} items={items} />
         </Sider>
     );
 }
