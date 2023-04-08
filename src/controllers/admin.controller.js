@@ -80,7 +80,7 @@ async function register(req, res) {
             },
         };
     } catch (e) {
-        writeLog(__filename, 'admin.controller.login', e.message);
+        writeLog(__filename, 'admin.controller.login', e.message, "FAILED");
         result = {
             code: 500,
             data: {
@@ -164,7 +164,7 @@ async function login(req, res) {
             },
         };
     } catch (e) {
-        writeLog(__filename, 'admin.controller.login', e.message);
+        writeLog(__filename, 'admin.controller.login', e.message, "FAILED");
         result = {
             code: 500,
             data: {
@@ -223,7 +223,7 @@ async function update(req, res) {
             }
         }
     } catch (e) {
-        writeLog(__filename, 'admin.controller.update', e.message);
+        writeLog(__filename, 'admin.controller.update', e.message, "FAILED");
         res.status(500).json({ status: false, message: e.message });
     }
 }
@@ -231,17 +231,28 @@ async function update(req, res) {
 async function getOne(req, res) {
     try {
         const { id } = req.params;
-        let admin = await admins.findOne({ where: { id: id } });
-        let newAdmin = admin.toJSON();
-        delete newAdmin.password;
+        let admin = await admins.findOne(
+            {
+                where: { id: id },
+                include: rules
+            },
+        );
         if (admin) {
+            let newAdmin = admin.toJSON();
+            delete newAdmin.password;
+            console.log('newAdmin: ', newAdmin);
             res.status(200).json({
                 status: true,
                 admin: newAdmin,
             });
+        } else {
+            res.status(200).json({
+                status: false,
+                message: 'Admin not found'
+            })
         }
     } catch (e) {
-        writeLog(__filename, 'admin.controller.getOne', e.message);
+        writeLog(__filename, 'admin.controller.getOne', e.message, "FAILED");
         res.status(500).json({
             status: false,
             message: 'INTERNAL_SERVER_ERROR',
@@ -262,7 +273,7 @@ async function getAll(req, res) {
             admins: allAdmin,
         });
     } catch (e) {
-        writeLog(__filename, 'admin.controller.getAll', e.message);
+        writeLog(__filename, 'admin.controller.getAll', e.message, "FAILED");
         res.status(500).json({
             status: false,
             message: 'INTERNAL_SERVER_ERROR',

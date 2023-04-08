@@ -18,10 +18,12 @@ module.exports = {
                     createdAt: {
                         allowNull: false,
                         type: Sequelize.DATE,
+                        defaultValue: Sequelize.DataTypes.NOW,
                     },
                     updatedAt: {
                         allowNull: true,
                         type: Sequelize.DATE,
+                        defaultValue: Sequelize.DataTypes.NOW,
                     },
                 }),
                 queryInterface.createTable(
@@ -74,10 +76,12 @@ module.exports = {
                         createdAt: {
                             allowNull: false,
                             type: Sequelize.DATE,
+                            defaultValue: Sequelize.DataTypes.NOW,
                         },
                         updatedAt: {
                             allowNull: true,
                             type: Sequelize.DATE,
+                            defaultValue: Sequelize.DataTypes.NOW,
                         },
                     },
                     {
@@ -100,10 +104,12 @@ module.exports = {
                         createdAt: {
                             allowNull: false,
                             type: Sequelize.DATE,
+                            defaultValue: Sequelize.DataTypes.NOW,
                         },
                         updatedAt: {
                             allowNull: true,
                             type: Sequelize.DATE,
+                            defaultValue: Sequelize.DataTypes.NOW,
                         },
                     },
                     {
@@ -140,10 +146,12 @@ module.exports = {
                         createdAt: {
                             allowNull: false,
                             type: Sequelize.DATE,
+                            defaultValue: Sequelize.DataTypes.NOW,
                         },
                         updatedAt: {
                             allowNull: true,
                             type: Sequelize.DATE,
+                            defaultValue: Sequelize.DataTypes.NOW,
                         },
                     },
                     {
@@ -190,10 +198,14 @@ module.exports = {
                         createdAt: {
                             allowNull: false,
                             type: Sequelize.DATE,
+                            defaultValue: Sequelize.DataTypes.NOW,
+
                         },
                         updatedAt: {
                             allowNull: true,
                             type: Sequelize.DATE,
+                            defaultValue: Sequelize.DataTypes.NOW,
+
                         },
                     },
                     {
@@ -218,19 +230,34 @@ module.exports = {
                         images: {
                             type: Sequelize.TEXT,
                         },
+                        thumbnail: {
+                            type: Sequelize.TEXT,
+                        },
                         description: {
                             type: Sequelize.TEXT,
                         },
                         phone: {
                             type: Sequelize.STRING(100),
                         },
+                        cityId: {
+                            allowNull: false,
+                            type: Sequelize.INTEGER(11),
+                            references: {
+                                model: {
+                                    tableName: 'cities',
+                                },
+                                key: 'id',
+                            },
+                        },
                         createdAt: {
                             allowNull: false,
                             type: Sequelize.DATE,
+                            defaultValue: Sequelize.DataTypes.NOW,
                         },
                         updatedAt: {
                             allowNull: true,
                             type: Sequelize.DATE,
+                            defaultValue: Sequelize.DataTypes.NOW,
                         },
                     },
                     {
@@ -252,7 +279,7 @@ module.exports = {
                         bed: {
                             type: Sequelize.INTEGER,
                         },
-                        bedDetal: {
+                        bedDetail: {
                             type: Sequelize.TEXT,
                         },
                         description: {

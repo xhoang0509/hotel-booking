@@ -11,12 +11,11 @@ async function authApi(req, res, next) {
             algorithms: process.env.JWT_ALGORITHM,
             ignoreExpiration: true,
         });
-        console.log('decoded: ', decoded);
         const now = Math.floor(Date.now() / 1000);
 
         if (decoded.exp < now) {
             writeLog(__filename, 'requiresAuth.authApi', 'JWT has expired');
-            res.status(401).json({ message: 'JWT expired' });
+            res.status(401).json({ status: false, message: 'JWT expired' });
         } else {
             if (decoded.type === 'admin') {
                 const admin = await admins.findOne({ where: { id: decoded.id } });
@@ -25,7 +24,7 @@ async function authApi(req, res, next) {
                     next();
                 } else {
                     writeLog(__filename, 'requiresAuth.authApi', 'Admin not found');
-                    res.status(401).json({ message: 'Admin not found' });
+                    res.status(401).json({ status: false, message: 'Admin not found' });
                 }
             } else if (decoded.type === 'user') {
                 const user = await users.findOne({ where: { id: decoded.id } });
@@ -34,13 +33,13 @@ async function authApi(req, res, next) {
                     next();
                 } else {
                     writeLog(__filename, 'requiresAuth.authApi', 'User not found');
-                    res.status(401).json({ message: 'User not found' });
+                    res.status(401).json({ status: false, message: 'User not found' });
                 }
             }
         }
     } catch (e) {
         writeLog(__filename, 'requiresAuth.authApi', `ERROR:  ${JSON.stringify(e)}`);
-        res.status(401).json({ message: 'UNAUTHORIZED' });
+        res.status(401).json({ status: false, message: 'UNAUTHORIZED' });
     }
 }
 

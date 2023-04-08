@@ -63,7 +63,7 @@ async function register(req, res) {
         };
         writeLog(__filename, 'user.controller.login', 'Send email welcome to: ' + email);
     } catch (e) {
-        writeLog(__filename, 'user.controller.login', e.message);
+        writeLog(__filename, 'user.controller.login', e.message, "FAILED");
         result = {
             code: 500,
             data: {
@@ -137,7 +137,7 @@ async function login(req, res) {
             },
         };
     } catch (e) {
-        writeLog(__filename, 'user.controller.login', e.message);
+        writeLog(__filename, 'user.controller.login', e.message, "FAILED");
         result = {
             code: 500,
             data: {
@@ -177,7 +177,7 @@ async function update(req, res) {
             }
         }
     } catch (e) {
-        writeLog(__filename, 'user.controller.update', e.message);
+        writeLog(__filename, 'user.controller.update', e.message, "FAILED");
         res.status(500).json({ status: false, message: e.message });
     }
 }
@@ -193,10 +193,15 @@ async function getOne(req, res) {
                 status: true,
                 user: newUser,
             });
+        } else {
+            res.status(200).json({
+                status: false,
+                message: 'User not found'
+            });
         }
-        writeLog(__filename, 'user.controller.getOne', 'SUCCESS');
+        writeLog(__filename, 'user.controller.getOne', "", 'SUCCESS');
     } catch (e) {
-        writeLog(__filename, 'user.controller.getOne', e.message);
+        writeLog(__filename, 'user.controller.getOne', e.message, "FAILED");
         res.status(500).json({
             status: false,
             message: 'INTERNAL_SERVER_ERROR',
@@ -212,12 +217,19 @@ async function getAll(req, res) {
             users: usersData,
         });
     } catch (e) {
-        writeLog(__filename, 'user.controller.getOne', e.message);
+        writeLog(__filename, 'user.controller.getOne', e.message, "FAILED");
         res.status(500).json({
             status: false,
             message: 'INTERNAL_SERVER_ERROR',
         });
     }
+}
+
+async function booking(req, res) {
+    res.status(200).json({
+        status: true,
+        message: 'OK'
+    })
 }
 
 module.exports = {
@@ -226,4 +238,5 @@ module.exports = {
     update,
     getOne,
     getAll,
+    booking,
 };

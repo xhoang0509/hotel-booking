@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         bed: {
             type: DataTypes.INTEGER,
         },
-        bedDetal: {
+        bedDetail: {
             type: DataTypes.TEXT,
         },
         description: {
@@ -26,6 +26,14 @@ module.exports = (sequelize, DataTypes) => {
         },
         toUseTime: {
             type: DataTypes.DATE,
+        },
+        locationId: {
+            type: DataTypes.INTEGER(11),
+            allowNull: false,
+            references: {
+                model: 'locations',
+                key: 'id',
+            },
         },
     });
     return Room;

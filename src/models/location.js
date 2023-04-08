@@ -14,6 +14,12 @@ module.exports = (sequelize, DataTypes) => {
         },
         images: {
             type: DataTypes.TEXT,
+            get() {
+                return JSON.parse(this.getDataValue("images"))
+            }
+        },
+        thumbnail: {
+            type: DataTypes.TEXT,
         },
         description: {
             type: DataTypes.TEXT,
@@ -21,6 +27,14 @@ module.exports = (sequelize, DataTypes) => {
         phone: {
             type: DataTypes.STRING(100),
         },
+        cityId: {
+            type: DataTypes.INTEGER(11),
+            allowNull: false,
+            references: {
+                model: 'cities',
+                key: 'id',
+            },
+        }
     });
     return Location;
 };

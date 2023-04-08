@@ -39,7 +39,17 @@ db['categories'].hasMany(db['countries'], { foreignKey: 'categoryId' });
 db['cities'].belongsTo(db['countries'], { foreignKey: 'countryId' });
 db['countries'].hasMany(db['cities'], { foreignKey: 'countryId' });
 
+db['locations'].belongsTo(db['cities'], { foreignKey: 'cityId' });
+db['cities'].hasMany(db['locations'], { foreignKey: 'cityId' });
+
+db['rooms'].belongsTo(db['locations'], { foreignKey: 'locationId' });
+db['locations'].hasMany(db['rooms'], { foreignKey: 'locationId' });
+
 db['admins'].belongsTo(db['rules'], { foreignKey: 'ruleId' });
 db['rules'].hasMany(db['admins'], { foreignKey: 'ruleId' });
+
+db['users'].belongsToMany(db['rooms'], { through: db['user_room'] });
+db['rooms'].belongsToMany(db['users'], { through: db['user_room'] });
+
 
 module.exports = db;
