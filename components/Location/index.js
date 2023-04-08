@@ -15,7 +15,7 @@ export default function Location({ location }) {
             <div className="p-4 mb-4 border border-[#ccc] flex">
                 <div className="mr-4 relative">
                     <Image
-                        src={location.images}
+                        src={location.thumbnail}
                         width={200}
                         height={200}
                         onClick={() => handleRouter(location.id)}

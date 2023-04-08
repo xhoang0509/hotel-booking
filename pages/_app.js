@@ -5,8 +5,10 @@ import Head from 'next/head';
 import React from 'react';
 import 'tailwindcss/tailwind.css';
 import { wrapper } from '@/redux/store';
+import { useNProgress } from '@/hooks/useNProgress';
 
 const App = ({ Component, pageProps: { ...pageProps } }) => {
+    useNProgress();
     return (
         <React.Fragment>
             <Head>

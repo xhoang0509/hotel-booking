@@ -1,8 +1,7 @@
-import Cookies from 'cookies';
+import userApi from '@/services/user';
 import jwt from 'jsonwebtoken';
 
-export function authUser(req, res, token) {
-    const cookies = new Cookies(req, res);
+export async function authUser(token) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY, {
         algorithms: process.env.JWT_ALGORITHM,
         ignoreExpiration: true,
@@ -10,6 +9,14 @@ export function authUser(req, res, token) {
 
     const now = Math.floor(Date.now() / 1000);
     if (decoded.exp < now) {
-        cookies.set('bookingJWT', '', { expires: new Date(0) });
+        return false;
+    } else {
+        const res = await userApi.getOne(decoded.id, token);
+        if (res.status) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
+

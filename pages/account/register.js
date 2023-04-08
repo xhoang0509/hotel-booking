@@ -38,7 +38,7 @@ export default function Register() {
     return (
         <WebLayout>
             <div className="flex flex-col items-center mt-12">
-                <Typography.Title level={4}>Đăng nhập hoặc tạo tài khoản</Typography.Title>
+                <Typography.Title level={4}>Đăng ký tài khoản</Typography.Title>
                 <Form
                     name="basic"
                     labelCol={{
@@ -62,7 +62,7 @@ export default function Register() {
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input your email!',
+                                message: 'Vui lòng nhập email!',
                             },
                         ]}
                     >
@@ -70,56 +70,53 @@ export default function Register() {
                     </Form.Item>
 
                     <Form.Item
-                        label="Password"
+                        label="Mật khẩu"
                         name="password"
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input your password!',
+                                message: 'Vui lòng nhập mật khẩu!',
                             },
                         ]}
                     >
                         <Input.Password className="w-80" />
                     </Form.Item>
-
                     <Form.Item
-                        label="First name"
-                        name="firstName"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your first name!',
-                            },
-                        ]}
-                    >
-                        <Input className="w-80" />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Last name"
+                        label="Họ"
                         name="lastName"
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input your last name!',
+                                message: 'Vui lòng nhập họ!',
                             },
                         ]}
                     >
                         <Input className="w-80" />
                     </Form.Item>
-
+                    <Form.Item
+                        label="Tên"
+                        name="firstName"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Vui lòng nhập tên!',
+                            },
+                        ]}
+                    >
+                        <Input className="w-80" />
+                    </Form.Item>
                     <Form.Item>
                         <Button
                             type="primary"
                             htmlType="submit"
                             className="mt-4 w-80 bg-[#4096FF] h-8 px-4"
                         >
-                            Register
+                            Đăng ký
                         </Button>
                     </Form.Item>
                 </Form>
                 <Typography>
-                    Already account ? <Link href="/account/login">Login</Link>
+                    Đã có tài khoản ? <Link href="/account/login">Đăng nhập</Link>
                 </Typography>
             </div>
         </WebLayout>

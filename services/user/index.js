@@ -14,6 +14,12 @@ const userApi = {
             headers: { Authorization: `Bearer ${token}` },
         });
     },
+
+    getOne(id, token) {
+        return axiosClient.get(`/user/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+    }
 };
 
 export default userApi;

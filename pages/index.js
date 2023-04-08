@@ -58,19 +58,19 @@ export default function Index() {
 }
 
 export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ req, res }) => {
-    let jwt = req.cookies['bookingJWT'] || '';
+    let token = req.cookies['bookingJWT'] || '';
 
-    if (jwt) {
+    if (token) {
         if (!store.getState().user.id) {
-            store.dispatch(SAGA_GET_USER_DATA_ASYNC(jwt));
+            store.dispatch(SAGA_GET_USER_DATA_ASYNC(token));
             store.dispatch(END);
             await store.sagaTask.toPromise();
-            authUser(req, res, jwt);
+            authUser(req, res, token);
         }
     }
     return {
         props: {
-            jwt,
+            token,
         },
     };
 });

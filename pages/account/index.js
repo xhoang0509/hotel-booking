@@ -1,12 +1,14 @@
 import WebLayout from '@/components/Layout/WebLayout';
+import { authUser } from '@/helpers/auth.helper';
+import { SAGA_GET_USER_DATA_ASYNC } from '@/redux/actions/user.action';
+import { wrapper } from '@/redux/store';
 import { Card, Col, Row, Typography } from 'antd';
+import { serialize } from 'cookie';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { wrapper } from '@/redux/store';
-import { SAGA_GET_USER_DATA_ASYNC } from '@/redux/actions/user.action';
 import { END } from 'redux-saga';
 
-export default function Account({ jwt }) {
+export default function Account({ token }) {
     const router = useRouter();
     return (
         <WebLayout>
@@ -14,7 +16,7 @@ export default function Account({ jwt }) {
                 <Typography.Title level={2}>
                     <span className="text-bold">Cài đặt tài khoản</span>
                 </Typography.Title>
-                <Typography.Text>Quản lý trải nghiệm Booking.com của bạn</Typography.Text>
+                <Typography.Text>Quản lý trải nghiệm Datphong.com của bạn</Typography.Text>
                 <Row gutter={12} className="my-4">
                     <Col span={12}>
                         <Card
@@ -55,13 +57,30 @@ export default function Account({ jwt }) {
 }
 
 export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ req, res }) => {
-    let jwt = req.cookies['bookingJWT'] || '';
+    let token = req.cookies['bookingJWT'] || '';
 
-    if (jwt) {
-        if (!store.getState().user.id) {
-            store.dispatch(SAGA_GET_USER_DATA_ASYNC(jwt));
-            store.dispatch(END);
-            await store.sagaTask.toPromise();
+    if (token) {
+        const status = await authUser(token);
+        if (status) {
+            if (!store.getState().user.id) {
+                store.dispatch(SAGA_GET_USER_DATA_ASYNC(token));
+                store.dispatch(END);
+                await store.sagaTask.toPromise();
+            }
+        } else {
+            res.setHeader('Set-Cookie', serialize('bookingJWT', '', {
+                httpOnly: true,
+                maxAge: -1,
+                path: '/',
+                sameSite: 'strict',
+                secure: true
+            }));
+            return {
+                redirect: {
+                    destination: '/account/login',
+                    permanent: false,
+                },
+            };
         }
     } else {
         return {
@@ -74,7 +93,7 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
 
     return {
         props: {
-            jwt,
+            token,
         },
     };
 });

@@ -5,26 +5,22 @@ import Gender from '@/components/Personal/Gender';
 import Name from '@/components/Personal/Name';
 import Nationality from '@/components/Personal/Nationality';
 import Phone from '@/components/Personal/Phone';
+import { authUser } from '@/helpers/auth.helper';
+import { wrapper } from '@/redux/store';
 import {
     BellOutlined,
     CreditCardOutlined,
-    LoadingOutlined,
     LockOutlined,
-    PlusOutlined,
     SettingOutlined,
-    UserAddOutlined,
+    UserAddOutlined
 } from '@ant-design/icons';
-import { Card, Divider, Typography, Upload } from 'antd';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { Card, Divider, Typography } from 'antd';
+import { serialize } from 'cookie';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { v4 } from 'uuid';
-import { storage } from './../../../firebase/storage';
-import { wrapper } from '@/redux/store';
-import { SAGA_GET_USER_DATA_ASYNC } from './../../../redux/actions/user.action';
 import { END } from 'redux-saga';
-import { saveUser } from '@/redux/reducers/user.reducer';
 import UploadAvatar from './../../../components/Personal/UploadAvatar';
+import { SAGA_GET_USER_DATA_ASYNC } from './../../../redux/actions/user.action';
 
 const gridStyle = {
     width: '100%',
@@ -66,7 +62,7 @@ const beforeUpload = (file) => {
     return isJpgOrPng && isLt2M;
 };
 
-export default function Personal({ jwt }) {
+export default function Personal({ token }) {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
     const [isEdit, setIsEdit] = useState(false);
@@ -97,14 +93,14 @@ export default function Personal({ jwt }) {
                             </Typography.Text>
                         </div>
                         <div>
-                            <UploadAvatar jwt={jwt} dispatch={dispatch} user={user} />
+                            <UploadAvatar jwt={token} dispatch={dispatch} user={user} />
                         </div>
                     </div>
                     <Divider />
                     <Name
                         isEdit={isEdit}
                         setIsEdit={setIsEdit}
-                        jwt={jwt}
+                        jwt={token}
                         user={user}
                         dispatch={dispatch}
                     />
@@ -112,7 +108,7 @@ export default function Personal({ jwt }) {
                     <Phone
                         isEdit={isEdit}
                         setIsEdit={setIsEdit}
-                        jwt={jwt}
+                        jwt={token}
                         user={user}
                         dispatch={dispatch}
                     />
@@ -120,7 +116,7 @@ export default function Personal({ jwt }) {
                     <Birthday
                         isEdit={isEdit}
                         setIsEdit={setIsEdit}
-                        jwt={jwt}
+                        jwt={token}
                         user={user}
                         dispatch={dispatch}
                     />
@@ -128,7 +124,7 @@ export default function Personal({ jwt }) {
                     <Nationality
                         isEdit={isEdit}
                         setIsEdit={setIsEdit}
-                        jwt={jwt}
+                        jwt={token}
                         user={user}
                         dispatch={dispatch}
                     />
@@ -136,7 +132,7 @@ export default function Personal({ jwt }) {
                     <Gender
                         isEdit={isEdit}
                         setIsEdit={setIsEdit}
-                        jwt={jwt}
+                        jwt={token}
                         user={user}
                         dispatch={dispatch}
                     />
@@ -144,7 +140,7 @@ export default function Personal({ jwt }) {
                     <Address
                         isEdit={isEdit}
                         setIsEdit={setIsEdit}
-                        jwt={jwt}
+                        jwt={token}
                         user={user}
                         dispatch={dispatch}
                     />
@@ -155,13 +151,30 @@ export default function Personal({ jwt }) {
 }
 
 export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ req, res }) => {
-    let jwt = req.cookies['bookingJWT'] || '';
+    let token = req.cookies['bookingJWT'] || '';
 
-    if (jwt) {
-        if (!store.getState().user.id) {
-            store.dispatch(SAGA_GET_USER_DATA_ASYNC(jwt));
-            store.dispatch(END);
-            await store.sagaTask.toPromise();
+    if (token) {
+        const status = await authUser(token);
+        if (status) {
+            if (!store.getState().user.id) {
+                store.dispatch(SAGA_GET_USER_DATA_ASYNC(token));
+                store.dispatch(END);
+                await store.sagaTask.toPromise();
+            }
+        } else {
+            res.setHeader('Set-Cookie', serialize('bookingJWT', '', {
+                httpOnly: true,
+                maxAge: -1,
+                path: '/',
+                sameSite: 'strict',
+                secure: true
+            }));
+            return {
+                redirect: {
+                    destination: '/account/login',
+                    permanent: false,
+                },
+            };
         }
     } else {
         return {
@@ -174,7 +187,7 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
 
     return {
         props: {
-            jwt,
+            token,
         },
     };
 });

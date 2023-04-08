@@ -13,6 +13,7 @@ module.exports = {
             "t-primary": "#0071C2",
             secondary: '#bdbdbd',
             white: '#ffffff',
+            black: '#000000',
             action: '#006ce4',
         },
     },

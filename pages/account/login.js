@@ -68,7 +68,7 @@ export default function Login({ user }) {
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input your email!',
+                                message: 'Vui lòng nhập email!',
                             },
                         ]}
                     >
@@ -76,12 +76,12 @@ export default function Login({ user }) {
                     </Form.Item>
 
                     <Form.Item
-                        label="Password"
+                        label="Mật khẩu"
                         name="password"
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input your password!',
+                                message: 'Vui lòng nhập mật khẩu!',
                             },
                         ]}
                     >
@@ -93,12 +93,12 @@ export default function Login({ user }) {
                             htmlType="submit"
                             className="mt-4 w-80 bg-[#4096FF] h-8 px-4"
                         >
-                            Login
+                            Đăng nhập
                         </Button>
                     </Form.Item>
                 </Form>
                 <Typography>
-                    Do not have an account ? <Link href="/account/register">Register</Link>
+                    Chưa có tài khoản ? <Link href="/account/register">Đăng ký</Link>
                 </Typography>
             </div>
         </WebLayout>
