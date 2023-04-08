@@ -5,6 +5,7 @@ const { welcomeCustomer } = require('../constant/email.const');
 const { validateUserRegister, validateUserLogin } = require('../helper/ValidateUser');
 
 const users = require('../models').users;
+const favorites = require('../models').favorites;
 const writeLog = require('../logger');
 const { sendEmail } = require('../services/email.service');
 
@@ -186,9 +187,9 @@ async function getOne(req, res) {
     try {
         const { id } = req.params;
         let user = await users.findOne({ where: { id: id } });
-        let newUser = user.toJSON();
-        delete newUser.password;
         if (user) {
+            let newUser = user.toJSON();
+            delete newUser.password;
             res.status(200).json({
                 status: true,
                 user: newUser,
@@ -217,7 +218,7 @@ async function getAll(req, res) {
             users: usersData,
         });
     } catch (e) {
-        writeLog(__filename, 'user.controller.getOne', e.message, "FAILED");
+        writeLog(__filename, 'user.controller.getAll', e.message, "FAILED");
         res.status(500).json({
             status: false,
             message: 'INTERNAL_SERVER_ERROR',
@@ -232,6 +233,39 @@ async function booking(req, res) {
     })
 }
 
+async function favorite(req, res) {
+    try {
+        const { userId, locationId } = req.body;
+        if (!userId || !locationId) {
+            res.status(200).json({
+                status: false,
+                message: 'Missing userId or locationId'
+            });
+            return;
+        }
+        const favorite = await favorites.findOne({ where: { userId, locationId } });
+        if (favorite) {
+            res.status(200).json({
+                status: false,
+                message: "User favorited it!"
+            });
+            return;
+        }
+        await favorites.create({ userId, locationId });
+        res.status(200).json({
+            status: true,
+            message: 'OK'
+        })
+
+    } catch (e) {
+        writeLog(__filename, 'user.controller.favorite', e.message, "FAILED");
+        res.status(500).json({
+            status: false,
+            message: 'INTERNAL_SERVER_ERROR',
+        });
+    }
+}
+
 module.exports = {
     register,
     login,
@@ -239,4 +273,5 @@ module.exports = {
     getOne,
     getAll,
     booking,
+    favorite
 };
