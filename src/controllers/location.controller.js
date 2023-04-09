@@ -7,14 +7,14 @@ const rooms = require('../models').rooms;
 async function getAll(req, res) {
     try {
         const locationsData = await locations.findAll({
-            include: cities
+            include: cities,
         });
         res.status(200).json({
             status: true,
             locations: locationsData,
         });
     } catch (e) {
-        writeLog(__filename, 'location.controller.getAll', e.message, "FAILED");
+        writeLog(__filename, 'location.controller.getAll', e.message, 'FAILED');
         res.status(500).json({ status: false, message: 'INTERNAL_SERVER_ERROR' });
     }
 }
@@ -37,11 +37,11 @@ async function getOne(req, res) {
         } else {
             res.status(200).json({
                 status: false,
-                message: "Location not found!",
+                message: 'Location not found!',
             });
         }
     } catch (e) {
-        writeLog(__filename, 'location.controller.getOne', e.message, "FAILED");
+        writeLog(__filename, 'location.controller.getOne', e.message, 'FAILED');
         res.status(500).json({ status: false, message: 'INTERNAL_SERVER_ERROR' });
     }
 }
@@ -55,7 +55,7 @@ async function create(req, res) {
             category,
         });
     } catch (e) {
-        writeLog(__filename, 'location.controller.create', e.message, "FAILED");
+        writeLog(__filename, 'location.controller.create', e.message, 'FAILED');
         res.status(500).json({ status: false, message: 'INTERNAL_SERVER_ERROR' });
     }
 }
@@ -80,7 +80,7 @@ async function update(req, res) {
             });
         }
     } catch (e) {
-        writeLog(__filename, 'location.controller.update', e.message, "FAILED");
+        writeLog(__filename, 'location.controller.update', e.message, 'FAILED');
         res.status(500).json({ status: false, message: 'INTERNAL_SERVER_ERROR' });
     }
 }

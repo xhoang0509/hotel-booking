@@ -13,7 +13,7 @@ async function getAll(req, res) {
             },
         });
     } catch (e) {
-        writeLog(__filename, 'rule.controller.getAll', e.message, "FAILED");
+        writeLog(__filename, 'rule.controller.getAll', e.message, 'FAILED');
         res.status(200).json({
             status: false,
             message: 'INTERNAL_SERVER_ERROR ' + e.message,

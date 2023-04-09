@@ -8,6 +8,7 @@ npx sequelize-cli db:drop;npx sequelize-cli db:create;npx sequelize-cli db:migra
 ```
 
 ### Database for pipeline
+
 ```bash
 cd src
 npx sequelize-cli db:migrate; npx sequelize-cli db:seed:all

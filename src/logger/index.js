@@ -9,7 +9,7 @@ function writeLog(file, func, message, status) {
         caller: `${func}`,
         message: message instanceof Error ? message.stack : message,
         time: `${date} ${time}`,
-        status: `${status}`
+        status: `${status}`,
     };
     console.log(JSON.stringify(log));
 }

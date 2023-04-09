@@ -199,13 +199,11 @@ module.exports = {
                             allowNull: false,
                             type: Sequelize.DATE,
                             defaultValue: Sequelize.DataTypes.NOW,
-
                         },
                         updatedAt: {
                             allowNull: true,
                             type: Sequelize.DATE,
                             defaultValue: Sequelize.DataTypes.NOW,
-
                         },
                     },
                     {

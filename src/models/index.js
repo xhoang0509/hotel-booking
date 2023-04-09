@@ -51,5 +51,4 @@ db['rules'].hasMany(db['admins'], { foreignKey: 'ruleId' });
 db['users'].belongsToMany(db['rooms'], { through: db['user_room'] });
 db['rooms'].belongsToMany(db['users'], { through: db['user_room'] });
 
-
 module.exports = db;

@@ -17,7 +17,7 @@ async function getAll(req, res) {
             cities: citiesData,
         });
     } catch (e) {
-        writeLog(__filename, 'city.controller.getAll', e.message, "FAILED");
+        writeLog(__filename, 'city.controller.getAll', e.message, 'FAILED');
         res.status(500).json({ status: false, message: 'INTERNAL_SERVER_ERROR' });
     }
 }
@@ -34,7 +34,7 @@ async function getOne(req, res) {
             city,
         });
     } catch (e) {
-        writeLog(__filename, 'city.controller.getOne', e.message, "FAILED");
+        writeLog(__filename, 'city.controller.getOne', e.message, 'FAILED');
         res.status(500).json({ status: false, message: 'INTERNAL_SERVER_ERROR' });
     }
 }
@@ -48,7 +48,7 @@ async function create(req, res) {
             city,
         });
     } catch (e) {
-        writeLog(__filename, 'city.controller.create', e.message, "FAILED");
+        writeLog(__filename, 'city.controller.create', e.message, 'FAILED');
         res.status(500).json({ status: false, message: 'INTERNAL_SERVER_ERROR' });
     }
 }
@@ -73,7 +73,7 @@ async function update(req, res) {
             });
         }
     } catch (e) {
-        writeLog(__filename, 'city.controller.update', e.message, "FAILED");
+        writeLog(__filename, 'city.controller.update', e.message, 'FAILED');
         res.status(500).json({ status: false, message: 'INTERNAL_SERVER_ERROR' });
     }
 }

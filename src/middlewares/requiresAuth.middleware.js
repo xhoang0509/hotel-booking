@@ -14,25 +14,25 @@ async function authApi(req, res, next) {
         const now = Math.floor(Date.now() / 1000);
 
         if (decoded.exp < now) {
-            writeLog(__filename, 'requiresAuth.authApi', 'JWT has expired');
+            writeLog(__filename, 'requiresAuth.authApi', 'JWT has expired', 'FAILED');
             res.status(401).json({ status: false, message: 'JWT expired' });
         } else {
             if (decoded.type === 'admin') {
                 const admin = await admins.findOne({ where: { id: decoded.id } });
                 if (admin) {
-                    writeLog(__filename, 'requiresAuth.authApi', 'OK');
+                    writeLog(__filename, 'requiresAuth.authApi', 'OK', 'SUCCESS');
                     next();
                 } else {
-                    writeLog(__filename, 'requiresAuth.authApi', 'Admin not found');
+                    writeLog(__filename, 'requiresAuth.authApi', 'Admin not found', 'FAILED');
                     res.status(401).json({ status: false, message: 'Admin not found' });
                 }
             } else if (decoded.type === 'user') {
                 const user = await users.findOne({ where: { id: decoded.id } });
                 if (user) {
-                    writeLog(__filename, 'requiresAuth.authApi', 'OK');
+                    writeLog(__filename, 'requiresAuth.authApi', 'OK', 'SUCCESS');
                     next();
                 } else {
-                    writeLog(__filename, 'requiresAuth.authApi', 'User not found');
+                    writeLog(__filename, 'requiresAuth.authApi', 'User not found', 'FAILED');
                     res.status(401).json({ status: false, message: 'User not found' });
                 }
             }

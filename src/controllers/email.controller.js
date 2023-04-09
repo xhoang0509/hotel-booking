@@ -41,7 +41,7 @@ async function send(req, res) {
             }
         }
     } catch (e) {
-        writeLog(__filename, 'email.controller.login', e.message, "FAILED");
+        writeLog(__filename, 'email.controller.login', e.message, 'FAILED');
         result = {
             code: 500,
             data: {

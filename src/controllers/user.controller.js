@@ -64,7 +64,7 @@ async function register(req, res) {
         };
         writeLog(__filename, 'user.controller.login', 'Send email welcome to: ' + email);
     } catch (e) {
-        writeLog(__filename, 'user.controller.login', e.message, "FAILED");
+        writeLog(__filename, 'user.controller.login', e.message, 'FAILED');
         result = {
             code: 500,
             data: {
@@ -138,7 +138,7 @@ async function login(req, res) {
             },
         };
     } catch (e) {
-        writeLog(__filename, 'user.controller.login', e.message, "FAILED");
+        writeLog(__filename, 'user.controller.login', e.message, 'FAILED');
         result = {
             code: 500,
             data: {
@@ -178,7 +178,7 @@ async function update(req, res) {
             }
         }
     } catch (e) {
-        writeLog(__filename, 'user.controller.update', e.message, "FAILED");
+        writeLog(__filename, 'user.controller.update', e.message, 'FAILED');
         res.status(500).json({ status: false, message: e.message });
     }
 }
@@ -197,12 +197,12 @@ async function getOne(req, res) {
         } else {
             res.status(200).json({
                 status: false,
-                message: 'User not found'
+                message: 'User not found',
             });
         }
-        writeLog(__filename, 'user.controller.getOne', "", 'SUCCESS');
+        writeLog(__filename, 'user.controller.getOne', '', 'SUCCESS');
     } catch (e) {
-        writeLog(__filename, 'user.controller.getOne', e.message, "FAILED");
+        writeLog(__filename, 'user.controller.getOne', e.message, 'FAILED');
         res.status(500).json({
             status: false,
             message: 'INTERNAL_SERVER_ERROR',
@@ -218,7 +218,7 @@ async function getAll(req, res) {
             users: usersData,
         });
     } catch (e) {
-        writeLog(__filename, 'user.controller.getAll', e.message, "FAILED");
+        writeLog(__filename, 'user.controller.getAll', e.message, 'FAILED');
         res.status(500).json({
             status: false,
             message: 'INTERNAL_SERVER_ERROR',
@@ -229,17 +229,17 @@ async function getAll(req, res) {
 async function booking(req, res) {
     res.status(200).json({
         status: true,
-        message: 'OK'
-    })
+        message: 'OK',
+    });
 }
 
-async function favorite(req, res) {
+async function postFavorite(req, res) {
     try {
         const { userId, locationId } = req.body;
         if (!userId || !locationId) {
             res.status(200).json({
                 status: false,
-                message: 'Missing userId or locationId'
+                message: 'Missing userId or locationId',
             });
             return;
         }
@@ -247,18 +247,44 @@ async function favorite(req, res) {
         if (favorite) {
             res.status(200).json({
                 status: false,
-                message: "User favorited it!"
+                message: 'User favorited it!',
             });
             return;
         }
         await favorites.create({ userId, locationId });
         res.status(200).json({
             status: true,
-            message: 'OK'
-        })
-
+            message: 'OK',
+        });
     } catch (e) {
-        writeLog(__filename, 'user.controller.favorite', e.message, "FAILED");
+        writeLog(__filename, 'user.controller.postFavorite', e.message, 'FAILED');
+        res.status(500).json({
+            status: false,
+            message: 'INTERNAL_SERVER_ERROR',
+        });
+    }
+}
+
+async function getFavorite(req, res) {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            res.status(200).json({
+                status: false,
+                message: 'Missing id',
+            });
+            return;
+        }
+        const favoritesData = await favorites.findAll({ where: { userId: id } });
+        if (favoritesData) {
+            console.log(JSON.parse(JSON.stringify(favoritesData)));
+        }
+        res.status(200).json({
+            status: true,
+            favorites: favoritesData,
+        });
+    } catch (e) {
+        writeLog(__filename, 'user.controller.getFavorite', e.message, 'FAILED');
         res.status(500).json({
             status: false,
             message: 'INTERNAL_SERVER_ERROR',
@@ -273,5 +299,6 @@ module.exports = {
     getOne,
     getAll,
     booking,
-    favorite
+    getFavorite,
+    postFavorite,
 };

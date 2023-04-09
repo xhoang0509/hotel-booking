@@ -11,7 +11,7 @@ async function getAll(req, res) {
             categories: categoriesData,
         });
     } catch (e) {
-        writeLog(__filename, 'category.controller.getAll', e.message, "FAILED");
+        writeLog(__filename, 'category.controller.getAll', e.message, 'FAILED');
         res.status(500).json({ status: false, message: 'INTERNAL_SERVER_ERROR' });
     }
 }
@@ -28,7 +28,7 @@ async function getOne(req, res) {
             category,
         });
     } catch (e) {
-        writeLog(__filename, 'category.controller.getOne', e.message, "FAILED");
+        writeLog(__filename, 'category.controller.getOne', e.message, 'FAILED');
         res.status(500).json({ status: false, message: 'INTERNAL_SERVER_ERROR' });
     }
 }
@@ -42,7 +42,7 @@ async function create(req, res) {
             category,
         });
     } catch (e) {
-        writeLog(__filename, 'category.controller.create', e.message, "FAILED");
+        writeLog(__filename, 'category.controller.create', e.message, 'FAILED');
         res.status(500).json({ status: false, message: 'INTERNAL_SERVER_ERROR' });
     }
 }
@@ -67,7 +67,7 @@ async function update(req, res) {
             });
         }
     } catch (e) {
-        writeLog(__filename, 'category.controller.update', e.message, "FAILED");
+        writeLog(__filename, 'category.controller.update', e.message, 'FAILED');
         res.status(500).json({ status: false, message: 'INTERNAL_SERVER_ERROR' });
     }
 }
