@@ -1,8 +1,11 @@
 import { wrapper } from '@/redux/store';
-import { Button, Card, Form, Input, Typography, notification } from 'antd';
+import { Button, Card, Form, Input, Layout, Typography, notification, Row, Col } from 'antd';
 import { useRouter } from 'next/router';
+import signinbg from "@/public/images/img-signin.jpg";
 
 export default function Login() {
+    const { Header, Footer, Content } = Layout;
+    const { Title } = Typography
     const router = useRouter();
     const onFinish = async (values) => {
         try {
@@ -39,63 +42,76 @@ export default function Login() {
     };
 
     return (
-        <div className="w-screen h-screen flex items-center justify-center bg-[#e6f2fb]">
-            <Card className="w-3/12">
-                <Typography.Title level={5} className="text-center pb-4">
-                    DATPHONG.COM LOGIN
-                </Typography.Title>
-                <Form
-                    name="login"
-                    labelCol={{
-                        span: 8,
-                    }}
-                    wrapperCol={{
-                        span: 16,
-                    }}
-                    onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
-                    autoComplete="off"
-                >
-                    <Form.Item
-                        label="Email"
-                        name="email"
-                        labelAlign="left"
-                        rules={[
-                            {
-                                required: true,
-                                message: ' Vui lòng nhập email!',
-                            },
-                        ]}
-                        className="pb-4"
-                    >
-                        <Input />
-                    </Form.Item>
+        <div className="">
+            <Layout className="layout-default layout-signin">
+                <Content className="signin">
+                    <Row gutter={[24, 0]} justify="space-around" className='flex items-center'>
+                        <Col
+                            xs={{ span: 24, offset: 0 }}
+                            lg={{ span: 6, offset: 2 }}
+                            md={{ span: 12 }}
+                        >
+                            <Title className="mb-15">Đăng nhập</Title>
+                            <Title className="font-regular text-muted" level={5}>
+                                Nhập email và mật khẩu của bạn để đăng nhập.
+                            </Title>
+                            <Form
+                                onFinish={onFinish}
+                                onFinishFailed={onFinishFailed}
+                                layout="vertical"
+                                className="row-col"
+                            >
+                                <Form.Item
+                                    className="username"
+                                    label="Email"
+                                    name="email"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Vui lòng nhập email của bạn!",
+                                        },
+                                    ]}
+                                >
+                                    <Input placeholder="Email" className='px-2'/>
+                                </Form.Item>
 
-                    <Form.Item
-                        label="Mật khẩu"
-                        name="password"
-                        labelAlign="left"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Vui lòng nhập mật khẩu!',
-                            },
-                        ]}
-                    >
-                        <Input.Password />
-                    </Form.Item>
-                    <Form.Item
-                        wrapperCol={{
-                            offset: 8,
-                            span: 16,
-                        }}
-                    >
-                        <Button type="primary" htmlType="submit" className="bg-btn-primary">
-                            Đăng nhập
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </Card>
+                                <Form.Item
+                                    className="username"
+                                    label="Mật khẩu"
+                                    name="password"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Vui lòng nhập mật khẩu của bạn!",
+                                        },
+                                    ]}
+                                >
+                                    <Input.Password placeholder="Mật khẩu" />
+                                </Form.Item>
+                                <Form.Item>
+                                    <Button
+                                        type="primary"
+                                        htmlType="submit"
+                                        style={{ width: "100%" }}
+                                        className='bg-btn-primary'
+                                    >
+                                        ĐĂNG NHẬP
+                                    </Button>
+                                </Form.Item>
+                            </Form>
+                        </Col>
+                        <Col
+                            className="sign-img"
+                            style={{ padding: 12 }}
+                            xs={{ span: 24 }}
+                            lg={{ span: 12 }}
+                            md={{ span: 12 }}
+                        >
+                            <img src={signinbg.src} alt="" />
+                        </Col>
+                    </Row>
+                </Content>
+            </Layout>
         </div>
     );
 }

@@ -1,3 +1,4 @@
+import Banner from '@/components/Home/Banner';
 import SummaryChart from '@/components/Home/Chart';
 import ProjectAndTimelint from '@/components/Home/ProjectAndTimeline';
 import Summary from '@/components/Home/Summary';
@@ -14,6 +15,7 @@ export default function Home() {
                 <Summary />
                 <SummaryChart />
                 <ProjectAndTimelint />
+                <Banner />
             </LayoutApp>
         </>
     );

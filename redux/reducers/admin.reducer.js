@@ -52,6 +52,7 @@ export const adminSlice = createSlice({
                 gender: action.payload.gender,
                 image: action.payload.image,
                 address: action.payload.address,
+                rule: action.payload.rule,
             };
         },
         [SAGA_GET_ADMIN_DATA_FAILED]: (state) => {

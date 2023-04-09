@@ -34,7 +34,7 @@ export default function LayoutApp({ children }) {
                 <Layout hasSider>
                     <Navigation />
                     <Layout
-                        className="site-layout min-h-screen h-auto"
+                        className="site-layout min-h-screen h-auto pr-8"
                         style={{
                             marginLeft: 250,
                         }}

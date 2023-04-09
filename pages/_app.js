@@ -2,13 +2,12 @@ import { useNProgress } from '@/hooks/use-nprogress';
 import { wrapper } from '@/redux/store';
 import '@/styles/globals.css';
 import '@/styles/chart.css';
+import '@/styles/responsive.css';
 import Head from 'next/head';
-import nProgress from 'nprogress';
 import React from 'react';
 
 const App = ({ Component, pageProps }) => {
     useNProgress();
-    nProgress.start();
     return (
         <React.Fragment>
             <Head>

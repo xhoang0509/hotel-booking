@@ -3,19 +3,19 @@ import { Button, Card, Col, Progress, Radio, Row, Timeline, Tooltip, Typography,
 import { useState } from "react";
 
 
-import ava2 from "../../public/images/logo-atlassian.svg";
-import ava6 from "../../public/images/logo-invision.svg";
-import ava5 from "../../public/images/logo-jira.svg";
-import ava1 from "../../public/images/logo-shopify.svg";
-import ava3 from "../../public/images/logo-slack.svg";
-import ava4 from "../../public/images/logo-spotify.svg";
-import team1 from "../../public/images/team-1.jpg";
-import team2 from "../../public/images/team-2.jpg";
-import team3 from "../../public/images/team-3.jpg";
-import team4 from "../../public/images/team-4.jpg";
+import ava1 from "@/public/images/logo-shopify.svg";
+import ava2 from "@/public/images/logo-atlassian.svg";
+import ava3 from "@/public/images/logo-slack.svg";
+import ava4 from "@/public/images/logo-spotify.svg";
+import ava5 from "@/public/images/logo-jira.svg";
+import ava6 from "@/public/images/logo-invision.svg";
+import team1 from "@/public/images/team-1.jpg";
+import team2 from "@/public/images/team-2.jpg";
+import team3 from "@/public/images/team-3.jpg";
+import team4 from "@/public/images/team-4.jpg";
 
 function ProjectAndTimelint() {
-    const { Title, Text, Paragraph  } = Typography
+    const { Title, Text, Paragraph } = Typography
     const [reverse, setReverse] = useState(false);
 
     const onChange = (e) => console.log(`radio checked:${e.target.value}`);
@@ -59,16 +59,16 @@ function ProjectAndTimelint() {
             member: (
                 <div className="avatar-group mt-2">
                     <Tooltip placement="bottom" title="Ryan Tompson">
-                        <img className="tootip-img" src={team1} alt="" />
+                        <img className="tootip-img" src={team1.src} alt="" />
                     </Tooltip>
                     <Tooltip placement="bottom" title="Romina Hadid">
-                        <img className="tootip-img" src={team2} alt="" />
+                        <img className="tootip-img" src={team2.src} alt="" />
                     </Tooltip>
                     <Tooltip placement="bottom" title="Alexander Smith">
-                        <img className="tootip-img" src={team3} alt="" />
+                        <img className="tootip-img" src={team3.src} alt="" />
                     </Tooltip>
                     <Tooltip placement="bottom" title="Jessica Doe">
-                        <img className="tootip-img" src={team4} alt="" />
+                        <img className="tootip-img" src={team4.src} alt="" />
                     </Tooltip>
                 </div>
             ),
@@ -81,10 +81,10 @@ function ProjectAndTimelint() {
             member: (
                 <div className="avatar-group mt-2">
                     <Tooltip placement="bottom" title="Ryan Tompson">
-                        <img className="tootip-img" src={team1} alt="" />
+                        <img className="tootip-img" src={team1.src} alt="" />
                     </Tooltip>
                     <Tooltip placement="bottom" title="Romina Hadid">
-                        <img className="tootip-img" src={team2} alt="" />
+                        <img className="tootip-img" src={team2.src} alt="" />
                     </Tooltip>
                 </div>
             ),
@@ -97,13 +97,13 @@ function ProjectAndTimelint() {
             member: (
                 <div className="avatar-group mt-2">
                     <Tooltip placement="bottom" title="Ryan Tompson">
-                        <img className="tootip-img" src={team1} alt="" />
+                        <img className="tootip-img" src={team1.src} alt="" />
                     </Tooltip>
                     <Tooltip placement="bottom" title="Romina Hadid">
-                        <img className="tootip-img" src={team1} alt="" />
+                        <img className="tootip-img" src={team1.src} alt="" />
                     </Tooltip>
                     <Tooltip placement="bottom" title="Alexander Smith">
-                        <img className="tootip-img" src={team3} alt="" />
+                        <img className="tootip-img" src={team3.src} alt="" />
                     </Tooltip>
                 </div>
             ),
@@ -116,10 +116,10 @@ function ProjectAndTimelint() {
             member: (
                 <div className="avatar-group mt-2">
                     <Tooltip placement="bottom" title="Ryan Tompson">
-                        <img className="tootip-img" src={team1} alt="" />
+                        <img className="tootip-img" src={team1.src} alt="" />
                     </Tooltip>
                     <Tooltip placement="bottom" title="Romina Hadid">
-                        <img className="tootip-img" src={team2} alt="" />
+                        <img className="tootip-img" src={team2.src} alt="" />
                     </Tooltip>
                 </div>
             ),
@@ -132,16 +132,16 @@ function ProjectAndTimelint() {
             member: (
                 <div className="avatar-group mt-2">
                     <Tooltip placement="bottom" title="Ryan Tompson">
-                        <img className="tootip-img" src={team1} alt="" />
+                        <img className="tootip-img" src={team1.src} alt="" />
                     </Tooltip>
                     <Tooltip placement="bottom" title="Romina Hadid">
-                        <img className="tootip-img" src={team2} alt="" />
+                        <img className="tootip-img" src={team2.src} alt="" />
                     </Tooltip>
                     <Tooltip placement="bottom" title="Alexander Smith">
-                        <img className="tootip-img" src={team3} alt="" />
+                        <img className="tootip-img" src={team3.src} alt="" />
                     </Tooltip>
                     <Tooltip placement="bottom" title="Jessica Doe">
-                        <img className="tootip-img" src={team4} alt="" />
+                        <img className="tootip-img" src={team4.src} alt="" />
                     </Tooltip>
                 </div>
             ),
@@ -162,10 +162,10 @@ function ProjectAndTimelint() {
             member: (
                 <div className="avatar-group mt-2">
                     <Tooltip placement="bottom" title="Ryan Tompson">
-                        <img className="tootip-img" src={team1} alt="" />
+                        <img className="tootip-img" src={team1.src} alt="" />
                     </Tooltip>
                     <Tooltip placement="bottom" title="Romina Hadid">
-                        <img className="tootip-img" src={team2} alt="" />
+                        <img className="tootip-img" src={team2.src} alt="" />
                     </Tooltip>
                 </div>
             ),
@@ -189,9 +189,8 @@ function ProjectAndTimelint() {
             }
         },
     };
-
-    return <Row gutter={[24, 0]}>,
-        <Col  className="mb-24">
+    return <Row gutter={[24, 0]}>
+        <Col xs={24} sm={24} md={12} lg={12} xl={12} className="mb-24">
             <Card bordered={false} className="criclebox cardbody h-full">
                 <div className="project-ant">
                     <div>
@@ -226,7 +225,7 @@ function ProjectAndTimelint() {
                                     <td>
                                         <h6>
                                             <img
-                                                src={d.img}
+                                                src={d.img.src}
                                                 alt=""
                                                 className="avatar-sm mr-10"
                                             />{" "}
@@ -260,7 +259,7 @@ function ProjectAndTimelint() {
                 </div>
             </Card>
         </Col>
-        <Col xs={24} sm={24} md={12} lg={12} xl={8} className="mb-24">
+        <Col xs={24} sm={24} md={12} lg={12} xl={12} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
                 <div className="timeline-box">
                     <Title level={5}>Orders History</Title>
@@ -290,7 +289,7 @@ function ProjectAndTimelint() {
                 </div>
             </Card>
         </Col>
-    </Row>;
+    </Row>
 }
 
 export default ProjectAndTimelint;
