@@ -1,5 +1,10 @@
 # DATN-API
 
+### RUN DOCKER FILE
+```bash
+docker-compose up -d
+```
+
 ### Create Database for new developer:
 
 ```bash
