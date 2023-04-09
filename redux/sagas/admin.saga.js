@@ -5,6 +5,7 @@ import {
     SAGA_GET_ADMIN_DATA_SUCCESS,
     SAGA_GET_ADMIN_DATA_FAILED,
 } from '../actions/admin.action';
+import writeLog from '@/logger';
 
 const getAdminById = (token) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY, {
@@ -32,7 +33,7 @@ function* getAdminData(action) {
             yield put(SAGA_GET_ADMIN_DATA_FAILED());
         }
     } catch (e) {
-        console.log('ERROR', '[admin.saga.js] getAdminData', e.message);
+        writeLog('admin.saga', 'getAdminData', e.message, 'ERROR');
     }
 }
 

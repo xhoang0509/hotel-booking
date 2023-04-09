@@ -11,6 +11,8 @@ import { getGender } from '@/constants/gender.const';
 import { getDateDetail } from '@/constants/date.const';
 import Link from 'next/link';
 import { getStatusLabel } from '@/constants/adminStatus.const';
+import { authAdmin } from '@/helper/auth.helper';
+import writeLog from '@/logger';
 
 export default function Account({ jwt }) {
     const router = useRouter();
@@ -185,13 +187,24 @@ export default function Account({ jwt }) {
 }
 
 export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ req, res }) => {
-    let jwt = req.cookies['adminJWT'] || '';
+    let token = req.cookies['adminJWT'] || '';
 
-    if (jwt) {
-        if (!store.getState().admin.id) {
-            store.dispatch(SAGA_GET_ADMIN_DATA_ASYNC(jwt));
-            store.dispatch(END);
-            await store.sagaTask.toPromise();
+    if (token) {
+        const status = await authAdmin(token);
+        if (status) {
+            if (!store.getState().admin.id) {
+                store.dispatch(SAGA_GET_ADMIN_DATA_ASYNC(token));
+                store.dispatch(END);
+                await store.sagaTask.toPromise();
+            }
+        } else {
+            res.setHeader('Set-Cookie', 'adminJWT=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;');
+            return {
+                redirect: {
+                    destination: '/login',
+                    permanent: false,
+                },
+            };
         }
     } else {
         return {
@@ -203,7 +216,7 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
     }
     return {
         props: {
-            jwt,
+            jwt: token,
         },
     };
 });

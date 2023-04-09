@@ -36,6 +36,7 @@ import project2 from "@/public/images/home-decor-2.jpeg";
 import project3 from "@/public/images/home-decor-3.jpeg";
 import noImage from "@/public/images/no-image.png";
 import { useSelector } from 'react-redux';
+import { authAdmin } from '@/helper/auth.helper';
 
 export default function Profile() {
     const admin = useSelector(state => state.admin);
@@ -166,7 +167,7 @@ export default function Profile() {
                     <Row justify="space-between" align="middle" gutter={[24, 0]}>
                         <Col span={24} md={12} className="col-info">
                             <Avatar.Group>
-                                {admin.image ? <Avatar size={74} shape="square" src={admin.image} className="rounded-full"/>
+                                {admin.image ? <Avatar size={74} shape="square" src={admin.image} className="rounded-full" />
                                     : <Avatar size="large" icon={<UserOutlined />} className="mr-4 rounded-full" />
                                 }
 
@@ -376,13 +377,23 @@ export default function Profile() {
 }
 
 export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ req, res }) => {
-    let jwt = req.cookies['adminJWT'] || '';
-
-    if (jwt) {
-        if (!store.getState().admin.id) {
-            store.dispatch(SAGA_GET_ADMIN_DATA_ASYNC(jwt));
-            store.dispatch(END);
-            await store.sagaTask.toPromise();
+    let token = req.cookies['adminJWT'] || '';
+    if (token) {
+        const status = await authAdmin(token);
+        if (status) {
+            if (!store.getState().admin.id) {
+                store.dispatch(SAGA_GET_ADMIN_DATA_ASYNC(token));
+                store.dispatch(END);
+                await store.sagaTask.toPromise();
+            }
+        } else {
+            res.setHeader('Set-Cookie', 'adminJWT=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;');
+            return {
+                redirect: {
+                    destination: '/login',
+                    permanent: false,
+                },
+            };
         }
     } else {
         return {
@@ -394,7 +405,7 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
     }
     return {
         props: {
-            jwt,
+            jwt: token,
         },
     };
 });
