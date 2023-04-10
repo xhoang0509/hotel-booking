@@ -34,7 +34,7 @@ export default function Header() {
         },
         {
             key: '2',
-            label: 'Đã lưu',
+            label: <Link href="/mywishlist">Đã lưu</Link>,
             icon: <HeartOutlined />,
         },
         {
@@ -49,7 +49,7 @@ export default function Header() {
                 <nav className="xl:w-3/5 md:w-full flex justify-between p-3">
                     <div className="flex items-center">
                         <span className="text-xl font-bold cursor-pointer">
-                            <Link href="/">BOOKING.COM</Link>
+                            <Link href="/">Datphong.com</Link>
                         </span>
                     </div>
                     <div className="text-bold flex">

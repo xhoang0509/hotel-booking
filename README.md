@@ -1,4 +1,4 @@
-## DATN CLIENT: BOOKING.COM
+## DATN CLIENT: DATPHONG.COM
 
 First, run the development server:
 

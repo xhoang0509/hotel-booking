@@ -19,15 +19,15 @@ export default function Login({ user }) {
             res = await res.json();
             if (res && res.status) {
                 notification.open({
-                    message: 'Login Successful',
-                    description: 'You have successfully logged in!',
+                    message: 'Đăng nhập thành công',
+                    description: 'Bạn đã đăng nhập thành công!',
                     placement: 'topRight',
                     type: 'success',
                 });
                 router.push('/account');
             } else {
                 notification.open({
-                    message: 'Login Failed',
+                    message: 'Đăng nhập thất bại',
                     description: res.message,
                     placement: 'topRight',
                     type: 'error',

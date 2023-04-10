@@ -4,25 +4,26 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import WebLayout from '@/components/Layout/WebLayout';
 
-export default function Register() {
+export default function Verify() {
     const router = useRouter();
-
+    const { email } = router.query;
+    console.log(router);
     const onFinish = async (values) => {
         try {
-            const res = await userApi.register(values);
-            if (res && res.data) {
-                if (res.data.status) {
+            const res = await userApi.verify(values);
+            if (res) {
+                if (res.status) {
                     notification.open({
-                        message: 'Đăng kí thành công!',
-                        description: 'Tài khoản của bạn đã được đăng kí thành công!',
+                        message: 'Xác thực thành công!',
+                        description: 'Tài khoản của bạn đã được xác thực!',
                         placement: 'topRight',
                         type: 'success',
                     });
-                    router.push(`/account/verify?email=${values.email}`);
+                    router.push('/account/login');
                 } else {
                     notification.open({
-                        message: 'Đăng kí thất bại!',
-                        description: res.data.message,
+                        message: 'Xác thực thất bại!',
+                        description: res.message,
                         placement: 'topRight',
                         type: 'error',
                     });
@@ -38,7 +39,7 @@ export default function Register() {
     return (
         <WebLayout>
             <div className="flex flex-col items-center mt-12">
-                <Typography.Title level={4}>Đăng ký tài khoản</Typography.Title>
+                <Typography.Title level={4}>Xác thực email</Typography.Title>
                 <Form
                     name="basic"
                     labelCol={{
@@ -53,65 +54,32 @@ export default function Register() {
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
                     autoComplete="off"
-                    layout="vertical"
+                    labelAlign="left"
                 >
                     <Form.Item
                         className="mt-4"
                         label="Email"
                         name="email"
+                        initialValue={email}
+                    >
+                        <Input className="w-80" disabled />
+                    </Form.Item>
+                    <Form.Item
+                        label="OTP"
+                        name="otp"
                         rules={[
-                            {
-                                required: true,
-                                message: 'Vui lòng nhập email!',
-                            },
+                            { required: true, message: "Yêu cầu nhập OTP" }
                         ]}
                     >
                         <Input className="w-80" />
                     </Form.Item>
-
-                    <Form.Item
-                        label="Mật khẩu"
-                        name="password"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Vui lòng nhập mật khẩu!',
-                            },
-                        ]}
-                    >
-                        <Input.Password className="w-80" />
-                    </Form.Item>
-                    <Form.Item
-                        label="Họ"
-                        name="lastName"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Vui lòng nhập họ!',
-                            },
-                        ]}
-                    >
-                        <Input className="w-80" />
-                    </Form.Item>
-                    <Form.Item
-                        label="Tên"
-                        name="firstName"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Vui lòng nhập tên!',
-                            },
-                        ]}
-                    >
-                        <Input className="w-80" />
-                    </Form.Item>
-                    <Form.Item>
+                    <Form.Item wrapperCol={{ offset: 12, span: 16 }}>
                         <Button
                             type="primary"
                             htmlType="submit"
-                            className="mt-4 w-80 bg-[#4096FF] h-8 px-4"
+                            className="mt-4 bg-[#4096FF] h-8 px-4"
                         >
-                            Đăng ký
+                            Xác thực
                         </Button>
                     </Form.Item>
                 </Form>

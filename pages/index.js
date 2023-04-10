@@ -1,13 +1,12 @@
 import Category from '@/components/Category';
+import SearchCategory from '@/components/Category/SearchCategory';
+import City from '@/components/City';
 import WebLayout from '@/components/Layout/WebLayout';
 import { wrapper } from '@/redux/store';
 import { Layout, Typography } from 'antd';
 import React from 'react';
 import { END } from 'redux-saga';
 import { SAGA_GET_USER_DATA_ASYNC } from './../redux/actions/user.action';
-import City from '@/components/City';
-import SearchCategory from '@/components/Category/SearchCategory';
-import { authUser } from '@/helpers/auth.helper';
 
 export default function Index() {
     return (
@@ -59,13 +58,11 @@ export default function Index() {
 
 export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ req, res }) => {
     let token = req.cookies['bookingJWT'] || '';
-
     if (token) {
         if (!store.getState().user.id) {
             store.dispatch(SAGA_GET_USER_DATA_ASYNC(token));
             store.dispatch(END);
             await store.sagaTask.toPromise();
-            authUser(req, res, token);
         }
     }
     return {

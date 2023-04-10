@@ -35,8 +35,6 @@ export default function Hotel() {
         }
     }, [id]);
 
-    console.log("location: ", location);
-
     return (
         <WebLayout>
             {loading && <div>loading...</div>}

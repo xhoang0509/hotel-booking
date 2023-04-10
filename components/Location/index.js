@@ -3,13 +3,24 @@ import Star from "../Star";
 import { HeartOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
+import { HeartIcon, HeartRedIcon } from "../Icons/HeartIcon";
+import userApi from "@/services/user";
 
-export default function Location({ location }) {
+export default function Location({ jwt, location }) {
     const router = useRouter();
 
     const handleRouter = useCallback((id) => {
         router.push(`/hotel?id=${id}`)
     }, []);
+
+    const handleAddFavorite = useCallback(async () => {
+        const data = {};
+        try {
+            const res = await userApi.addFavorite(data, jwt)
+        } catch (e) {
+            console.log(e);
+        }
+    }, [])
     return (
         <div>
             <div className="p-4 mb-4 border border-[#ccc] flex">
@@ -21,7 +32,8 @@ export default function Location({ location }) {
                         onClick={() => handleRouter(location.id)}
                         className="cursor-pointer"
                     />
-                    <HeartOutlined className="cursor-pointer absolute top-2 right-2 text-2xl font-bold text-white" />
+                    <HeartIcon className="cursor-pointer absolute top-2 right-2 text-2xl font-bold text-white" onClick={handleAddFavorite} />
+                    <HeartRedIcon className="cursor-pointer absolute top-2 right-2 text-2xl font-bold text-white" />
                 </div>
                 <div className="flex flex-1 justify-between">
                     <div>
@@ -44,7 +56,7 @@ export default function Location({ location }) {
                             <div className="w-8 h-8 bg-primary text-white flex items-center justify-center font-bold rounded-tl rounded-br">8.6</div>
                         </div>
                         <div className="bg-[#FEBB02] text-xs p-1 mb-4">Mới trên Datphong.com</div>
-                        <div className="bg-t-primary text-center text-white p-2 cursor-pointer">Hiển thị giá</div>
+                        <div className="bg-t-primary text-center text-white p-2 cursor-pointer mb-2">Hiển thị giá</div>
                     </div>
                 </div>
             </div>

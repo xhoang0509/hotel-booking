@@ -19,6 +19,24 @@ const userApi = {
         return axiosClient.get(`/user/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
         });
+    },
+
+    getFavorite(id, token) {
+        return axiosClient.get(`/user/favorite/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+    },
+
+    addFavorite(data, token) {
+        return axiosClient.post(`/user/favorite`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+    },
+
+    verify(data) {
+        return axiosClient.post('/user/verify', data)
     }
 };
 
