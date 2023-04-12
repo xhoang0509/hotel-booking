@@ -1,6 +1,7 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const writeLog = require('../logger');
+const { USER_STATUS } = require('../constant/user.const');
 const admins = require('../models').admins;
 const users = require('../models').users;
 
@@ -29,8 +30,13 @@ async function authApi(req, res, next) {
             } else if (decoded.type === 'user') {
                 const user = await users.findOne({ where: { id: decoded.id } });
                 if (user) {
-                    writeLog(__filename, 'requiresAuth.authApi', 'OK', 'SUCCESS');
-                    next();
+                    if (user.status === USER_STATUS.ACTIVE) {
+                        writeLog(__filename, 'requiresAuth.authApi', 'OK', 'SUCCESS');
+                        next();
+                    } else {
+                        writeLog(__filename, 'requiresAuth.authApi', 'OK', 'FAILED');
+                        res.status(401).json({ status: false, message: 'User not active' });
+                    }
                 } else {
                     writeLog(__filename, 'requiresAuth.authApi', 'User not found', 'FAILED');
                     res.status(401).json({ status: false, message: 'User not found' });

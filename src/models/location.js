@@ -27,6 +27,18 @@ module.exports = (sequelize, DataTypes) => {
         phone: {
             type: DataTypes.STRING(100),
         },
+        oldPrice: {
+            type: DataTypes.BIGINT,
+        },
+        price: {
+            type: DataTypes.BIGINT,
+        },
+        fromUseTime: {
+            type: DataTypes.BIGINT,
+        },
+        toUseTime: {
+            type: DataTypes.DATE,
+        },
         cityId: {
             type: DataTypes.INTEGER(11),
             allowNull: false,

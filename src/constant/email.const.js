@@ -12,6 +12,16 @@ Best regards,
 {{your_name}}
 {{company_name}}`;
 
+const otpCustomer = `Dear {{customer_name}},
+
+Mã OTP của bạn là: {{customer_otp}}
+Mã này chỉ có hiệu lực trong vòng 10 phút.
+
+Best regards,
+{{your_name}}
+{{company_name}}`;
+
 module.exports = {
     welcomeCustomer,
+    otpCustomer,
 };

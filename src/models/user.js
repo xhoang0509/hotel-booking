@@ -44,6 +44,16 @@ module.exports = (sequelize, DataTypes) => {
         images: {
             type: DataTypes.TEXT,
         },
+        status: {
+            type: DataTypes.ENUM('draft', 'active', 'inactive'),
+            defaultValue: 'draft'
+        },
+        otp: {
+            type: DataTypes.INTEGER,
+        },
+        otp_timestamp: {
+            type: DataTypes.BIGINT,
+        },
     });
     return User;
 };

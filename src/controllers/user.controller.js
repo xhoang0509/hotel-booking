@@ -1,13 +1,17 @@
 require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { welcomeCustomer } = require('../constant/email.const');
+const { welcomeCustomer, otpCustomer } = require('../constant/email.const');
 const { validateUserRegister, validateUserLogin } = require('../helper/ValidateUser');
 
 const users = require('../models').users;
 const favorites = require('../models').favorites;
+const locations = require('../models').locations;
+
 const writeLog = require('../logger');
 const { sendEmail } = require('../services/email.service');
+const UserService = require('../services/user.service');
+const { USER_STATUS } = require('../constant/user.const');
 
 const { JWT_SECRET_KEY } = process.env;
 
@@ -36,24 +40,44 @@ async function register(req, res) {
                 code: 400,
                 data: {
                     status: false,
-                    message: 'Email already exists!',
+                    message: 'Email đã tồn tại!',
                 },
             };
             return;
         }
         let passwordHash = await bcrypt.hash(password, 10);
-        user = await users.create({ email, password: passwordHash, firstName, lastName });
+        const userOTP = UserService.generateOTP();
+        user = await users.create({
+            email,
+            password: passwordHash,
+            firstName,
+            lastName,
+            status: USER_STATUS.DRAFT,
+            otp: userOTP,
+            otp_timestamp: Date.now()
+        });
         const newUser = user.toJSON();
         delete newUser.password;
 
-        let bodyEmail = welcomeCustomer
+        let bodyEmail = otpCustomer
             .split('{{customer_name}}')
             .join(`${firstName} ${lastName}`)
-            .split('{{company_name}}')
-            .join('Booking.com')
-            .split('{{your_name}}')
-            .join('Xuan Hoang');
-        sendEmail(email, 'Welcome to Datphong.com', bodyEmail);
+            .split('{{customer_otp}}')
+            .join(userOTP)
+            .split("{{your_name}}")
+            .join("Xuan Hoang")
+            .split("{{company_name}}")
+            .join("Datphong.com")
+        await sendEmail(email, 'Xác thực đăng ký', bodyEmail);
+
+        // let bodyEmail = welcomeCustomer
+        //     .split('{{customer_name}}')
+        //     .join(`${firstName} ${lastName}`)
+        //     .split('{{company_name}}')
+        //     .join('Booking.com')
+        //     .split('{{your_name}}')
+        //     .join('Xuan Hoang');
+        // sendEmail(email, 'Welcome to Datphong.com', bodyEmail);
         result = {
             code: 200,
             data: {
@@ -62,7 +86,7 @@ async function register(req, res) {
                 user: newUser,
             },
         };
-        writeLog(__filename, 'user.controller.login', 'Send email welcome to: ' + email);
+        writeLog(__filename, 'user.controller.login', 'Send email welcome to: ' + email, "OK");
     } catch (e) {
         writeLog(__filename, 'user.controller.login', e.message, 'FAILED');
         result = {
@@ -109,6 +133,17 @@ async function login(req, res) {
             return;
         }
 
+        if (user.status !== USER_STATUS.ACTIVE) {
+            result = {
+                code: 404,
+                data: {
+                    status: false,
+                    message: 'User not active!',
+                },
+            };
+            return;
+        }
+
         const isPasswordMatch = await bcrypt.compare(password, user.password);
 
         if (!isPasswordMatch) {
@@ -127,6 +162,7 @@ async function login(req, res) {
         });
 
         const userData = user.toJSON();
+        userData.token = token;
         delete userData.password;
         result = {
             code: 200,
@@ -197,7 +233,7 @@ async function getOne(req, res) {
         } else {
             res.status(200).json({
                 status: false,
-                message: 'User not found',
+                message: 'Không tìm thấy người dùng',
             });
         }
         writeLog(__filename, 'user.controller.getOne', '', 'SUCCESS');
@@ -275,9 +311,14 @@ async function getFavorite(req, res) {
             });
             return;
         }
-        const favoritesData = await favorites.findAll({ where: { userId: id } });
-        if (favoritesData) {
-            console.log(JSON.parse(JSON.stringify(favoritesData)));
+        let favoritesData = await favorites.findAll({ where: { userId: id } });
+        if (favoritesData.length > 0) {
+            const promise = favoritesData.map(async (favorite) => {
+                const location = await locations.findOne({ where: { id: favorite.locationId } });
+                return { ...favorite.toJSON(), location: location.toJSON() };
+            });
+
+            favoritesData = await Promise.all(promise);
         }
         res.status(200).json({
             status: true,
@@ -292,6 +333,89 @@ async function getFavorite(req, res) {
     }
 }
 
+async function verify(req, res) {
+    try {
+        const { email, otp } = req.body;
+        const user = await users.findOne({ where: { email: email } });
+        if (user) {
+            const currentTime = Date.now();
+            if ((currentTime - user.otp_timestamp) / 10000 > 1000 * 60 * 10) {
+                res.status(200).json({
+                    status: false,
+                    message: 'Otp đã hết hạn',
+                });
+                return;
+            }
+
+            if (user.otp === parseInt(otp)) {
+                await users.update({ status: USER_STATUS.ACTIVE }, { where: { email: email } });
+                res.status(200).json({
+                    status: true,
+                    message: 'OK',
+                });
+            } else {
+                res.status(200).json({
+                    status: false,
+                    message: 'Otp không hợp lệ',
+                });
+            }
+        } else {
+            res.status(400).json({
+                status: false,
+                message: 'Không tìm thấy người dùng'
+            })
+        }
+    } catch (e) {
+        writeLog(__filename, 'user.controller.verify', e.message, 'FAILED');
+        res.status(400).json({
+            status: false,
+            message: e.message,
+        });
+    }
+}
+
+async function requestOtp(req, res) {
+    try {
+        const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+        console.log('ip :', JSON.stringify(ip));
+        const { email } = req.body;
+        const user = await users.findOne({ where: { email: email } });
+        if (user) {
+            const userOTP = UserService.generateOTP();
+            await users.update({
+                otp: userOTP,
+                otp_timestamp: Date.now()
+            }, { where: { email: email } });
+            let bodyEmail = otpCustomer
+                .split('{{customer_name}}')
+                .join(`${user.firstName} ${user.lastName}`)
+                .split('{{customer_otp}}')
+                .join(userOTP)
+                .split("{{your_name}}")
+                .join("Xuan Hoang")
+                .split("{{company_name}}")
+                .join("Datphong.com")
+            await sendEmail(email, 'Xác thực đăng ký', bodyEmail);
+            writeLog(__filename, 'user.controller.requestOtp', "", 'OK');
+            res.status(200).json({
+                status: true,
+                message: "Request OTP OK",
+            });
+        } else {
+            res.status(400).json({
+                status: false,
+                message: "User not found!",
+            });
+        }
+    } catch (e) {
+        writeLog(__filename, 'user.controller.requestOtp', e.message, 'FAILED');
+        res.status(400).json({
+            status: false,
+            message: e.message,
+        });
+    }
+}
+
 module.exports = {
     register,
     login,
@@ -301,4 +425,6 @@ module.exports = {
     booking,
     getFavorite,
     postFavorite,
+    verify,
+    requestOtp
 };
