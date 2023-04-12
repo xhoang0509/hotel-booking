@@ -37,6 +37,10 @@ const userApi = {
 
     verify(data) {
         return axiosClient.post('/user/verify', data)
+    },
+
+    requestOTP(data) {
+        return axiosClient.post('/user/request-otp', data);
     }
 };
 

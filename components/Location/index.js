@@ -1,26 +1,55 @@
+import userApi from "@/services/user";
 import Image from "next/image";
-import Star from "../Star";
-import { HeartOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
-import { HeartIcon, HeartRedIcon } from "../Icons/HeartIcon";
-import userApi from "@/services/user";
+import { useSelector } from "react-redux";
+import { HeartIcon } from "../Icons/HeartIcon";
+import Star from "../Star";
+import { notification } from "antd";
 
 export default function Location({ jwt, location }) {
     const router = useRouter();
+    const user = useSelector(state => state.user);
 
     const handleRouter = useCallback((id) => {
         router.push(`/hotel?id=${id}`)
     }, []);
 
-    const handleAddFavorite = useCallback(async () => {
-        const data = {};
+    const handleAddFavorite = useCallback(async (id) => {
+        const data = {
+            userId: user.id,
+            locationId: id,
+        };
         try {
-            const res = await userApi.addFavorite(data, jwt)
+            if (!user.id || !jwt) {
+                notification.open({
+                    message: 'Thêm địa điểm thất bại',
+                    description: "Bạn cần đăng nhập để thêm địa điểm vào bộ sưu tập của mình!",
+                    placement: 'topRight',
+                    type: 'error',
+                });
+                return;
+            }
+            const res = await userApi.addFavorite(data, jwt);
+            if (res.status) {
+                notification.open({
+                    message: 'Thêm địa điểm thành công',
+                    description: 'Bạn đã thêm thành công vào bộ sưu tập của mình!',
+                    placement: 'topRight',
+                    type: 'success',
+                });
+            } else if (res.message === 'User favorited it!') {
+                notification.open({
+                    message: 'Thêm địa điểm thất bại',
+                    description: "Địa điểm đã có trong bộ sưu tập của bạn!",
+                    placement: 'topRight',
+                    type: 'error',
+                });
+            }
         } catch (e) {
             console.log(e);
         }
-    }, [])
+    }, [jwt])
     return (
         <div>
             <div className="p-4 mb-4 border border-[#ccc] flex">
@@ -32,8 +61,10 @@ export default function Location({ jwt, location }) {
                         onClick={() => handleRouter(location.id)}
                         className="cursor-pointer"
                     />
-                    <HeartIcon className="cursor-pointer absolute top-2 right-2 text-2xl font-bold text-white" onClick={handleAddFavorite} />
-                    <HeartRedIcon className="cursor-pointer absolute top-2 right-2 text-2xl font-bold text-white" />
+                    <div onClick={() => handleAddFavorite(location.id)}>
+                        <HeartIcon className="cursor-pointer absolute top-2 right-2 text-2xl font-bold text-white z-10" />
+                    </div>
+                    {/* <HeartRedIcon className="cursor-pointer absolute top-2 right-2 text-2xl font-bold text-white" /> */}
                 </div>
                 <div className="flex flex-1 justify-between">
                     <div>

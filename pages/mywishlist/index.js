@@ -45,7 +45,7 @@ export default function MyWishList({ jwt }) {
                     <div>
                         <div className="text-sm flex items-center">
                             <HeartOutlined />
-                            <span className="ml-2">Đã lưu 4 chỗ nghỉ</span>
+                            <span className="ml-2">Đã lưu {favorites.length} chỗ nghỉ</span>
                         </div>
                     </div>
                     <Divider />

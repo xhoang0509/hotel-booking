@@ -3,11 +3,12 @@ import { Button, Form, Input, notification, Typography } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import WebLayout from '@/components/Layout/WebLayout';
+import { useCallback } from 'react';
 
 export default function Verify() {
     const router = useRouter();
     const { email } = router.query;
-    console.log(router);
+    const [form] = Form.useForm()
     const onFinish = async (values) => {
         try {
             const res = await userApi.verify(values);
@@ -36,11 +37,21 @@ export default function Verify() {
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
+
+    const handleRequestOTP = useCallback(async () => {
+        try {
+            const email = form.getFieldValue('email');
+            await userApi.requestOTP({ email: email })
+        } catch (e) {
+            console.log(e.message);
+        }
+    }, []);
     return (
         <WebLayout>
             <div className="flex flex-col items-center mt-12">
                 <Typography.Title level={4}>Xác thực email</Typography.Title>
                 <Form
+                    form={form}
                     name="basic"
                     labelCol={{
                         span: 8,
@@ -61,8 +72,12 @@ export default function Verify() {
                         label="Email"
                         name="email"
                         initialValue={email}
+                        rules={[
+                            { required: true, message: "Yêu cầu nhập email" }
+                        ]}
+
                     >
-                        <Input className="w-80" disabled />
+                        <Input className="w-80" />
                     </Form.Item>
                     <Form.Item
                         label="OTP"
@@ -83,6 +98,9 @@ export default function Verify() {
                         </Button>
                     </Form.Item>
                 </Form>
+                <Typography>
+                    Yêu cầu gửi mã OTP <Button onClick={handleRequestOTP}>tại đây</Button>
+                </Typography>
                 <Typography>
                     Đã có tài khoản ? <Link href="/account/login">Đăng nhập</Link>
                 </Typography>

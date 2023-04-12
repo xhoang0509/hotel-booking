@@ -1,14 +1,20 @@
 import Gallery from "@/components/Gallery";
 import WebLayout from "@/components/Layout/WebLayout";
+import { SAGA_GET_USER_DATA_ASYNC } from "@/redux/actions/user.action";
+import { wrapper } from "@/redux/store";
 import locationApi from "@/services/location";
+import userApi from "@/services/user";
 import { HeartOutlined, SearchOutlined } from "@ant-design/icons";
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { DatePicker, Input, Typography } from "antd";
+import { DatePicker, Input, Typography, notification } from "antd";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { END } from "redux-saga";
 
 
-export default function Hotel() {
+export default function Hotel({ jwt }) {
+    const user = useSelector(state => state.user);
     const { Text, Title } = Typography
     const router = useRouter();
     const { id } = router.query
@@ -34,6 +40,44 @@ export default function Hotel() {
             fetchData();
         }
     }, [id]);
+
+    console.log(user);
+
+    const handleAddFavorite = useCallback(async () => {
+        const data = {
+            userId: user.id,
+            locationId: id,
+        };
+        try {
+            if (!user.id || !jwt) {
+                notification.open({
+                    message: 'Thêm địa điểm thất bại',
+                    description: "Bạn cần đăng nhập để thêm địa điểm vào bộ sưu tập của mình!",
+                    placement: 'topRight',
+                    type: 'error',
+                });
+                return;
+            }
+            const res = await userApi.addFavorite(data, jwt);
+            if (res.status) {
+                notification.open({
+                    message: 'Thêm địa điểm thành công',
+                    description: 'Bạn đã thêm thành công vào bộ sưu tập của mình!',
+                    placement: 'topRight',
+                    type: 'success',
+                });
+            } else if (res.message === 'User favorited it!') {
+                notification.open({
+                    message: 'Thêm địa điểm thất bại',
+                    description: "Địa điểm đã có trong bộ sưu tập của bạn!",
+                    placement: 'topRight',
+                    type: 'error',
+                });
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }, [jwt, id, user]);
 
     return (
         <WebLayout>
@@ -84,7 +128,9 @@ export default function Hotel() {
                         <div className="font-bold mt-4 w-full bg-sub-primary text-white rounded-none border-none text-center py-2 cursor-pointer hover:bg-primary" >
                             Đặt ngay
                         </div>
-                        <div className="font-bold mt-4 w-full text-primary rounded-none text-center py-2 cursor-pointer flex items-center justify-center border-2">
+                        <div className="font-bold mt-4 w-full text-primary rounded-none text-center py-2 cursor-pointer flex items-center justify-center border-2"
+                            onClick={handleAddFavorite}
+                        >
                             <HeartOutlined className="mr-2" />
                             Lưu chỗ nghỉ
                         </div>
@@ -96,7 +142,7 @@ export default function Hotel() {
                 <div>
                     <p className="font-bold text-xl">Đánh giá của khách</p>
                     <div>
-                        
+
                     </div>
                 </div>
             </>
@@ -104,3 +150,21 @@ export default function Hotel() {
         </WebLayout>
     )
 }
+
+export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ req, res }) => {
+    let token = req.cookies['bookingJWT'] || '';
+
+    if (token) {
+        if (!store.getState().user.id) {
+            store.dispatch(SAGA_GET_USER_DATA_ASYNC(token));
+            store.dispatch(END);
+            await store.sagaTask.toPromise();
+        }
+    }
+
+    return {
+        props: {
+            jwt: token,
+        },
+    };
+});

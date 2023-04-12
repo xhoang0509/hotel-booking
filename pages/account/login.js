@@ -3,9 +3,11 @@ import { wrapper } from '@/redux/store';
 import { Button, Form, Input, notification, Typography } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 export default function Login({ user }) {
     const router = useRouter();
+    const [notActive, setNotActive] = useState(false);
 
     const onFinish = async (values) => {
         try {
@@ -26,9 +28,14 @@ export default function Login({ user }) {
                 });
                 router.push('/account');
             } else {
+                let description;
+                if(res.message === "User not active!")  {
+                    description = "Tài khoản chưa kích hoạt!";
+                    setNotActive(true);
+                }
                 notification.open({
                     message: 'Đăng nhập thất bại',
-                    description: res.message,
+                    description: description,
                     placement: 'topRight',
                     type: 'error',
                 });
@@ -100,6 +107,9 @@ export default function Login({ user }) {
                 <Typography>
                     Chưa có tài khoản ? <Link href="/account/register">Đăng ký</Link>
                 </Typography>
+                {notActive && <Typography>
+                    Kích hoạt tài khoản của bạn <Link href="/account/verify">Tại đây</Link>
+                </Typography>}
             </div>
         </WebLayout>
     );

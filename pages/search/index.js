@@ -1,11 +1,14 @@
 import WebLayout from "@/components/Layout/WebLayout";
 import Location from "@/components/Location";
+import { SAGA_GET_USER_DATA_ASYNC } from "@/redux/actions/user.action";
+import { wrapper } from "@/redux/store";
 import locationApi from "@/services/location";
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, DatePicker, Input, Select } from "antd";
+import { DatePicker, Input, Select } from "antd";
 import { useCallback, useEffect, useState } from "react";
+import { END } from "redux-saga";
 
-export default function Search() {
+export default function Search({ jwt }) {
     const [loading, setLoading] = useState(false);
     const [locations, setLocations] = useState([]);
 
@@ -23,8 +26,6 @@ export default function Search() {
     const handleChange = (value) => {
         console.log(`selected ${value}`);
     };
-
-    console.log(locations)
 
     return <WebLayout>
         <div className="flex">
@@ -94,7 +95,7 @@ export default function Search() {
                 </div>
                 {
                     !loading && locations.map(location => {
-                        return <Location key={location.id} location={location} />
+                        return <Location key={location.id} location={location} jwt={jwt}/>
                     })
 
                 }
@@ -102,3 +103,21 @@ export default function Search() {
         </div>
     </WebLayout>
 }
+
+export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ req, res }) => {
+    let token = req.cookies['bookingJWT'] || '';
+
+    if (token) {
+        if (!store.getState().user.id) {
+            store.dispatch(SAGA_GET_USER_DATA_ASYNC(token));
+            store.dispatch(END);
+            await store.sagaTask.toPromise();
+        }
+    }
+
+    return {
+        props: {
+            jwt: token,
+        },
+    };
+});
