@@ -21,6 +21,7 @@ npx sequelize-cli db:migrate; npx sequelize-cli db:seed:all
 
 # create migration
 
+
 ```bash
 cd src
 npx sequelize-cli migration:generate --name migration-skeleton
