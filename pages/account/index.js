@@ -68,13 +68,16 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
                 await store.sagaTask.toPromise();
             }
         } else {
-            res.setHeader('Set-Cookie', serialize('bookingJWT', '', {
-                httpOnly: true,
-                maxAge: -1,
-                path: '/',
-                sameSite: 'strict',
-                secure: true
-            }));
+            res.setHeader(
+                'Set-Cookie',
+                serialize('bookingJWT', '', {
+                    httpOnly: true,
+                    maxAge: -1,
+                    path: '/',
+                    sameSite: 'strict',
+                    secure: true,
+                })
+            );
             return {
                 redirect: {
                     destination: '/account/login',

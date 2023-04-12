@@ -11,10 +11,10 @@ export default function Address({ isEdit, setIsEdit, jwt, user, dispatch }) {
     const [loading, setLoading] = useState(false);
 
     const initialValue = useMemo(() => {
-        if(user.address) {
+        if (user.address) {
             return user.address.split(' | ');
         } else {
-            return ""
+            return '';
         }
     }, [user]);
 

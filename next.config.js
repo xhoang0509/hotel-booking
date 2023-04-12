@@ -22,7 +22,12 @@ const nextConfig = {
                 pathname: '/image/**',
             },
         ],
-        domains: ['firebasestorage.googleapis.com', 'q-xx.bstatic.com', 'r-xx.bstatic.com', 'cf.bstatic.com'],
+        domains: [
+            'firebasestorage.googleapis.com',
+            'q-xx.bstatic.com',
+            'r-xx.bstatic.com',
+            'cf.bstatic.com',
+        ],
     },
 };
 

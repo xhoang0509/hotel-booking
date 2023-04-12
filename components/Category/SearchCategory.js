@@ -59,7 +59,7 @@ export default function SearchCategory() {
     }, [fetchData, active]);
 
     const handleCategoryClick = useCallback(() => {
-        router.push('/search')
+        router.push('/search');
     }, []);
 
     return (

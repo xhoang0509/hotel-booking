@@ -1,5 +1,5 @@
-import { Modal } from "antd";
-import { useCallback, useState } from "react";
+import { Modal } from 'antd';
+import { useCallback, useState } from 'react';
 
 function Gallery({ images }) {
     const [selected, setSelected] = useState();
@@ -19,17 +19,24 @@ function Gallery({ images }) {
         setSelected(image);
     }, []);
 
+    return (
+        <div className="flex flex-wrap">
+            {images.map((image, index) => {
+                return (
+                    <img
+                        onClick={() => handleImageClick(image)}
+                        key={index}
+                        src={image}
+                        className={`p-2 cursor-pointer`}
+                    />
+                );
+            })}
 
-    return <div className="flex flex-wrap">
-        {images.map((image, index) => {
-            return <img onClick={() => handleImageClick(image)} key={index} src={image} className={`p-2 cursor-pointer`} />
-        })}
-
-
-        <Modal open={isModalOpen} footer={[]} onCancel={handleCancel} width={1000}>
-            <img src={selected} alt="" className="w-full h-auto" />
-        </Modal>
-    </div>
+            <Modal open={isModalOpen} footer={[]} onCancel={handleCancel} width={1000}>
+                <img src={selected} alt="" className="w-full h-auto" />
+            </Modal>
+        </div>
+    );
 }
 
 export default Gallery;

@@ -8,8 +8,6 @@ const locationApi = {
     getOne(id) {
         return axiosClient.get(`/location/${id}`);
     },
-
-
 };
 
 export default locationApi;

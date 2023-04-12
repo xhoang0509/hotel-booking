@@ -95,19 +95,24 @@ export default function Header() {
                     </div>
                 </nav>
             </div>
-            {router.pathname === '/' &&
-                <div className='flex justify-center bg-black banner'>
-                    <img className='xl:w-4/5 md:w-full' src={thumnailImg.src} alt="" />
-                    <div className='xl:w-4/5 md:w-full banner-overlay'></div>
-                    <div className='absolute top-[20%] left-[20%]'>
-                        <div className='text-white'>
-                            <p className='font-bold text-5xl mb-5'>Vi vu theo cách của bạn</p>
-                            <p className='text-2xl mb-5'>Tiết kiệm ít nhất 15% cho lưu trú toàn cầu, từ nghỉ <br /> dưỡng đến phiêu lưu hoang dã</p>
-                            <button className='bg-[#0071C2] px-5 py-2 capitalize'>Tìm ưu đãi mùa du lịch</button>
+            {router.pathname === '/' && (
+                <div className="flex justify-center bg-black banner">
+                    <img className="xl:w-4/5 md:w-full" src={thumnailImg.src} alt="" />
+                    <div className="xl:w-4/5 md:w-full banner-overlay"></div>
+                    <div className="absolute top-[20%] left-[20%]">
+                        <div className="text-white">
+                            <p className="font-bold text-5xl mb-5">Vi vu theo cách của bạn</p>
+                            <p className="text-2xl mb-5">
+                                Tiết kiệm ít nhất 15% cho lưu trú toàn cầu, từ nghỉ <br /> dưỡng đến
+                                phiêu lưu hoang dã
+                            </p>
+                            <button className="bg-[#0071C2] px-5 py-2 capitalize">
+                                Tìm ưu đãi mùa du lịch
+                            </button>
                         </div>
                     </div>
                 </div>
-            }
+            )}
         </React.Fragment>
     );
 }

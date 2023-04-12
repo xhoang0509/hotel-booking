@@ -12,7 +12,7 @@ import {
     CreditCardOutlined,
     LockOutlined,
     SettingOutlined,
-    UserAddOutlined
+    UserAddOutlined,
 } from '@ant-design/icons';
 import { Card, Divider, Typography } from 'antd';
 import { serialize } from 'cookie';
@@ -162,13 +162,16 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
                 await store.sagaTask.toPromise();
             }
         } else {
-            res.setHeader('Set-Cookie', serialize('bookingJWT', '', {
-                httpOnly: true,
-                maxAge: -1,
-                path: '/',
-                sameSite: 'strict',
-                secure: true
-            }));
+            res.setHeader(
+                'Set-Cookie',
+                serialize('bookingJWT', '', {
+                    httpOnly: true,
+                    maxAge: -1,
+                    path: '/',
+                    sameSite: 'strict',
+                    secure: true,
+                })
+            );
             return {
                 redirect: {
                     destination: '/account/login',

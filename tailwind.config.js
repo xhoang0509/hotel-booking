@@ -10,12 +10,13 @@ module.exports = {
         colors: {
             primary: '#003580',
             'sub-primary': '#006CE6',
-            "t-primary": "#0071C2",
+            't-primary': '#0071C2',
+            'yellow-bg': '#FEBB02',
             secondary: '#bdbdbd',
             white: '#ffffff',
             black: '#000000',
             action: '#006ce4',
-            red: '#FF0000'
+            red: '#FF0000',
         },
     },
     plugins: [],

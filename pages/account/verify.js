@@ -8,7 +8,7 @@ import { useCallback } from 'react';
 export default function Verify() {
     const router = useRouter();
     const { email } = router.query;
-    const [form] = Form.useForm()
+    const [form] = Form.useForm();
     const onFinish = async (values) => {
         try {
             const res = await userApi.verify(values);
@@ -40,8 +40,29 @@ export default function Verify() {
 
     const handleRequestOTP = useCallback(async () => {
         try {
+            await form.validateFields(['email']);
             const email = form.getFieldValue('email');
-            await userApi.requestOTP({ email: email })
+            const res = await userApi.requestOTP({ email: email });
+            if (res.status) {
+                notification.open({
+                    message: 'Gửi mã OTP thành công!',
+                    description: 'Mã OTP đã được gửi đến email của bạn!',
+                    placement: 'topRight',
+                    type: 'success',
+                });
+            }
+            let description = res.message;
+            if (res.statusCode === 429) {
+                description = 'Vui lòng thử lại sau 5 phút!';
+            }
+            if (!res.status) {
+                notification.open({
+                    message: 'Gửi mã OTP thất bại!',
+                    description: description,
+                    placement: 'topRight',
+                    type: 'error',
+                });
+            }
         } catch (e) {
             console.log(e.message);
         }
@@ -72,19 +93,14 @@ export default function Verify() {
                         label="Email"
                         name="email"
                         initialValue={email}
-                        rules={[
-                            { required: true, message: "Yêu cầu nhập email" }
-                        ]}
-
+                        rules={[{ required: true, message: 'Yêu cầu nhập email' }]}
                     >
                         <Input className="w-80" />
                     </Form.Item>
                     <Form.Item
                         label="OTP"
                         name="otp"
-                        rules={[
-                            { required: true, message: "Yêu cầu nhập OTP" }
-                        ]}
+                        rules={[{ required: true, message: 'Yêu cầu nhập OTP' }]}
                     >
                         <Input className="w-80" />
                     </Form.Item>

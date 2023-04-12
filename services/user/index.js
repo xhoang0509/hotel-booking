@@ -30,18 +30,18 @@ const userApi = {
     addFavorite(data, token) {
         return axiosClient.post(`/user/favorite`, data, {
             headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+                Authorization: `Bearer ${token}`,
+            },
+        });
     },
 
     verify(data) {
-        return axiosClient.post('/user/verify', data)
+        return axiosClient.post('/user/verify', data);
     },
 
     requestOTP(data) {
         return axiosClient.post('/user/request-otp', data);
-    }
+    },
 };
 
 export default userApi;
