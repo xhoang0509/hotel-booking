@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         status: {
             type: DataTypes.ENUM('draft', 'active', 'inactive'),
-            defaultValue: 'draft'
+            defaultValue: 'draft',
         },
         otp: {
             type: DataTypes.INTEGER,

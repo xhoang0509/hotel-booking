@@ -21,7 +21,16 @@ Best regards,
 {{your_name}}
 {{company_name}}`;
 
+const resetPassowrdTemplate = `Dear {{customer_name}},
+
+Truy cập vào đây để thay đổi mật khẩu quả bạn {{reset_url}}
+Đường dẫn này chỉ có hiệu lực trong vòng 15 phút.
+
+Best regards,
+{{company_name}}`;
+
 module.exports = {
     welcomeCustomer,
     otpCustomer,
+    resetPassowrdTemplate,
 };

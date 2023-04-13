@@ -5,5 +5,5 @@ const USER_STATUS = {
 };
 
 module.exports = {
-    USER_STATUS
-}
+    USER_STATUS,
+};

@@ -5,14 +5,14 @@ module.exports = {
     async up(queryInterface, Sequelize) {
         await queryInterface.addColumn('users', 'status', {
             type: Sequelize.ENUM('draft', 'active', 'inactive'),
-            defaultValue: 'draft'
+            defaultValue: 'draft',
         });
         await queryInterface.addColumn('users', 'otp', {
             type: Sequelize.DataTypes.INTEGER,
         });
         await queryInterface.addColumn('users', 'otp_timestamp', {
             type: Sequelize.DataTypes.BIGINT,
-        })
+        });
     },
 
     async down(queryInterface, Sequelize) {

@@ -1,7 +1,7 @@
 require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { welcomeCustomer, otpCustomer } = require('../constant/email.const');
+const { welcomeCustomer, otpCustomer, resetPassowrdTemplate } = require('../constant/email.const');
 const { validateUserRegister, validateUserLogin } = require('../helper/ValidateUser');
 
 const users = require('../models').users;
@@ -54,7 +54,7 @@ async function register(req, res) {
             lastName,
             status: USER_STATUS.DRAFT,
             otp: userOTP,
-            otp_timestamp: Date.now()
+            otp_timestamp: Date.now(),
         });
         const newUser = user.toJSON();
         delete newUser.password;
@@ -64,10 +64,10 @@ async function register(req, res) {
             .join(`${firstName} ${lastName}`)
             .split('{{customer_otp}}')
             .join(userOTP)
-            .split("{{your_name}}")
-            .join("Xuan Hoang")
-            .split("{{company_name}}")
-            .join("Datphong.com")
+            .split('{{your_name}}')
+            .join('Xuan Hoang')
+            .split('{{company_name}}')
+            .join('Datphong.com');
         await sendEmail(email, 'Xác thực đăng ký', bodyEmail);
 
         // let bodyEmail = welcomeCustomer
@@ -86,7 +86,7 @@ async function register(req, res) {
                 user: newUser,
             },
         };
-        writeLog(__filename, 'user.controller.login', 'Send email welcome to: ' + email, "OK");
+        writeLog(__filename, 'user.controller.login', 'Send email welcome to: ' + email, 'OK');
     } catch (e) {
         writeLog(__filename, 'user.controller.login', e.message, 'FAILED');
         result = {
@@ -362,8 +362,8 @@ async function verify(req, res) {
         } else {
             res.status(400).json({
                 status: false,
-                message: 'Không tìm thấy người dùng'
-            })
+                message: 'Không tìm thấy người dùng',
+            });
         }
     } catch (e) {
         writeLog(__filename, 'user.controller.verify', e.message, 'FAILED');
@@ -382,29 +382,32 @@ async function requestOtp(req, res) {
         const user = await users.findOne({ where: { email: email } });
         if (user) {
             const userOTP = UserService.generateOTP();
-            await users.update({
-                otp: userOTP,
-                otp_timestamp: Date.now()
-            }, { where: { email: email } });
+            await users.update(
+                {
+                    otp: userOTP,
+                    otp_timestamp: Date.now(),
+                },
+                { where: { email: email } }
+            );
             let bodyEmail = otpCustomer
                 .split('{{customer_name}}')
                 .join(`${user.firstName} ${user.lastName}`)
                 .split('{{customer_otp}}')
                 .join(userOTP)
-                .split("{{your_name}}")
-                .join("Xuan Hoang")
-                .split("{{company_name}}")
-                .join("Datphong.com")
+                .split('{{your_name}}')
+                .join('Xuan Hoang')
+                .split('{{company_name}}')
+                .join('Datphong.com');
             await sendEmail(email, 'Xác thực đăng ký', bodyEmail);
-            writeLog(__filename, 'user.controller.requestOtp', "", 'OK');
+            writeLog(__filename, 'user.controller.requestOtp', '', 'OK');
             res.status(200).json({
                 status: true,
-                message: "Request OTP OK",
+                message: 'Request OTP OK',
             });
         } else {
             res.status(400).json({
                 status: false,
-                message: "User not found!",
+                message: 'User not found!',
             });
         }
     } catch (e) {
@@ -413,6 +416,85 @@ async function requestOtp(req, res) {
             status: false,
             message: e.message,
         });
+    }
+}
+
+async function forgotPassword(req, res) {
+    let code = 400;
+    const result = {
+        status: false,
+        message: '',
+    };
+    try {
+        const { email } = req.body;
+        if (email) {
+            const user = await users.findOne({ where: { email: email } });
+            if (user) {
+                const { firstName, lastName } = user;
+                const token = jwt.sign({ email: email }, process.env.JWT_SECRET_KEY, {
+                    expiresIn: '15m',
+                });
+                let bodyEmail = resetPassowrdTemplate
+                    .split('{{customer_name}}')
+                    .join(`${firstName} ${lastName}`)
+                    .split('{{reset_url}}')
+                    .join(`${process.env.CLIENT_URL}/account/reset-password?jwt=${token}`)
+                    .split('{{company_name}}')
+                    .join('Datphong.com');
+                await sendEmail(email, 'Đặt lại mật khẩu', bodyEmail);
+                code = 200;
+                result.status = true;
+                result.message = 'URL forgot password sended to email!';
+            } else {
+                result.status = false;
+                result.message = 'User not found!';
+            }
+        } else {
+            result.status = false;
+            result.message = 'Missing email!';
+        }
+    } catch (e) {
+        writeLog(__filename, 'user.controller.forgotPassword', e.message, 'FAILED');
+        code = 500;
+        result.status = false;
+        result.message = e.message;
+    } finally {
+        res.status(code).json(result);
+    }
+}
+
+async function resetPassowrd(req, res) {
+    let code = 400;
+    result = {
+        status: false,
+        message: '',
+    };
+    try {
+        const { token, password } = req.body;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY, {
+            algorithms: process.env.JWT_ALGORITHM,
+            ignoreExpiration: true,
+        });
+        const now = Math.floor(Date.now() / 1000);
+        if (decoded.exp < now) {
+            writeLog(__filename, 'user.controller.resetPassowrd', 'JWT has expired', 'FAILED');
+            result.status = fasle;
+            result.message = 'JWT has expired';
+        } else {
+            const user = await users.findOne({ where: { email: decoded.email } });
+            let passwordHash = await bcrypt.hash(password, 10);
+            user.password = passwordHash;
+            await user.save();
+            code = 200;
+            result.status = true;
+            result.message = 'Reset password successful';
+        }
+    } catch (e) {
+        writeLog(__filename, 'user.controller.resetPassowrd', e.message, 'FAILED');
+        result.status = fasle;
+        result.message = e.message;
+    } finally {
+        res.status(code).json(result);
     }
 }
 
@@ -426,5 +508,7 @@ module.exports = {
     getFavorite,
     postFavorite,
     verify,
-    requestOtp
+    requestOtp,
+    forgotPassword,
+    resetPassowrd,
 };

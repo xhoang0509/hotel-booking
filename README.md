@@ -1,6 +1,7 @@
 # DATN-API
 
 ### RUN DOCKER FILE
+
 ```bash
 docker-compose up -d
 ```
@@ -20,7 +21,6 @@ npx sequelize-cli db:migrate; npx sequelize-cli db:seed:all
 ```
 
 # create migration
-
 
 ```bash
 cd src
