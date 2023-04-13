@@ -85,7 +85,6 @@ export default function Verify() {
                     }}
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
-                    autoComplete="off"
                     labelAlign="left"
                 >
                     <Form.Item

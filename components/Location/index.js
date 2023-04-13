@@ -102,10 +102,10 @@ export default function Location({ jwt, location, favorites }) {
                             <span>Cách trung tâm 4.7 km</span>
                         </div>
                         <span className="mb-2 bg-[#f7f7f7] p-2 inline-block">
-                            <span className="text-xm line-through mr-2">
+                            <span className="text-sm line-through mr-2">
                                 {formattedPrice(location.oldPrice)}
                             </span>
-                            <span className="text-xl text-red">
+                            <span className="text-lg text-red font-bold">
                                 {formattedPrice(location.price)}
                             </span>
                         </span>

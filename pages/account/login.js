@@ -65,7 +65,6 @@ export default function Login({ user }) {
                     }}
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
-                    autoComplete="off"
                     layout="vertical"
                 >
                     <Form.Item
@@ -76,6 +75,10 @@ export default function Login({ user }) {
                             {
                                 required: true,
                                 message: 'Vui lòng nhập email!',
+                            },
+                            {
+                                type: 'email',
+                                message: 'Vui lòng nhập đúng định dạng email!',
                             },
                         ]}
                     >
@@ -89,6 +92,10 @@ export default function Login({ user }) {
                             {
                                 required: true,
                                 message: 'Vui lòng nhập mật khẩu!',
+                            },
+                            {
+                                min: 6,
+                                message: 'Mật khẩu tối thiểu 6 ký tự!',
                             },
                         ]}
                     >

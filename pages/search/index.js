@@ -61,7 +61,9 @@ export default function Search({ jwt }) {
                     </div>
                 </div>
                 <div className="w-[74%] p-4">
-                    <div className="font-bold text-lg mb-4">Hà Nội: tìm thấy 2.276 chỗ nghỉ</div>
+                    <div className="font-bold text-lg mb-4">
+                        Hà Nội: tìm thấy {locations.length} chỗ nghỉ
+                    </div>
                     <div className="mb-4">
                         <div className="text-sm mb-2">Sắp xếp theo: </div>
                         <Select
