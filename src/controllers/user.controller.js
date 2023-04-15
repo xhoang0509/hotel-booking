@@ -444,7 +444,7 @@ async function forgotPassword(req, res) {
                 await sendEmail(email, 'Đặt lại mật khẩu', bodyEmail);
                 code = 200;
                 result.status = true;
-                result.message = 'URL forgot password sended to email!';
+                result.message = 'Đường đẫn đặt lại mật khẩu đã được gửi đến email của bạn!';
             } else {
                 result.status = false;
                 result.message = 'User not found!';
@@ -478,7 +478,7 @@ async function resetPassowrd(req, res) {
         const now = Math.floor(Date.now() / 1000);
         if (decoded.exp < now) {
             writeLog(__filename, 'user.controller.resetPassowrd', 'JWT has expired', 'FAILED');
-            result.status = fasle;
+            result.status = false;
             result.message = 'JWT has expired';
         } else {
             const user = await users.findOne({ where: { email: decoded.email } });
@@ -491,7 +491,7 @@ async function resetPassowrd(req, res) {
         }
     } catch (e) {
         writeLog(__filename, 'user.controller.resetPassowrd', e.message, 'FAILED');
-        result.status = fasle;
+        result.status = false;
         result.message = e.message;
     } finally {
         res.status(code).json(result);

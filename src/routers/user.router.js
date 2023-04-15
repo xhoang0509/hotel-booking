@@ -28,7 +28,9 @@ userRouter.post('/booking', authApi, (req, res) => booking(req, res));
 userRouter.get('/favorite/:id', authApi, (req, res) => getFavorite(req, res));
 userRouter.post('/favorite', authApi, (req, res) => postFavorite(req, res));
 userRouter.post('/request-otp', limiter(5 * 60 * 1000, 1), (req, res) => requestOtp(req, res));
-userRouter.post('/forgot-password', (req, res) => forgotPassword(req, res));
+userRouter.post('/forgot-password', limiter(5 * 60 * 1000, 1), (req, res) =>
+    forgotPassword(req, res)
+);
 userRouter.post('/reset-password', (req, res) => resetPassowrd(req, res));
 
 module.exports = userRouter;
