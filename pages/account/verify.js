@@ -3,13 +3,17 @@ import { Button, Form, Input, notification, Typography } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import WebLayout from '@/components/Layout/WebLayout';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 export default function Verify() {
     const router = useRouter();
     const { email } = router.query;
+    const [loadingRequestOTP, setLoadingRequestOTP] = useState(false);
+    const [loadingVerify, setLoadingVerify] = useState(false);
     const [form] = Form.useForm();
+
     const onFinish = async (values) => {
+        setLoadingVerify(true);
         try {
             const res = await userApi.verify(values);
             if (res) {
@@ -33,12 +37,14 @@ export default function Verify() {
         } catch (e) {
             console.log(e);
         }
+        setLoadingVerify(false);
     };
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
 
     const handleRequestOTP = useCallback(async () => {
+        setLoadingRequestOTP(true);
         try {
             await form.validateFields(['email']);
             const email = form.getFieldValue('email');
@@ -66,6 +72,7 @@ export default function Verify() {
         } catch (e) {
             console.log(e.message);
         }
+        setLoadingRequestOTP(false);
     }, []);
     return (
         <WebLayout>
@@ -108,13 +115,14 @@ export default function Verify() {
                             type="primary"
                             htmlType="submit"
                             className="mt-4 bg-[#4096FF] h-8 px-4"
+                            loading={loadingVerify}
                         >
                             Xác thực
                         </Button>
                     </Form.Item>
                 </Form>
                 <Typography>
-                    Yêu cầu gửi mã OTP <Button onClick={handleRequestOTP}>tại đây</Button>
+                    Yêu cầu gửi mã OTP <Button onClick={handleRequestOTP} loading={loadingRequestOTP}>tại đây</Button>
                 </Typography>
                 <Typography>
                     Đã có tài khoản ? <Link href="/account/login">Đăng nhập</Link>
