@@ -5,7 +5,8 @@ import { wrapper } from '@/redux/store';
 import locationApi from '@/services/location';
 import userApi from '@/services/user';
 import { SearchOutlined } from '@ant-design/icons';
-import { DatePicker, Input, Select } from 'antd';
+import { Breadcrumb, DatePicker, Input, Select } from 'antd';
+import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { END } from 'redux-saga';
@@ -39,6 +40,17 @@ export default function Search({ jwt }) {
 
     return (
         <WebLayout>
+            <Breadcrumb
+                items={[
+                    {
+                        title: <Link href="/">Trang chủ</Link>,
+                    },
+                    {
+                        title: <Link href="/search">Tìm kiếm</Link>,
+                    },
+                ]}
+                className="mb-4"
+            />
             <div className="flex">
                 <div className="w-[20%]">
                     <div className="bg-[#FEBB02]  mr-4 p-4">

@@ -122,7 +122,10 @@ export default function Verify() {
                     </Form.Item>
                 </Form>
                 <Typography>
-                    Yêu cầu gửi mã OTP <Button onClick={handleRequestOTP} loading={loadingRequestOTP}>tại đây</Button>
+                    Yêu cầu gửi mã OTP{' '}
+                    <Button onClick={handleRequestOTP} loading={loadingRequestOTP}>
+                        tại đây
+                    </Button>
                 </Typography>
                 <Typography>
                     Đã có tài khoản ? <Link href="/account/login">Đăng nhập</Link>

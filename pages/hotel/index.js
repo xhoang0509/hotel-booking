@@ -1,13 +1,15 @@
 import Gallery from '@/components/Gallery';
 import WebLayout from '@/components/Layout/WebLayout';
 import NotFoundLocation from '@/components/Location/NotFoundLocation';
+import ModalSelectBookingDate from '@/components/Modal/ModalSelectBookingDate';
 import { SAGA_GET_USER_DATA_ASYNC } from '@/redux/actions/user.action';
 import { wrapper } from '@/redux/store';
 import locationApi from '@/services/location';
 import userApi from '@/services/user';
 import { HeartOutlined, SearchOutlined } from '@ant-design/icons';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { DatePicker, Input, notification } from 'antd';
+import { Breadcrumb, DatePicker, Input, notification } from 'antd';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -19,7 +21,9 @@ export default function Hotel({ jwt }) {
     const router = useRouter();
     const { id } = router.query;
     const [loading, setLoading] = useState(false);
+    const [loadingBooking, setLoadingBooking] = useState(false);
     const [location, setLocation] = useState();
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const fetchData = useCallback(async () => {
         setLoading(true);
@@ -41,7 +45,17 @@ export default function Hotel({ jwt }) {
         }
     }, [id]);
 
-    console.log(user);
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
 
     const handleAddFavorite = useCallback(async () => {
         const data = {
@@ -81,6 +95,20 @@ export default function Hotel({ jwt }) {
 
     return (
         <WebLayout>
+            <Breadcrumb
+                items={[
+                    {
+                        title: <Link href="/">Trang chủ</Link>,
+                    },
+                    {
+                        title: <Link href="/search">Tìm kiếm</Link>,
+                    },
+                    {
+                        title: <Link href="#">Chi tiết địa điểm</Link>,
+                    },
+                ]}
+                className="mb-4"
+            />
             {loading && <div>loading...</div>}
             {!loading && !location && <NotFoundLocation />}
             {!loading && location && (
@@ -116,8 +144,23 @@ export default function Hotel({ jwt }) {
                     </div>
                     <div className="flex">
                         <div className="w-[75%]">
-                            <div className="text-sm">
+                            <div className="text-sm font-normal pr-10">
                                 <p>{location.description}</p>
+                                <br />
+                                <p className="leading-7 text-justify">
+                                    Tọa lạc tại tỉnh Quảng Ninh, cách Đảo Quan Lạn 2,1 km, Song Châu
+                                    Villa Quan Lạn cung cấp chỗ nghỉ với nhà hàng, chỗ đỗ xe riêng
+                                    miễn phí, khu vườn và sân hiên. Chỗ nghỉ này nằm trong bán kính
+                                    khoảng 22 km từ Đảo Ba Mùn, 30 km từ Đảo Cô Tô và 9 km từ Bãi
+                                    biển Minh Châu. Nơi đây cung cấp dịch vụ lễ tân 24 giờ và dịch
+                                    vụ phòng cho khách. Mỗi phòng nghỉ tại Song Châu Villa Quan Lạn
+                                    đều có sân trong nhìn ra khu vườn, máy điều hòa và TV màn hình
+                                    phẳng. Chỗ nghỉ phục vụ bữa sáng kiểu lục địa hoặc bữa sáng à la
+                                    carte. Song Châu Villa Quan Lạn nằm cách Bãi Dài 26 km. Sân bay
+                                    gần nhất là sân bay quốc tế Cát Bi, cách khách sạn 80 km. Các
+                                    cặp đôi đặc biệt thích địa điểm này — họ cho điểm 9,8 cho kỳ
+                                    nghỉ dành cho 2 người.
+                                </p>
                             </div>
                         </div>
                         <div className="w-[20%] bg-[#E4F4FF] p-4 text-sm">
@@ -133,7 +176,10 @@ export default function Hotel({ jwt }) {
                             </div>
                             <p className="font-bold mb-4">Thông tin về bữa sáng</p>
                             <p className="">Kiểu Á</p>
-                            <div className="font-bold mt-4 w-full bg-sub-primary text-white rounded-none border-none text-center py-2 cursor-pointer hover:bg-primary">
+                            <div
+                                className="font-bold mt-4 w-full bg-sub-primary text-white rounded-none border-none text-center py-2 cursor-pointer hover:bg-primary"
+                                onClick={showModal}
+                            >
                                 Đặt ngay
                             </div>
                             <div
@@ -147,9 +193,15 @@ export default function Hotel({ jwt }) {
                         </div>
                     </div>
                     <div>
-                        <p className="font-bold text-xl">Đánh giá của khách</p>
+                        <p className="font-bold text-xl">Đánh giá của khách hàng</p>
                         <div></div>
                     </div>
+                    <ModalSelectBookingDate
+                        isModalOpen={isModalOpen}
+                        handleOk={handleOk}
+                        handleCancel={handleCancel}
+                        loadingBooking={loadingBooking}
+                    />
                 </>
             )}
         </WebLayout>

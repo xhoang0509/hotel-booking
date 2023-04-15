@@ -37,15 +37,12 @@ export default function Account({ token }) {
                     </Col>
                     <Col span={12}>
                         <Card
-                            title={<span className="text-lg text-bold">Các tùy chọn</span>}
+                            title={<span className="text-lg text-bold">Lịch sử đặt phòng</span>}
                             className="w-full"
                         >
                             <Link href="" className="">
-                                <Typography className="hover:text-action">
-                                    Thay đổi ngôn ngữ, tiền tệ và các yêu cầu hỗ trợ khuyết tật.
-                                </Typography>
                                 <Typography className="underline text-action">
-                                    Quản lý tùy chọn.
+                                    Xem lịch sử đặt phòng của bạn.
                                 </Typography>
                             </Link>
                         </Card>
