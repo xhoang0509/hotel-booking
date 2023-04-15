@@ -42,6 +42,14 @@ const userApi = {
     requestOTP(data) {
         return axiosClient.post('/user/request-otp', data);
     },
+
+    forgotPassword(data) {
+        return axiosClient.post('/user/forgot-password', data);
+    },
+
+    resetPassword(data) {
+        return axiosClient.post('/user/reset-password', data);
+    },
 };
 
 export default userApi;

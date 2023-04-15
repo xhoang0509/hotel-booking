@@ -1,13 +1,60 @@
 import WebLayout from '@/components/Layout/WebLayout';
 import { wrapper } from '@/redux/store';
-import { Button, Form, Input, notification, Typography } from 'antd';
+import userApi from '@/services/user';
+import { Button, Form, Input, Modal, notification, Typography } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 export default function Login({ user }) {
     const router = useRouter();
     const [notActive, setNotActive] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [form] = Form.useForm();
+
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleOk = useCallback(async () => {
+        form.validateFields()
+            .then(async () => {
+                setLoading(true);
+                const formData = form.getFieldsValue();
+                try {
+                    const res = await userApi.forgotPassword({ email: formData.email });
+                    if (res) {
+                        if (res.status) {
+                            notification.open({
+                                message: 'Gửi yêu cầu quên mật khẩu thành công!',
+                                description: res.message,
+                                placement: 'topRight',
+                                type: 'success',
+                            });
+                            setIsModalOpen(false);
+                        } else {
+                            notification.open({
+                                message: 'Gửi yêu cầu quên mật khẩu thất bại!',
+                                description: res.message,
+                                placement: 'topRight',
+                                type: 'error',
+                            });
+                            setIsModalOpen(false);
+                        }
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
+                setLoading(false);
+            })
+            .catch((errorInfo) => {
+                console.log('Form validation failed:', errorInfo);
+            });
+    }, [form]);
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
 
     const onFinish = async (values) => {
         try {
@@ -28,7 +75,7 @@ export default function Login({ user }) {
                 });
                 router.push('/account');
             } else {
-                let description;
+                let description = res.message;
                 if (res.message === 'User not active!') {
                     description = 'Tài khoản chưa kích hoạt!';
                     setNotActive(true);
@@ -114,12 +161,55 @@ export default function Login({ user }) {
                 <Typography>
                     Chưa có tài khoản ? <Link href="/account/register">Đăng ký</Link>
                 </Typography>
+                <Typography>
+                    Quên mật khẩu của bạn{' '}
+                    <span onClick={showModal} className="text-link cursor-pointer">
+                        tại đây
+                    </span>
+                </Typography>
                 {notActive && (
                     <Typography>
                         Kích hoạt tài khoản của bạn <Link href="/account/verify">Tại đây</Link>
                     </Typography>
                 )}
             </div>
+            <Modal
+                title="Quên mật khẩu"
+                open={isModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                footer={[
+                    <Button key="back" onClick={handleCancel}>
+                        Hủy
+                    </Button>,
+                    <Button
+                        key="submit"
+                        type="primary"
+                        loading={loading}
+                        onClick={handleOk}
+                        className="bg-sub-primary"
+                    >
+                        Yêu cầu
+                    </Button>,
+                ]}
+            >
+                <p>Link đặt lại mật khẩu sẽ được gửi vào gmail của bạn.</p>
+                <div className="mt-4">
+                    <Form form={form} layout="vertical" name="resetPassword">
+                        <Form.Item
+                            name="email"
+                            label="Email"
+                            rules={[
+                                { required: true, message: 'Email không được để trống' },
+                                { type: 'email', message: 'Email không đúng định dạng' },
+                            ]}
+                            wrapperCol={{ span: 18 }}
+                        >
+                            <Input />
+                        </Form.Item>
+                    </Form>
+                </div>
+            </Modal>
         </WebLayout>
     );
 }

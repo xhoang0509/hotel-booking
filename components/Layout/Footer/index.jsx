@@ -1,6 +1,10 @@
 import { Typography, Form, Input } from 'antd';
+import Link from 'next/link';
+import { useSelector } from 'react-redux';
 
 export default function Footer() {
+    const user = useSelector((state) => state.user);
+
     return (
         <div className="flex flex-col items-center bg-primary py-12">
             <Typography className="text-white text-xl">Tiết kiệm thời gian và tiền bạc!</Typography>
@@ -12,7 +16,7 @@ export default function Footer() {
                     <Form.Item name="email" className="inline-block mr-2">
                         <Input
                             size="large"
-                            placeholder="Your email address"
+                            placeholder="Địa chỉ email của bạn"
                             className="rounded-sm py-2 w-60"
                         />
                     </Form.Item>
@@ -21,7 +25,7 @@ export default function Footer() {
                             className="text-white text-lg bg-[#0071C2] rounded-sm py-2 px-4"
                             type="submit"
                         >
-                            Subcribe
+                            <Link href={user.id ? '/search' : '/account/register'}>Đăng ký</Link>
                         </button>
                     </Form.Item>
                 </Form>

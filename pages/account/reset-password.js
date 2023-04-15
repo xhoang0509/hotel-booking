@@ -3,15 +3,47 @@ import userApi from '@/services/user';
 import { Button, Form, Input, notification, Typography } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 export default function ResetPassword() {
+    const router = useRouter();
+    const { jwt } = router.query;
     const [form] = Form.useForm();
+    const [loading, setLoading] = useState(false);
     const [password, setPassword] = useState('');
 
-    const onFinish = (values) => {
-        console.log(values);
-    };
+    const onFinish = useCallback(
+        async (values) => {
+            try {
+                setLoading(true);
+                await new Promise((resolver) => setTimeout(resolver, 1000));
+                const res = await userApi.resetPassword({ token: jwt, password: values.password });
+                if (res) {
+                    if (res.status) {
+                        notification.open({
+                            message: 'Đặt lại mật khẩu thành công!',
+                            description: res.message,
+                            placement: 'topRight',
+                            type: 'success',
+                        });
+                    } else {
+                        notification.open({
+                            message: 'Đặt lại mật khẩu thất bại!',
+                            description: res.message,
+                            placement: 'topRight',
+                            type: 'error',
+                        });
+                    }
+                }
+            } catch (e) {
+                console.log(e);
+            }
+            setLoading(false);
+            await new Promise((resolver) => setTimeout(resolver, 1000));
+            router.push('/account/login');
+        },
+        [jwt]
+    );
 
     const validateConfirmPassword = ({ getFieldValue }) => ({
         validator(_, value) {
@@ -82,6 +114,7 @@ export default function ResetPassword() {
                             type="primary"
                             htmlType="submit"
                             className="mt-4 bg-[#4096FF] h-8 px-4"
+                            loading={loading}
                         >
                             Xác thực
                         </Button>
@@ -98,12 +131,12 @@ export default function ResetPassword() {
 export async function getServerSideProps({ req, res }) {
     const jwt = req.cookies['bookingJWT'];
     if (jwt) {
-        // return {
-        //     redirect: {
-        //         destination: '/account',
-        //         permanent: false,
-        //     },
-        // };
+        return {
+            redirect: {
+                destination: '/account',
+                permanent: false,
+            },
+        };
     }
 
     return {
