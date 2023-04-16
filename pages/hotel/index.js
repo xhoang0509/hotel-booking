@@ -2,13 +2,14 @@ import Gallery from '@/components/Gallery';
 import WebLayout from '@/components/Layout/WebLayout';
 import NotFoundLocation from '@/components/Location/NotFoundLocation';
 import ModalSelectBookingDate from '@/components/Modal/ModalSelectBookingDate';
+import TableRoom from '@/components/TableRoom';
 import { SAGA_GET_USER_DATA_ASYNC } from '@/redux/actions/user.action';
 import { wrapper } from '@/redux/store';
 import locationApi from '@/services/location';
 import userApi from '@/services/user';
-import { HeartOutlined, SearchOutlined } from '@ant-design/icons';
+import { HeartOutlined, InfoCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { Breadcrumb, DatePicker, Input, notification } from 'antd';
+import { Breadcrumb, DatePicker, Divider, Input, notification } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
@@ -192,9 +193,19 @@ export default function Hotel({ jwt }) {
                             <div className="text-center mt-2 text-xs">Đã lưu vào 19 danh sách</div>
                         </div>
                     </div>
+                    <Divider />
+                    <div>
+                        <p className="font-bold text-xl mb-2">Phòng trống</p>
+                        <div className='text-[#D12C18] text-sm mb-2'>
+                            <InfoCircleOutlined className='mr-2' />
+                            <span>Chọn ngày để xem phòng trống và giá tại chỗ nghỉ này</span>
+                        </div>
+                        <div className='bg-[#4C76B2] text-white text-sm p-2 mb-2'>Loại chỗ nghỉ</div>
+                        <TableRoom rooms={location.rooms}/>
+                    </div>
+                    <Divider />
                     <div>
                         <p className="font-bold text-xl">Đánh giá của khách hàng</p>
-                        <div></div>
                     </div>
                     <ModalSelectBookingDate
                         isModalOpen={isModalOpen}
