@@ -16,11 +16,11 @@ function TableRoom({ rooms }) {
         },
         {
             title: 'Giá',
-            key: 'price',
-            dataIndex: 'price',
-            render: (_, { price }) => (
+            key: 'newPrice',
+            dataIndex: 'newPrice',
+            render: (_, { newPrice }) => (
                 <Tag color={'red'} >
-                    {formattedPrice(price)}
+                    {formattedPrice(newPrice)}
                 </Tag>
             ),
         },

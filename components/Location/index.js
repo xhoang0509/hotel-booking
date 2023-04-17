@@ -106,7 +106,7 @@ export default function Location({ jwt, location, favorites }) {
                                 {formattedPrice(location.oldPrice)}
                             </span>
                             <span className="text-lg text-red font-bold">
-                                {formattedPrice(location.price)}
+                                {formattedPrice(location.newPrice)}
                             </span>
                         </span>
                         <p className="text-xs max-w-[400px]">{location.description}</p>
