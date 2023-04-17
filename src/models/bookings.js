@@ -1,23 +1,26 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-    const UserRoom = sequelize.define('user_room', {
-        user_id: {
+    const UserLocation = sequelize.define('bookings', {
+        id: {
             type: DataTypes.INTEGER(11),
-            allowNull: false,
+            primaryKey: true,
+            autoIncrement: true,
+        },
+        userId: {
+            type: DataTypes.INTEGER(11),
             references: {
                 model: 'users',
                 key: 'id',
             },
         },
-        room_id: {
+        locationId: {
             type: DataTypes.INTEGER(11),
-            allowNull: false,
             references: {
-                model: 'rooms',
+                model: 'locations',
                 key: 'id',
             },
         },
-        pirce: DataTypes.INTEGER(11),
+        price: DataTypes.INTEGER(11),
     });
-    return UserRoom;
+    return UserLocation;
 };

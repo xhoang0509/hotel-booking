@@ -5,27 +5,6 @@ module.exports = {
     async up(queryInterface, Sequelize) {
         return queryInterface.sequelize.transaction((t) => {
             return Promise.all([
-                queryInterface.createTable('photos', {
-                    id: {
-                        allowNull: false,
-                        primaryKey: true,
-                        autoIncrement: true,
-                        type: Sequelize.INTEGER(11),
-                    },
-                    href: {
-                        type: Sequelize.TEXT,
-                    },
-                    createdAt: {
-                        allowNull: false,
-                        type: Sequelize.DATE,
-                        defaultValue: Sequelize.DataTypes.NOW,
-                    },
-                    updatedAt: {
-                        allowNull: true,
-                        type: Sequelize.DATE,
-                        defaultValue: Sequelize.DataTypes.NOW,
-                    },
-                }),
                 queryInterface.createTable(
                     'users',
                     {
@@ -73,6 +52,16 @@ module.exports = {
                         images: {
                             type: Sequelize.TEXT,
                         },
+                        status: {
+                            type: Sequelize.ENUM('draft', 'active', 'inactive'),
+                            defaultValue: 'draft',
+                        },
+                        otp: {
+                            type: Sequelize.DataTypes.INTEGER,
+                        },
+                        otp_timestamp: {
+                            type: Sequelize.DataTypes.BIGINT,
+                        },
                         createdAt: {
                             allowNull: false,
                             type: Sequelize.DATE,
@@ -100,6 +89,9 @@ module.exports = {
                         name: {
                             allowNull: false,
                             type: Sequelize.STRING(100),
+                        },
+                        images: {
+                            type: Sequelize.DataTypes.STRING,
                         },
                         createdAt: {
                             allowNull: false,
@@ -237,6 +229,13 @@ module.exports = {
                         phone: {
                             type: Sequelize.STRING(100),
                         },
+                        oldPrice: Sequelize.DataTypes.INTEGER,
+                        newPrice: Sequelize.DataTypes.INTEGER,
+                        checkInDate: Sequelize.DATE,
+                        checkOutDate: Sequelize.DATE,
+                        convenients: {
+                            type: Sequelize.TEXT,
+                        },
                         cityId: {
                             allowNull: false,
                             type: Sequelize.INTEGER(11),
@@ -283,15 +282,33 @@ module.exports = {
                         description: {
                             type: Sequelize.TEXT,
                         },
-                        price: {
+                        oldPrice: {
                             type: Sequelize.FLOAT,
                         },
-                        fromUseTime: {
+                        newPrice: {
+                            type: Sequelize.FLOAT,
+                        },
+                        checkInDate: {
                             type: Sequelize.DATE,
                         },
-                        toUseTime: {
+                        checkOutDate: {
                             type: Sequelize.DATE,
                         },
+                        images: {
+                            type: Sequelize.TEXT,
+                        },
+                        options: {
+                            type: Sequelize.TEXT,
+                        },
+                        locationId: {
+                            type: Sequelize.DataTypes.INTEGER(11),
+                            allowNull: false,
+                            references: {
+                                model: 'locations',
+                                key: 'id',
+                            },
+                        },
+                        point: Sequelize.DataTypes.INTEGER,
                         createdAt: {
                             allowNull: false,
                             type: Sequelize.DATE,
@@ -392,6 +409,99 @@ module.exports = {
                         updatedAt: {
                             allowNull: true,
                             type: Sequelize.DATE,
+                        },
+                    },
+                    {
+                        transaction: t,
+                    }
+                ),
+                queryInterface.createTable(
+                    'bookings',
+                    {
+                        id: {
+                            allowNull: false,
+                            primaryKey: true,
+                            autoIncrement: true,
+                            type: Sequelize.INTEGER(11),
+                        },
+                        userId: {
+                            type: Sequelize.DataTypes.INTEGER(11),
+                            references: {
+                                model: 'users',
+                                key: 'id',
+                            },
+                        },
+                        locationId: {
+                            type: Sequelize.DataTypes.INTEGER(11),
+                            references: {
+                                model: 'rooms',
+                                key: 'id',
+                            },
+                        },
+                        price: {
+                            type: Sequelize.DataTypes.DOUBLE,
+                        },
+                        discount: {
+                            type: Sequelize.DataTypes.DOUBLE,
+                        },
+                        point: {
+                            type: Sequelize.DataTypes.DOUBLE,
+                        },
+                        checkInDate: {
+                            type: Sequelize.DataTypes.DATE,
+                        },
+                        checkOutDate: {
+                            type: Sequelize.DataTypes.DATE,
+                        },
+                        paymentMethod: {
+                            type: Sequelize.DataTypes.STRING,
+                        },
+                        paymentStatus: {
+                            type: Sequelize.DataTypes.STRING,
+                        },
+                        createdAt: {
+                            allowNull: false,
+                            type: Sequelize.DATE,
+                        },
+                        updatedAt: {
+                            allowNull: true,
+                            type: Sequelize.DATE,
+                        },
+                    },
+                    {
+                        transaction: t,
+                    }
+                ),
+                queryInterface.createTable(
+                    'favorites',
+                    {
+                        id: {
+                            type: Sequelize.DataTypes.INTEGER(11),
+                            autoIncrement: true,
+                            primaryKey: true,
+                        },
+                        userId: {
+                            type: Sequelize.DataTypes.INTEGER(11),
+                            references: {
+                                model: 'users',
+                                key: 'id',
+                            },
+                        },
+                        locationId: {
+                            type: Sequelize.DataTypes.INTEGER(11),
+                            references: {
+                                model: 'locations',
+                                key: 'id',
+                            },
+                        },
+                        createdAt: {
+                            type: Sequelize.DataTypes.DATE,
+                            defaultValue: Sequelize.DataTypes.NOW,
+                            allowNull: false,
+                        },
+                        updatedAt: {
+                            type: Sequelize.DataTypes.DATE,
+                            defaultValue: Sequelize.DataTypes.NOW,
                         },
                     },
                     {

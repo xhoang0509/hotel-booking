@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             type: DataTypes.STRING(100),
         },
-        image: DataTypes.STRING,
+        images: DataTypes.STRING,
     });
     return Category;
 };

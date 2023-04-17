@@ -30,14 +30,17 @@ module.exports = (sequelize, DataTypes) => {
         oldPrice: {
             type: DataTypes.BIGINT,
         },
-        price: {
+        newPrice: {
             type: DataTypes.BIGINT,
         },
-        fromUseTime: {
+        checkInDate: {
             type: DataTypes.BIGINT,
         },
-        toUseTime: {
+        checkOutDate: {
             type: DataTypes.DATE,
+        },
+        convenients: {
+            type: DataTypes.TEXT,
         },
         cityId: {
             type: DataTypes.INTEGER(11),

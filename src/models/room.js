@@ -18,15 +18,25 @@ module.exports = (sequelize, DataTypes) => {
         description: {
             type: DataTypes.TEXT,
         },
-        price: {
+        oldPrice: {
             type: DataTypes.FLOAT,
         },
-        fromUseTime: {
+        newPrice: {
+            type: DataTypes.FLOAT,
+        },
+        checkInDate: {
             type: DataTypes.DATE,
         },
-        toUseTime: {
+        checkOutDate: {
             type: DataTypes.DATE,
         },
+        images: {
+            type: DataTypes.TEXT,
+        },
+        options: {
+            type: DataTypes.TEXT,
+        },
+        point: DataTypes.INTEGER,
         locationId: {
             type: DataTypes.INTEGER(11),
             allowNull: false,

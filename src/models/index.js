@@ -48,7 +48,10 @@ db['locations'].hasMany(db['rooms'], { foreignKey: 'locationId' });
 db['admins'].belongsTo(db['rules'], { foreignKey: 'ruleId' });
 db['rules'].hasMany(db['admins'], { foreignKey: 'ruleId' });
 
-db['users'].belongsToMany(db['rooms'], { through: db['user_room'] });
-db['rooms'].belongsToMany(db['users'], { through: db['user_room'] });
+db['bookings'].belongsTo(db['users'], { foreignKey: 'userId' });
+db['users'].hasMany(db['bookings'], { foreignKey: 'userId' });
+
+db['bookings'].belongsTo(db['locations'], { foreignKey: 'locationId' });
+db['locations'].hasMany(db['bookings'], { foreignKey: 'locationId' });
 
 module.exports = db;
