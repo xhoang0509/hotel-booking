@@ -312,10 +312,12 @@ module.exports = {
                         createdAt: {
                             allowNull: false,
                             type: Sequelize.DATE,
+                            defaultValue: Sequelize.DataTypes.NOW,
                         },
                         updatedAt: {
                             allowNull: true,
                             type: Sequelize.DATE,
+                            defaultValue: Sequelize.DataTypes.NOW,
                         },
                     },
                     {
@@ -339,9 +341,11 @@ module.exports = {
                         },
                         createdAt: {
                             type: Sequelize.DATE,
+                            defaultValue: Sequelize.DataTypes.NOW,
                         },
                         updatedAt: {
                             type: Sequelize.DATE,
+                            defaultValue: Sequelize.DataTypes.NOW,
                         },
                     },
                     {
@@ -405,10 +409,12 @@ module.exports = {
                         createdAt: {
                             allowNull: false,
                             type: Sequelize.DATE,
+                            defaultValue: Sequelize.DataTypes.NOW,
                         },
                         updatedAt: {
                             allowNull: true,
                             type: Sequelize.DATE,
+                            defaultValue: Sequelize.DataTypes.NOW,
                         },
                     },
                     {
@@ -462,10 +468,12 @@ module.exports = {
                         createdAt: {
                             allowNull: false,
                             type: Sequelize.DATE,
+                            defaultValue: Sequelize.DataTypes.NOW,
                         },
                         updatedAt: {
                             allowNull: true,
                             type: Sequelize.DATE,
+                            defaultValue: Sequelize.DataTypes.NOW,
                         },
                     },
                     {
