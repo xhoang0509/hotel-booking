@@ -41,6 +41,15 @@ module.exports = (sequelize, DataTypes) => {
         },
         convenients: {
             type: DataTypes.TEXT,
+            get() {
+                return JSON.parse(this.getDataValue('convenients'));
+            },
+        },
+        notes: {
+            type: DataTypes.TEXT,
+            get() {
+                return JSON.parse(this.getDataValue('notes'));
+            }
         },
         cityId: {
             type: DataTypes.INTEGER(11),

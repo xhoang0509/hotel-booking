@@ -236,6 +236,9 @@ module.exports = {
                         convenients: {
                             type: Sequelize.TEXT,
                         },
+                        notes: {
+                            type: Sequelize.TEXT,
+                        },
                         cityId: {
                             allowNull: false,
                             type: Sequelize.INTEGER(11),
