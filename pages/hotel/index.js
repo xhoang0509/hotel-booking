@@ -9,14 +9,13 @@ import locationApi from '@/services/location';
 import userApi from '@/services/user';
 import { HeartOutlined, InfoCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { Breadcrumb, DatePicker, Divider, Input, notification } from 'antd';
+import { Breadcrumb, Col, DatePicker, Divider, Input, Row, notification } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { END } from 'redux-saga';
 
-const { RangePicker } = DatePicker;
 export default function Hotel({ jwt }) {
     const user = useSelector((state) => state.user);
     const router = useRouter();
@@ -24,7 +23,9 @@ export default function Hotel({ jwt }) {
     const [loading, setLoading] = useState(false);
     const [loadingBooking, setLoadingBooking] = useState(false);
     const [location, setLocation] = useState();
+    const [roomId, setRoomId] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [price, setPrice] = useState({});
 
     const fetchData = useCallback(async () => {
         setLoading(true);
@@ -94,6 +95,10 @@ export default function Hotel({ jwt }) {
         }
     }, [jwt, id, user]);
 
+    const handleBooking = useCallback(() => {
+        showModal();
+    }, []);
+
     return (
         <WebLayout>
             <Breadcrumb
@@ -114,8 +119,8 @@ export default function Hotel({ jwt }) {
             {!loading && !location && <NotFoundLocation />}
             {!loading && location && (
                 <>
-                    <div className="flex mb-6">
-                        <div className="w-[20%]">
+                    <Row className="flex mb-6">
+                        <Col className="w-[20%]">
                             <div className="bg-[#FEBB02]  mr-4 p-4">
                                 <div className="font-bold mb-2 text-lg">Tìm</div>
                                 <div className="mb-4">
@@ -134,17 +139,32 @@ export default function Hotel({ jwt }) {
                                     Tìm
                                 </div>
                             </div>
-                        </div>
-                        <div className="w-[75%]">
-                            <div className="text-lg font-bold">{location.name}</div>
-                            <p className="text-sm">
+                        </Col>
+                        <Col className="w-[75%] text-sm">
+                            <div className="text-lg font-bold mb-2">{location.name}</div>
+                            <p className="mb-2">
                                 {location.address} – Vị trí xuất sắc - hiển thị bản đồ
                             </p>
+                            <div>Một số hình ảnh:</div>
                             <Gallery images={location.images} />
-                        </div>
-                    </div>
-                    <div className="flex">
-                        <div className="w-[75%]">
+                        </Col>
+                    </Row>
+                    <Row className="flex">
+                        <Col className="w-[75%]">
+                            <div className="flex flex-wrap">
+                                {location.convenients.map((convenient, idx) => {
+                                    return (
+                                        <div
+                                            key={idx}
+                                            className="w-[200px] h-[60px] border flex items-center justify-center m-2 border-[#e7e7e7] bg-[#EBF3FF]"
+                                        >
+                                            <span className="text-sm text-center">
+                                                {convenient}
+                                            </span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
                             <div className="text-sm font-normal pr-10">
                                 <p>{location.description}</p>
                                 <br />
@@ -163,8 +183,8 @@ export default function Hotel({ jwt }) {
                                     nghỉ dành cho 2 người.
                                 </p>
                             </div>
-                        </div>
-                        <div className="w-[20%] bg-[#E4F4FF] p-4 text-sm">
+                        </Col>
+                        <Col className="w-[20%] bg-[#E4F4FF] p-4 text-sm">
                             <p className="font-bold mb-4">Điểm nổi bật của chỗ nghỉ</p>
                             <p className="font-bold mb-4">Hoàn hảo cho kỳ nghỉ 1 đêm!</p>
                             <div className="text-xs flex my-4">
@@ -177,11 +197,8 @@ export default function Hotel({ jwt }) {
                             </div>
                             <p className="font-bold mb-4">Thông tin về bữa sáng</p>
                             <p className="">Kiểu Á</p>
-                            <div
-                                className="font-bold mt-4 w-full bg-sub-primary text-white rounded-none border-none text-center py-2 cursor-pointer hover:bg-primary"
-                                onClick={showModal}
-                            >
-                                Đặt ngay
+                            <div className="font-bold mt-4 w-full bg-sub-primary text-white rounded-none border-none text-center py-2 cursor-pointer hover:bg-primary">
+                                <a href="#book_now">Đặt ngay</a>
                             </div>
                             <div
                                 className="font-bold mt-4 w-full text-primary rounded-none text-center py-2 cursor-pointer flex items-center justify-center border-2"
@@ -191,27 +208,46 @@ export default function Hotel({ jwt }) {
                                 Lưu chỗ nghỉ
                             </div>
                             <div className="text-center mt-2 text-xs">Đã lưu vào 19 danh sách</div>
-                        </div>
-                    </div>
+                        </Col>
+                    </Row>
                     <Divider />
-                    <div>
+                    <div id="book_now">
                         <p className="font-bold text-xl mb-2">Phòng trống</p>
-                        <div className='text-[#D12C18] text-sm mb-2'>
-                            <InfoCircleOutlined className='mr-2' />
+                        <div className="text-[#D12C18] text-sm mb-2">
+                            <InfoCircleOutlined className="mr-2" />
                             <span>Chọn ngày để xem phòng trống và giá tại chỗ nghỉ này</span>
                         </div>
-                        <div className='bg-[#4C76B2] text-white text-sm p-2 mb-2'>Loại chỗ nghỉ</div>
-                        <TableRoom rooms={location.rooms}/>
+                        <div className="bg-[#4C76B2] text-white text-sm p-2 mb-2">
+                            Loại chỗ nghỉ
+                        </div>
+                        <TableRoom
+                            rooms={location.rooms}
+                            onBooking={handleBooking}
+                            setPrice={setPrice}
+                            setRoomId={setRoomId}
+                        />
                     </div>
                     <Divider />
-                    <div>
-                        <p className="font-bold text-xl">Đánh giá của khách hàng</p>
+                    <p className="font-bold text-xl">Đánh giá của khách hàng</p>
+                    <Divider />
+                    <p className="font-bold text-xl">Ghi chú</p>
+                    <div className="text-sm bg-[#EBF3FF] p-4">
+                        {location.notes.map((note, index) => {
+                            return (
+                                <div key={index} className="mb-4">
+                                    {note}
+                                </div>
+                            );
+                        })}
                     </div>
                     <ModalSelectBookingDate
                         isModalOpen={isModalOpen}
-                        handleOk={handleOk}
+                        setIsModalOpen={setIsModalOpen}
                         handleCancel={handleCancel}
                         loadingBooking={loadingBooking}
+                        price={price}
+                        location={location}
+                        roomId={roomId}
                     />
                 </>
             )}

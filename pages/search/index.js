@@ -5,9 +5,9 @@ import { wrapper } from '@/redux/store';
 import locationApi from '@/services/location';
 import userApi from '@/services/user';
 import { SearchOutlined } from '@ant-design/icons';
-import { Breadcrumb, DatePicker, Input, Select } from 'antd';
+import { Breadcrumb, Col, DatePicker, Input, Row, Select } from 'antd';
 import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { END } from 'redux-saga';
 
@@ -16,6 +16,8 @@ export default function Search({ jwt }) {
     const [loading, setLoading] = useState(false);
     const [locations, setLocations] = useState([]);
     const [favorites, setFavorites] = useState([]);
+    const [search, setSearch] = useState('');
+    const locationRef = useRef([]);
     useEffect(() => {
         fetchData();
     }, []);
@@ -24,6 +26,7 @@ export default function Search({ jwt }) {
         const res = await locationApi.getAll();
         if (res.status) {
             setLocations(res.locations);
+            locationRef.current = res.locations;
         }
         if (user && user.id) {
             const resFavorite = await userApi.getFavorite(user.id, jwt);
@@ -36,6 +39,22 @@ export default function Search({ jwt }) {
 
     const handleChange = (value) => {
         console.log(`selected ${value}`);
+    };
+
+    const handleSerch = () => {
+        if (!search) {
+            setLocations(locationRef.current);
+            return;
+        }
+        const newLocations = locations.filter((location) =>
+            location.name.toLowerCase().includes(search.toLowerCase())
+        );
+        setLocations(newLocations);
+    };
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            handleSerch();
+        }
     };
 
     return (
@@ -51,13 +70,19 @@ export default function Search({ jwt }) {
                 ]}
                 className="mb-4"
             />
-            <div className="flex">
-                <div className="w-[20%]">
+            <Row className="w-full">
+                <Col className="w-[20%]">
                     <div className="bg-[#FEBB02]  mr-4 p-4">
                         <div className="font-bold mb-2 text-lg">Tìm</div>
                         <div className="mb-4">
                             <p className="text-xs">Tên chỗ nghỉ / địa điểm đến</p>
-                            <Input className="rounded-none" prefix={<SearchOutlined />} />
+                            <Input
+                                className="rounded-none"
+                                prefix={<SearchOutlined />}
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                onKeyPress={handleKeyPress}
+                            />
                         </div>
                         <div className="mb-4">
                             <p className="text-xs">Ngày nhận phòng</p>
@@ -67,12 +92,15 @@ export default function Search({ jwt }) {
                             <p className="text-xs">Ngày trả phòng</p>
                             <DatePicker className="w-full rounded-none" />
                         </div>
-                        <div className="w-full bg-sub-primary text-white rounded-none border-none text-center py-3 cursor-pointer hover:bg-primary">
+                        <div
+                            className="w-full bg-sub-primary text-white rounded-none border-none text-center py-3 cursor-pointer hover:bg-primary"
+                            onClick={handleSerch}
+                        >
                             Tìm
                         </div>
                     </div>
-                </div>
-                <div className="w-[74%] p-4">
+                </Col>
+                <Col className="w-[74%]">
                     <div className="font-bold text-lg mb-4">
                         Hà Nội: tìm thấy {locations.length} chỗ nghỉ
                     </div>
@@ -129,8 +157,12 @@ export default function Search({ jwt }) {
                                 />
                             );
                         })}
-                </div>
-            </div>
+
+                    {!loading && locations.length === 0 && (
+                        <div>Không tìm thấy chỗ nghỉ phù hợp</div>
+                    )}
+                </Col>
+            </Row>
         </WebLayout>
     );
 }

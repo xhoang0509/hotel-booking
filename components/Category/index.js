@@ -33,7 +33,7 @@ export default function Category() {
                             className="w-[15%] px-2 py-2 mr-2 bg-gray-200 rounded-lg cursor-pointer"
                         >
                             <Image
-                                src={category.image}
+                                src={category.images}
                                 className="w-[170px] h-[136px] object-cover"
                                 width={'170'}
                                 height={'136'}

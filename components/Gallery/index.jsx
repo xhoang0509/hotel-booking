@@ -27,7 +27,7 @@ function Gallery({ images }) {
                         onClick={() => handleImageClick(image)}
                         key={index}
                         src={image}
-                        className={`p-2 cursor-pointer`}
+                        className={`p-2 cursor-pointer max-w-[300px] h-auto`}
                     />
                 );
             })}

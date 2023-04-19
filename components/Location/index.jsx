@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { HeartIcon, HeartRedIcon } from '../Icons/HeartIcon';
 import Star from '../Star';
-import { Typography, notification } from 'antd';
+import { Tag, Typography, notification } from 'antd';
 import { formattedPrice } from '@/helpers/price.helper';
 
 export default function Location({ jwt, location, favorites }) {
@@ -109,6 +109,20 @@ export default function Location({ jwt, location, favorites }) {
                                 {formattedPrice(location.newPrice)}
                             </span>
                         </span>
+                        <div className="mb-4">
+                            <Tag color="#008009">Ưu Đãi Mùa Du Lịch</Tag>
+                        </div>
+                        <div className="max-w-[400px]">
+                            <p className="text-sm">Tiện nghi: </p>
+                            {location.convenients.length > 0 &&
+                                location.convenients.map((convenient, index) => {
+                                    return (
+                                        <Tag className="mb-2" color="magenta" key={index}>
+                                            {convenient}
+                                        </Tag>
+                                    );
+                                })}
+                        </div>
                         <p className="text-xs max-w-[400px]">{location.description}</p>
                     </div>
                     <div>

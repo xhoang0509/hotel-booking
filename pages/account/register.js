@@ -3,11 +3,14 @@ import { Button, Form, Input, notification, Typography } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import WebLayout from '@/components/Layout/WebLayout';
+import { useState } from 'react';
 
 export default function Register() {
     const router = useRouter();
+    const [loading, setLoading] = useState(false);
 
     const onFinish = async (values) => {
+        setLoading(true);
         try {
             const res = await userApi.register(values);
             if (res && res.data) {
@@ -31,6 +34,7 @@ export default function Register() {
         } catch (e) {
             console.log(e);
         }
+        setLoading(false);
     };
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
@@ -52,7 +56,6 @@ export default function Register() {
                     }}
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
-                    autoComplete="off"
                     layout="vertical"
                 >
                     <Form.Item
@@ -76,6 +79,10 @@ export default function Register() {
                             {
                                 required: true,
                                 message: 'Vui lòng nhập mật khẩu!',
+                            },
+                            {
+                                min: 6,
+                                message: 'Yêu cầu tối thiểu 6 ký tự!',
                             },
                         ]}
                     >
@@ -110,6 +117,7 @@ export default function Register() {
                             type="primary"
                             htmlType="submit"
                             className="mt-4 w-80 bg-[#4096FF] h-8 px-4"
+                            loading={loading}
                         >
                             Đăng ký
                         </Button>

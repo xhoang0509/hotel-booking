@@ -12,6 +12,7 @@ export default function Login({ user }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
+    const [loadingLogin, setLoadingLogin] = useState(false);
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -57,6 +58,7 @@ export default function Login({ user }) {
     };
 
     const onFinish = async (values) => {
+        setLoadingLogin(true);
         try {
             let res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/login`, {
                 method: 'POST',
@@ -90,6 +92,7 @@ export default function Login({ user }) {
         } catch (e) {
             console.log(e);
         }
+        setLoadingLogin(false);
     };
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
@@ -153,6 +156,7 @@ export default function Login({ user }) {
                             type="primary"
                             htmlType="submit"
                             className="mt-4 w-80 bg-[#4096FF] h-8 px-4"
+                            loading={loading}
                         >
                             Đăng nhập
                         </Button>
