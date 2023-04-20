@@ -19,7 +19,7 @@ function ModalSelectBookingDate({ isModalOpen, handleCancel, price, location, ro
         localStorage.setItem(
             LocalStorage.checkout,
             JSON.stringify({
-                values,
+                checkInOutDate: values.checkInOutDate,
                 price,
                 locationId: location.id,
                 roomId,

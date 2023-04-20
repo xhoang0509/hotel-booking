@@ -2,13 +2,13 @@ import axiosClient from '../axiosClient';
 
 const bookingApi = {
     booking(data, token) {
-        return axiosClient.post('/category', data, {
+        return axiosClient.post('/booking', data, {
             headers: { Authorization: `Bearer ${token}` },
         });
     },
 
     getAll() {
-        return axiosClient.get('/category');
+        return axiosClient.get('/booking');
     },
 };
 
