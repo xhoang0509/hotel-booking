@@ -11,9 +11,31 @@ async function booking(req, res) {
         message: '',
     };
     try {
-        const { userId, locationId } = req.body;
+        const {
+            userId,
+            locationId,
+            firstName,
+            lastName,
+            email,
+            price,
+            checkInDate,
+            checkOutDate,
+            paymentMethod,
+            paymentStatus
+        } = req.body;
         if (userId && locationId) {
-            const booking = await bookings.create({ userId, locationId });
+            const booking = await bookings.create({
+                userId,
+                locationId,
+                firstName,
+                lastName,
+                email,
+                price,
+                checkInDate,
+                checkOutDate,
+                paymentMethod,
+                paymentStatus
+            });
             result.booking = booking;
             result.status = true;
         } else {

@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             get() {
                 return JSON.parse(this.getDataValue('images'));
-            }
+            },
         },
         options: {
             type: DataTypes.TEXT,

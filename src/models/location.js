@@ -49,8 +49,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             get() {
                 return JSON.parse(this.getDataValue('notes'));
-            }
+            },
         },
+        qr_banking: DataTypes.STRING,
         cityId: {
             type: DataTypes.INTEGER(11),
             allowNull: false,

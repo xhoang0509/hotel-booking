@@ -21,6 +21,36 @@ module.exports = (sequelize, DataTypes) => {
             },
         },
         price: DataTypes.INTEGER(11),
+        price: {
+            type: DataTypes.DOUBLE,
+        },
+        discount: {
+            type: DataTypes.DOUBLE,
+        },
+        point: {
+            type: DataTypes.DOUBLE,
+        },
+        checkInDate: {
+            type: DataTypes.DATE,
+        },
+        checkOutDate: {
+            type: DataTypes.DATE,
+        },
+        paymentMethod: {
+            type: DataTypes.STRING,
+        },
+        paymentStatus: {
+            type: DataTypes.STRING,
+        },
+        firstName: {
+            type: DataTypes.TEXT,
+        },
+        lastName: {
+            type: DataTypes.TEXT,
+        },
+        email: {
+            type: DataTypes.TEXT,
+        },
     });
     return UserLocation;
 };
