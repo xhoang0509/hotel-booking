@@ -21,7 +21,7 @@ async function booking(req, res) {
             checkInDate,
             checkOutDate,
             paymentMethod,
-            paymentStatus
+            paymentStatus,
         } = req.body;
         if (userId && locationId) {
             const booking = await bookings.create({
@@ -34,7 +34,7 @@ async function booking(req, res) {
                 checkInDate,
                 checkOutDate,
                 paymentMethod,
-                paymentStatus
+                paymentStatus,
             });
             result.booking = booking;
             result.status = true;
@@ -82,8 +82,7 @@ async function getBookingByUser(req, res) {
         const { id } = req.params;
         const bookingDB = await bookings.findAll({
             where: { userId: id },
-            include: users,
-            include: locations,
+            include: [users, locations],
         });
         result.bookings = bookingDB;
         result.status = true;
@@ -96,8 +95,32 @@ async function getBookingByUser(req, res) {
     }
 }
 
+async function getOne(req, res) {
+    let code = 200;
+    let result = {
+        status: false,
+        message: '',
+    };
+    try {
+        const { id } = req.params;
+        const booking = await bookings.findOne({
+            where: { id: id },
+            include: [users, locations],
+        });
+        result.booking = booking;
+        result.message = 'OK';
+        result.status = true;
+    } catch (e) {
+        writeLog(__filename, 'getOne', e.message, 'FAILED');
+        code = 500;
+        result.message = e.message;
+    }
+    res.status(code).json(result);
+}
+
 module.exports = {
     booking,
     getAll,
+    getOne,
     getBookingByUser,
 };

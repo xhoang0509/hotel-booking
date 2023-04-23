@@ -7,6 +7,7 @@ const cityRouter = require('./city.router');
 const ruleRouter = require('./rule.router');
 const locationRouter = require('./location.router');
 const bookingRouter = require('./booking.router');
+const paymentRouter = require('./payment.router');
 
 const routers = new Router();
 
@@ -18,5 +19,6 @@ routers.use('/category', categoryRouter);
 routers.use('/city', cityRouter);
 routers.use('/location', locationRouter);
 routers.use('/booking', bookingRouter);
+routers.use('/payment', paymentRouter);
 
 module.exports = routers;
