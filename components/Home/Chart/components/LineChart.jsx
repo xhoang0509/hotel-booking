@@ -1,9 +1,9 @@
-import { MinusOutlined } from "@ant-design/icons";
-import { Typography } from "antd";
-import lineChart from "../configs/lineChart";
-import dynamic from "next/dynamic";
+import { MinusOutlined } from '@ant-design/icons';
+import { Typography } from 'antd';
+import lineChart from '../configs/lineChart';
+import dynamic from 'next/dynamic';
 
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {ssr: false})
+const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 function LineChart() {
     const { Title, Paragraph } = Typography;
@@ -31,7 +31,7 @@ function LineChart() {
                 series={lineChart.series}
                 type="area"
                 height={350}
-                width={"100%"}
+                width={'100%'}
             />
         </>
     );

@@ -34,7 +34,15 @@ export default function City({ jwt }) {
             title: 'Hỉnh ảnh',
             dataIndex: 'image',
             key: 'image',
-            render: (text, record) => <Image src={text} alt="image" className="w-[200px] h-auto" width={'200'} height={'300'} />,
+            render: (text, record) => (
+                <Image
+                    src={text}
+                    alt="image"
+                    className="w-[200px] h-auto"
+                    width={'200'}
+                    height={'300'}
+                />
+            ),
         },
         {
             title: 'Số lượng',
@@ -70,9 +78,12 @@ export default function City({ jwt }) {
         setFetching(false);
     }, [jwt]);
 
-    const handleEditClick = useCallback((id) => {
-        router.push(`/city/${id}`);
-    }, [router]);
+    const handleEditClick = useCallback(
+        (id) => {
+            router.push(`/city/${id}`);
+        },
+        [router]
+    );
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -153,7 +164,10 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
                 await store.sagaTask.toPromise();
             }
         } else {
-            res.setHeader('Set-Cookie', 'adminJWT=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;');
+            res.setHeader(
+                'Set-Cookie',
+                'adminJWT=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;'
+            );
             return {
                 redirect: {
                     destination: '/login',
@@ -172,7 +186,7 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
 
     return {
         props: {
-            jwt:token,
+            jwt: token,
         },
     };
 });

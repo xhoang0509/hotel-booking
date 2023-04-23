@@ -301,7 +301,10 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
                 await store.sagaTask.toPromise();
             }
         } else {
-            res.setHeader('Set-Cookie', 'adminJWT=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;');
+            res.setHeader(
+                'Set-Cookie',
+                'adminJWT=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;'
+            );
             return {
                 redirect: {
                     destination: '/login',

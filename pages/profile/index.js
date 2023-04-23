@@ -9,7 +9,7 @@ import {
     TwitterOutlined,
     UserOutlined,
     VerticalAlignTopOutlined,
-} from "@ant-design/icons";
+} from '@ant-design/icons';
 import {
     Avatar,
     Button,
@@ -22,52 +22,52 @@ import {
     Switch,
     Upload,
     message,
-} from "antd";
+} from 'antd';
 
-import BgProfile from "@/public/images/bg-profile.jpg";
-import profilavatar from "@/public/images/face-1.jpg";
-import convesionImg5 from "@/public/images/face-2.jpg";
-import convesionImg from "@/public/images/face-3.jpg";
-import convesionImg2 from "@/public/images/face-4.jpg";
-import convesionImg3 from "@/public/images/face-5.jpeg";
-import convesionImg4 from "@/public/images/face-6.jpeg";
-import project1 from "@/public/images/home-decor-1.jpeg";
-import project2 from "@/public/images/home-decor-2.jpeg";
-import project3 from "@/public/images/home-decor-3.jpeg";
-import noImage from "@/public/images/no-image.png";
+import BgProfile from '@/public/images/bg-profile.jpg';
+import profilavatar from '@/public/images/face-1.jpg';
+import convesionImg5 from '@/public/images/face-2.jpg';
+import convesionImg from '@/public/images/face-3.jpg';
+import convesionImg2 from '@/public/images/face-4.jpg';
+import convesionImg3 from '@/public/images/face-5.jpeg';
+import convesionImg4 from '@/public/images/face-6.jpeg';
+import project1 from '@/public/images/home-decor-1.jpeg';
+import project2 from '@/public/images/home-decor-2.jpeg';
+import project3 from '@/public/images/home-decor-3.jpeg';
+import noImage from '@/public/images/no-image.png';
 import { useSelector } from 'react-redux';
 import { authAdmin } from '@/helper/auth.helper';
 
 export default function Profile() {
-    const admin = useSelector(state => state.admin);
+    const admin = useSelector((state) => state.admin);
     console.log(admin);
     const [imageURL, setImageURL] = useState(false);
     const [, setLoading] = useState(false);
 
     const getBase64 = (img, callback) => {
         const reader = new FileReader();
-        reader.addEventListener("load", () => callback(reader.result));
+        reader.addEventListener('load', () => callback(reader.result));
         reader.readAsDataURL(img);
     };
 
     const beforeUpload = (file) => {
-        const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
         if (!isJpgOrPng) {
-            message.error("You can only upload JPG/PNG file!");
+            message.error('You can only upload JPG/PNG file!');
         }
         const isLt2M = file.size / 1024 / 1024 < 2;
         if (!isLt2M) {
-            message.error("Image must smaller than 2MB!");
+            message.error('Image must smaller than 2MB!');
         }
         return isJpgOrPng && isLt2M;
     };
 
     const handleChange = (info) => {
-        if (info.file.status === "uploading") {
+        if (info.file.status === 'uploading') {
             setLoading(false);
             return;
         }
-        if (info.file.status === "done") {
+        if (info.file.status === 'done') {
             getBase64(info.file.originFileObj, (imageUrl) => {
                 setLoading(false);
                 setImageURL(false);
@@ -97,60 +97,59 @@ export default function Profile() {
 
     const uploadButton = (
         <div className="ant-upload-text font-semibold text-dark">
-            {<VerticalAlignTopOutlined style={{ width: 20, color: "#000" }} />}
+            {<VerticalAlignTopOutlined style={{ width: 20, color: '#000' }} />}
             <div>Upload New Project</div>
         </div>
     );
 
     const data = [
         {
-            title: "Sophie B.",
+            title: 'Sophie B.',
             avatar: convesionImg,
-            description: "Hi! I need more information…",
+            description: 'Hi! I need more information…',
         },
         {
-            title: "Anne Marie",
+            title: 'Anne Marie',
             avatar: convesionImg2,
-            description: "Awesome work, can you…",
+            description: 'Awesome work, can you…',
         },
         {
-            title: "Ivan",
+            title: 'Ivan',
             avatar: convesionImg3,
-            description: "About files I can…",
+            description: 'About files I can…',
         },
         {
-            title: "Peterson",
+            title: 'Peterson',
             avatar: convesionImg4,
-            description: "Have a great afternoon…",
+            description: 'Have a great afternoon…',
         },
         {
-            title: "Nick Daniel",
+            title: 'Nick Daniel',
             avatar: convesionImg5,
-            description: "Hi! I need more information…",
+            description: 'Hi! I need more information…',
         },
     ];
 
     const project = [
         {
             img: project1,
-            titlesub: "Project #1",
-            title: "Modern",
-            disciption:
-                "As Uber works through a huge amount of internal management turmoil.",
+            titlesub: 'Project #1',
+            title: 'Modern',
+            disciption: 'As Uber works through a huge amount of internal management turmoil.',
         },
         {
             img: project2,
-            titlesub: "Project #2",
-            title: "Scandinavian",
+            titlesub: 'Project #2',
+            title: 'Scandinavian',
             disciption:
-                "Music is something that every person has his or her own specific opinion about.",
+                'Music is something that every person has his or her own specific opinion about.',
         },
         {
             img: project3,
-            titlesub: "Project #3",
-            title: "Minimalist",
+            titlesub: 'Project #3',
+            title: 'Minimalist',
             disciption:
-                "Different people have different taste, and various types of music, Zimbali Resort",
+                'Different people have different taste, and various types of music, Zimbali Resort',
         },
     ];
 
@@ -158,18 +157,29 @@ export default function Profile() {
         <LayoutApp>
             <div
                 className="profile-nav-bg mt-5"
-                style={{ backgroundImage: "url(" + BgProfile.src + ")" }}
+                style={{ backgroundImage: 'url(' + BgProfile.src + ')' }}
             ></div>
             <Card
                 className="card-profile-head"
-                bodyStyle={{ display: "none" }}
+                bodyStyle={{ display: 'none' }}
                 title={
                     <Row justify="space-between" align="middle" gutter={[24, 0]}>
                         <Col span={24} md={12} className="col-info">
                             <Avatar.Group>
-                                {admin.image ? <Avatar size={74} shape="square" src={admin.image} className="rounded-full" />
-                                    : <Avatar size="large" icon={<UserOutlined />} className="mr-4 rounded-full" />
-                                }
+                                {admin.image ? (
+                                    <Avatar
+                                        size={74}
+                                        shape="square"
+                                        src={admin.image}
+                                        className="rounded-full"
+                                    />
+                                ) : (
+                                    <Avatar
+                                        size="large"
+                                        icon={<UserOutlined />}
+                                        className="mr-4 rounded-full"
+                                    />
+                                )}
 
                                 <div className="avatar-info">
                                     <h4 className="font-semibold m-0">{`${admin.lastName} ${admin.firstName}`}</h4>
@@ -181,9 +191,9 @@ export default function Profile() {
                             span={24}
                             md={12}
                             style={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "flex-end",
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'flex-end',
                             }}
                         >
                             <Radio.Group defaultValue="a">
@@ -221,9 +231,7 @@ export default function Profile() {
                                 <span>Email me when someone mentions me</span>
                             </li>
                             <li>
-                                <h6 className="list-header text-sm text-muted m-0">
-                                    APPLICATION
-                                </h6>
+                                <h6 className="list-header text-sm text-muted m-0">APPLICATION</h6>
                             </li>
                             <li>
                                 <Switch defaultChecked />
@@ -249,11 +257,10 @@ export default function Profile() {
                         bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
                     >
                         <p className="text-dark">
-                            {" "}
-                            Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer
-                            is no. If two equally difficult paths, choose the one more painful
-                            in the short term (pain avoidance is creating an illusion of
-                            equality).{" "}
+                            {' '}
+                            Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer is no.
+                            If two equally difficult paths, choose the one more painful in the short
+                            term (pain avoidance is creating an illusion of equality).{' '}
                         </p>
                         <hr className="my-25" />
                         <Descriptions title="Thông tin cá nhân">
@@ -280,10 +287,10 @@ export default function Profile() {
                                     {<TwitterOutlined />}
                                 </a>
                                 <a href="#pablo" className="mx-5 px-5">
-                                    {<FacebookOutlined style={{ color: "#344e86" }} />}
+                                    {<FacebookOutlined style={{ color: '#344e86' }} />}
                                 </a>
                                 <a href="#pablo" className="mx-5 px-5">
-                                    {<InstagramOutlined style={{ color: "#e1306c" }} />}
+                                    {<InstagramOutlined style={{ color: '#e1306c' }} />}
                                 </a>
                             </Descriptions.Item>
                         </Descriptions>
@@ -305,7 +312,11 @@ export default function Profile() {
                                 <List.Item actions={[<Button type="link">REPLY</Button>]}>
                                     <List.Item.Meta
                                         avatar={
-                                            <Avatar shape="square" size={48} src={item.avatar.src} />
+                                            <Avatar
+                                                shape="square"
+                                                size={48}
+                                                src={item.avatar.src}
+                                            />
                                         }
                                         title={item.title}
                                         description={item.description}
@@ -364,7 +375,7 @@ export default function Profile() {
                             onChange={handleChange}
                         >
                             {imageURL ? (
-                                <img src={imageURL} alt="avatar" style={{ width: "100%" }} />
+                                <img src={imageURL} alt="avatar" style={{ width: '100%' }} />
                             ) : (
                                 uploadButton
                             )}
@@ -387,7 +398,10 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
                 await store.sagaTask.toPromise();
             }
         } else {
-            res.setHeader('Set-Cookie', 'adminJWT=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;');
+            res.setHeader(
+                'Set-Cookie',
+                'adminJWT=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;'
+            );
             return {
                 redirect: {
                     destination: '/login',

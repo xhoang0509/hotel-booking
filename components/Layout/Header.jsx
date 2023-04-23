@@ -48,7 +48,7 @@ export default function HeaderLayout() {
         >
             <div className="flex justify-between items-center px-8 h-full">
                 <Link className="text-bold text-base" href="/">
-                    Home
+                    Trang chủ
                 </Link>
                 <Dropdown
                     menu={{
@@ -57,9 +57,19 @@ export default function HeaderLayout() {
                     className="cursor-pointer"
                 >
                     <div className="flex justify-between items-center">
-                        {admin.image ? <Avatar size={50} src={admin.image} className='mr-4 border-2 rounded-full border-[#FEBB02]' />
-                            : <Avatar size="large" icon={<UserOutlined />} className="mr-4 rounded-full" />
-                        }
+                        {admin.image ? (
+                            <Avatar
+                                size={50}
+                                src={admin.image}
+                                className="mr-4 border-2 rounded-full border-[#FEBB02]"
+                            />
+                        ) : (
+                            <Avatar
+                                size="large"
+                                icon={<UserOutlined />}
+                                className="mr-4 rounded-full"
+                            />
+                        )}
                         <div className="mr-4 font-bold text-base">{`${admin.lastName} ${admin.firstName}`}</div>
                     </div>
                 </Dropdown>

@@ -3,9 +3,9 @@ import { authAdmin } from '@/helper/auth.helper';
 import { SAGA_GET_ADMIN_DATA_ASYNC } from '@/redux/actions/admin.action';
 import { wrapper } from '@/redux/store';
 import adminApi from '@/services/admin';
-import cityApi from '@/services/city';
+import locationApi from '@/services/location';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Modal, Skeleton, Space, Table, Typography, notification } from 'antd';
+import { Button, Modal, Skeleton, Space, Table, Tag, Typography, notification } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -15,7 +15,7 @@ import { END } from 'redux-saga';
 export default function Location({ jwt }) {
     const router = useRouter();
     const [fetching, setFetching] = useState(false);
-    const [cities, setCities] = useState([]);
+    const [locations, setLocations] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [adminId, setAdminId] = useState('');
 
@@ -32,14 +32,38 @@ export default function Location({ jwt }) {
         },
         {
             title: 'Hỉnh ảnh',
-            dataIndex: 'image',
-            key: 'image',
-            render: (text, record) => <Image src={text} alt="image" className="w-[200px] h-auto" width={'200'} height={'300'} />,
+            dataIndex: 'thumbnail',
+            key: 'thumbnail',
+            render: (text, record) => (
+                <Image
+                    src={text}
+                    alt="image"
+                    className="w-[200px] h-auto"
+                    width={'200'}
+                    height={'300'}
+                />
+            ),
         },
         {
-            title: 'Số lượng',
+            title: 'Điên thoại liên hệ',
             dataIndex: 'phone',
             key: 'phone',
+        },
+        {
+            title: 'Thành phố',
+            dataIndex: 'city',
+            key: 'city',
+            render: (_, record) => {
+                return <Tag color="green">{record.city.name}</Tag>;
+            },
+        },
+        {
+            title: 'Số phòng',
+            dataIndex: 'numberRoom',
+            key: 'numberRoom',
+            render: (_, record) => {
+                return <Tag color="red">3</Tag>;
+            },
         },
         {
             title: 'Hành động',
@@ -60,9 +84,9 @@ export default function Location({ jwt }) {
     const fetchData = useCallback(async () => {
         setFetching(true);
         try {
-            const res = await cityApi.getAll(jwt);
+            const res = await locationApi.getAll(jwt);
             if (res.status) {
-                setCities(res.cities);
+                setLocations(res.locations);
             }
         } catch (error) {
             console.log(error);
@@ -70,9 +94,12 @@ export default function Location({ jwt }) {
         setFetching(false);
     }, [jwt]);
 
-    const handleEditClick = useCallback((id) => {
-        router.push(`/city/${id}`);
-    }, [router]);
+    const handleEditClick = useCallback(
+        (id) => {
+            router.push(`/city/${id}`);
+        },
+        [router]
+    );
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -119,7 +146,7 @@ export default function Location({ jwt }) {
                     >
                         Thêm địa điểm mới
                     </Button>
-                    <Table columns={columns} dataSource={cities} />
+                    <Table columns={columns} dataSource={locations} />
                     <Modal
                         title="Vô hiệu hóa"
                         open={isModalOpen}
@@ -153,7 +180,10 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
                 await store.sagaTask.toPromise();
             }
         } else {
-            res.setHeader('Set-Cookie', 'adminJWT=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;');
+            res.setHeader(
+                'Set-Cookie',
+                'adminJWT=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;'
+            );
             return {
                 redirect: {
                     destination: '/login',
@@ -168,7 +198,6 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
                 permanent: false,
             },
         };
-
     }
 
     return {

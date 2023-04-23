@@ -66,7 +66,7 @@ export default function Navigation() {
                     key: 9,
                     label: <Link href="/city">Thành phố</Link>,
                 },
-                 {
+                {
                     key: 10,
                     label: <Link href="/location">Địa điểm</Link>,
                 },
@@ -95,7 +95,13 @@ export default function Navigation() {
             >
                 <Link href="/">DATPHONG.COM</Link>
             </div>
-            <Menu className='font-bold' theme="dark" mode="inline" defaultSelectedKeys={['4']} items={items} />
+            <Menu
+                className="font-bold"
+                theme="dark"
+                mode="inline"
+                defaultSelectedKeys={['4']}
+                items={items}
+            />
         </Sider>
     );
 }

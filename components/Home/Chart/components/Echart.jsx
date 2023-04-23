@@ -1,27 +1,27 @@
-import { Row, Col, Typography } from "antd";
-import eChart from "../configs/eChart";
-import dynamic from "next/dynamic";
+import { Row, Col, Typography } from 'antd';
+import eChart from '../configs/eChart';
+import dynamic from 'next/dynamic';
 
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {ssr: false})
+const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 function EChart() {
     const { Title, Paragraph } = Typography;
 
     const items = [
         {
-            Title: "3,6K",
-            user: "Users",
+            Title: '3,6K',
+            user: 'Users',
         },
         {
-            Title: "2m",
-            user: "Clicks",
+            Title: '2m',
+            user: 'Clicks',
         },
         {
-            Title: "$772",
-            user: "Sales",
+            Title: '$772',
+            user: 'Sales',
         },
         {
-            Title: "82",
-            user: "Items",
+            Title: '82',
+            user: 'Items',
         },
     ];
 
@@ -42,8 +42,8 @@ function EChart() {
                     than last week <span className="bnb2">+30%</span>
                 </Paragraph>
                 <Paragraph className="lastweek">
-                    We have created multiple options for you to put together and customise
-                    into pixel perfect pages.
+                    We have created multiple options for you to put together and customise into
+                    pixel perfect pages.
                 </Paragraph>
                 <Row gutter>
                     {items.map((v, index) => (

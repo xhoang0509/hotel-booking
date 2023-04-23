@@ -5,12 +5,6 @@ const nextConfig = {
         remotePatterns: [
             {
                 protocol: 'https',
-                hostname: 'firebasestorage.googleapis.com',
-                port: '',
-                pathname: '/image/**',
-            },
-            {
-                protocol: 'https',
                 hostname: 'q-xx.bstatic.com',
                 port: '',
                 pathname: '/image/**',
@@ -21,8 +15,19 @@ const nextConfig = {
                 port: '',
                 pathname: '/image/**',
             },
+            {
+                protocol: 'https',
+                hostname: 'cf.bstatic.com',
+                port: '',
+                pathname: '/image/**',
+            },
         ],
-        domains: ['firebasestorage.googleapis.com', 'q-xx.bstatic.com', 'r-xx.bstatic.com'],
+        domains: [
+            'firebasestorage.googleapis.com',
+            'q-xx.bstatic.com',
+            'r-xx.bstatic.com',
+            'cf.bstatic.com',
+        ],
     },
 };
 

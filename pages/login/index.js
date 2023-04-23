@@ -1,11 +1,11 @@
 import { wrapper } from '@/redux/store';
 import { Button, Card, Form, Input, Layout, Typography, notification, Row, Col } from 'antd';
 import { useRouter } from 'next/router';
-import signinbg from "@/public/images/img-signin.jpg";
+import signinbg from '@/public/images/img-signin.jpg';
 
 export default function Login() {
     const { Header, Footer, Content } = Layout;
-    const { Title } = Typography
+    const { Title } = Typography;
     const router = useRouter();
     const onFinish = async (values) => {
         try {
@@ -45,7 +45,7 @@ export default function Login() {
         <div className="">
             <Layout className="layout-default layout-signin">
                 <Content className="signin">
-                    <Row gutter={[24, 0]} justify="space-around" className='flex items-center'>
+                    <Row gutter={[24, 0]} justify="space-around" className="flex items-center">
                         <Col
                             xs={{ span: 24, offset: 0 }}
                             lg={{ span: 6, offset: 2 }}
@@ -68,11 +68,11 @@ export default function Login() {
                                     rules={[
                                         {
                                             required: true,
-                                            message: "Vui lòng nhập email của bạn!",
+                                            message: 'Vui lòng nhập email của bạn!',
                                         },
                                     ]}
                                 >
-                                    <Input placeholder="Email" className='px-2'/>
+                                    <Input placeholder="Email" className="px-2" />
                                 </Form.Item>
 
                                 <Form.Item
@@ -82,7 +82,7 @@ export default function Login() {
                                     rules={[
                                         {
                                             required: true,
-                                            message: "Vui lòng nhập mật khẩu của bạn!",
+                                            message: 'Vui lòng nhập mật khẩu của bạn!',
                                         },
                                     ]}
                                 >
@@ -92,8 +92,8 @@ export default function Login() {
                                     <Button
                                         type="primary"
                                         htmlType="submit"
-                                        style={{ width: "100%" }}
-                                        className='bg-btn-primary'
+                                        style={{ width: '100%' }}
+                                        className="bg-btn-primary"
                                     >
                                         ĐĂNG NHẬP
                                     </Button>
