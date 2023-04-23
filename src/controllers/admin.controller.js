@@ -143,7 +143,7 @@ async function login(req, res) {
             };
             return;
         }
-        writeLog(__filename, 'admin.controller.login', `Admin: ${admin.email} login successfully`);
+        writeLog(__filename, 'admin.controller.login', `Admin: ${admin.email} login successfully`, 'SUCCESS');
         const token = jwt.sign(
             { email: admin.email, id: admin.id, type: 'admin' },
             JWT_SECRET_KEY,

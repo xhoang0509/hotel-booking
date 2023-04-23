@@ -27,7 +27,7 @@ app.use(
 );
 
 app.get('/', (req, res) => {
-    res.send('BOOKING.COM API');
+    res.send('DATPHONG.COM API');
 });
 
 app.use(routers);

@@ -15,36 +15,36 @@ async function authApi(req, res, next) {
         const now = Math.floor(Date.now() / 1000);
 
         if (decoded.exp < now) {
-            writeLog(__filename, 'requiresAuth.authApi', 'JWT has expired', 'FAILED');
+            writeLog(__filename, 'authApi', 'JWT has expired', 'FAILED');
             res.status(401).json({ status: false, message: 'JWT expired' });
         } else {
             if (decoded.type === 'admin') {
                 const admin = await admins.findOne({ where: { id: decoded.id } });
                 if (admin) {
-                    writeLog(__filename, 'requiresAuth.authApi', 'OK', 'SUCCESS');
+                    writeLog(__filename, 'authApi', 'OK', 'SUCCESS');
                     next();
                 } else {
-                    writeLog(__filename, 'requiresAuth.authApi', 'Admin not found', 'FAILED');
+                    writeLog(__filename, 'authApi', 'Admin not found', 'FAILED');
                     res.status(401).json({ status: false, message: 'Admin not found' });
                 }
             } else if (decoded.type === 'user') {
                 const user = await users.findOne({ where: { id: decoded.id } });
                 if (user) {
                     if (user.status === USER_STATUS.ACTIVE) {
-                        writeLog(__filename, 'requiresAuth.authApi', 'OK', 'SUCCESS');
+                        writeLog(__filename, 'authApi', 'OK', 'SUCCESS');
                         next();
                     } else {
-                        writeLog(__filename, 'requiresAuth.authApi', 'OK', 'FAILED');
+                        writeLog(__filename, 'authApi', 'OK', 'FAILED');
                         res.status(401).json({ status: false, message: 'User not active' });
                     }
                 } else {
-                    writeLog(__filename, 'requiresAuth.authApi', 'User not found', 'FAILED');
+                    writeLog(__filename, 'authApi', 'User not found', 'FAILED');
                     res.status(401).json({ status: false, message: 'User not found' });
                 }
             }
         }
     } catch (e) {
-        writeLog(__filename, 'requiresAuth.authApi', `ERROR:  ${JSON.stringify(e)}`);
+        writeLog(__filename, 'authApi', `ERROR:  ${JSON.stringify(e)}`);
         res.status(401).json({ status: false, message: 'UNAUTHORIZED' });
     }
 }

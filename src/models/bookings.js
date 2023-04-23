@@ -51,6 +51,12 @@ module.exports = (sequelize, DataTypes) => {
         email: {
             type: DataTypes.TEXT,
         },
+        email: {
+            type: DataTypes.TEXT,
+        },
+        status: {
+            type: DataTypes.TEXT,
+        },
     });
     return UserLocation;
 };
