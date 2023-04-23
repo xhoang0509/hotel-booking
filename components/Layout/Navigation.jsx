@@ -72,6 +72,25 @@ export default function Navigation() {
                 },
             ],
         },
+        {
+            key: 11,
+            label: <span>Quản lý phòng đặt</span>,
+            icon: <EnvironmentOutlined />,
+            children: [
+                {
+                    key: 8,
+                    label: <Link href="/booking">Tất cả phòng đặt</Link>,
+                },
+                {
+                    key: 9,
+                    label: <Link href="/city">Thành phố</Link>,
+                },
+                {
+                    key: 10,
+                    label: <Link href="/location">Địa điểm</Link>,
+                },
+            ],
+        },
     ];
 
     return (

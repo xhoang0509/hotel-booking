@@ -8,11 +8,11 @@ import { SAGA_GET_ADMIN_DATA_ASYNC } from '@/redux/actions/admin.action';
 import { wrapper } from '@/redux/store';
 import { END } from 'redux-saga';
 
-export default function Home() {
+export default function Home({ jwt }) {
     return (
         <>
             <LayoutApp>
-                <Summary />
+                <Summary jwt={jwt} />
                 <SummaryChart />
                 <ProjectAndTimelint />
                 <Banner />
@@ -53,7 +53,7 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
     }
     return {
         props: {
-            token,
+            jwt: token,
         },
     };
 });
