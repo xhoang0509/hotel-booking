@@ -7,8 +7,16 @@ const bookingApi = {
         });
     },
 
-    getAll() {
-        return axiosClient.get('/booking');
+    getOne(id, token) {
+        return axiosClient.get(`/booking/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+    },
+
+    getBookingsByUser(id, token) {
+        return axiosClient.get(`/booking/${id}/user`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
     },
 };
 

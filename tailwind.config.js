@@ -18,7 +18,7 @@ module.exports = {
             action: '#006ce4',
             red: '#FF0000',
             link: '#1677ff',
-            success: '#28A745'
+            success: '#28A745',
         },
     },
     plugins: [],

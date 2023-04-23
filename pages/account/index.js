@@ -40,7 +40,7 @@ export default function Account({ token }) {
                             title={<span className="text-lg text-bold">Lịch sử đặt phòng</span>}
                             className="w-full"
                         >
-                            <Link href="" className="">
+                            <Link href="/booking-history" className="">
                                 <Typography className="underline text-action">
                                     Xem lịch sử đặt phòng của bạn.
                                 </Typography>

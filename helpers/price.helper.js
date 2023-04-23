@@ -8,9 +8,9 @@ export const formattedPrice = function (price) {
 
 export const diffPrice = function (oldPrice, newPrice) {
     return oldPrice - newPrice;
-}
+};
 
 export const savePercent = function (oldPrice, newPrice) {
-    let percent = (oldPrice - newPrice) / oldPrice * 100;
+    let percent = ((oldPrice - newPrice) / oldPrice) * 100;
     return Math.floor(percent);
-}
+};
