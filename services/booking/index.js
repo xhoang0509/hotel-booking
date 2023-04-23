@@ -13,6 +13,12 @@ const bookingApi = {
         });
     },
 
+    update(id, data, token) {
+        return axiosClient.put(`/booking/${id}`, data, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+    },
+
     getBookingsByUser(id, token) {
         return axiosClient.get(`/booking/${id}/user`, {
             headers: { Authorization: `Bearer ${token}` },

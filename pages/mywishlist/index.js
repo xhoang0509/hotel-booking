@@ -27,10 +27,11 @@ export default function MyWishList({ jwt }) {
             console.log(e);
         }
         setFetching(false);
-    });
+    }, [jwt, user]);
 
     useEffect(() => {
         fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     console.log('favorites: ', favorites);
@@ -48,8 +49,8 @@ export default function MyWishList({ jwt }) {
                     </div>
                     <Divider />
                     <div className="flex flex-wrap gap-[10px]">
-                        {favorites.map((favorite) => {
-                            return <LocationCard location={favorite.location} />;
+                        {favorites.map((favorite, index) => {
+                            return <LocationCard key={index} location={favorite.location} />;
                         })}
                     </div>
                 </div>

@@ -4,9 +4,12 @@ import { useRouter } from 'next/router';
 
 function LocationCard({ location }) {
     const router = useRouter();
-    const handleNameClick = useCallback((id) => {
-        router.push(`/hotel?id=${id}`);
-    }, []);
+    const handleNameClick = useCallback(
+        (id) => {
+            router.push(`/hotel?id=${id}`);
+        },
+        [router]
+    );
 
     return (
         <div className="bg-[#F2F2F2]">

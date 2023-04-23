@@ -33,6 +33,7 @@ function TableRoom({ rooms, onBooking, setPrice, setRoomId }) {
                             key={index}
                             src={image}
                             className={`p-2 cursor-pointer max-w-[300px] h-auto`}
+                            alt="room image"
                         />
                     );
                 });

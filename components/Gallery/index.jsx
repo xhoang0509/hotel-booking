@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react';
 function Gallery({ images }) {
     const [selected, setSelected] = useState();
     const [isModalOpen, setIsModalOpen] = useState(false);
+
     const showModal = () => {
         setIsModalOpen(true);
     };

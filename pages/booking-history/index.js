@@ -1,20 +1,17 @@
 import WebLayout from '@/components/Layout/WebLayout';
-import { LocalStorage } from '@/constants/storage.const';
 import { authUser } from '@/helpers/auth.helper';
+import { TranslateBookingStatus, checkEnableEdit } from '@/helpers/booking.helper';
 import { formatDateVN } from '@/helpers/date.helper';
 import { formattedPrice } from '@/helpers/price.helper';
 import { SAGA_GET_USER_DATA_ASYNC } from '@/redux/actions/user.action';
 import { wrapper } from '@/redux/store';
 import bookingApi from '@/services/booking';
-import locationApi from '@/services/location';
 import { Button, Space, Table, Tag, notification } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { END } from 'redux-saga';
-const moment = require('moment');
-require('moment/locale/vi');
 
 export default function BookingHistory({ jwt }) {
     const router = useRouter();
@@ -28,14 +25,13 @@ export default function BookingHistory({ jwt }) {
     const [local, setLocal] = useState({});
     const [fetching, setFetching] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [location, setLocation] = useState({});
-    const [room, setRoom] = useState({});
     const [paymentMethod, setPaymentMethod] = useState('cash');
     const [paymentStatus, setPaymentStatus] = useState(false);
     const [bookings, setBookings] = useState([]);
 
     useEffect(() => {
         fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const fetchData = useCallback(async () => {
@@ -51,54 +47,6 @@ export default function BookingHistory({ jwt }) {
         }
         setFetching(false);
     }, [user, jwt]);
-
-    const handleChange = (value) => {
-        setPaymentMethod(value);
-    };
-
-    const handleCheckBox = (e) => {
-        setPaymentStatus(e.target.checked);
-    };
-
-    const handleBooking = async () => {
-        setLoading(true);
-        try {
-            if (local && local.locationId) {
-                const data = {
-                    paymentMethod,
-                    paymentStatus,
-                    ...info,
-                    price: local.price.newPrice,
-                    locationId: local.locationId,
-                    checkInDate: local.checkInOutDate[0],
-                    checkOutDate: local.checkInOutDate[1],
-                };
-                console.log('data: ', data);
-                const res = await bookingApi.booking(data, jwt);
-                if (res.status) {
-                    notification.open({
-                        message: 'Đặt phòng thành công',
-                        description: 'Bạn đã đặt phòng thành công!',
-                        placement: 'topRight',
-                        type: 'success',
-                    });
-                    setTimeout(() => {
-                        router.push('/booking-history');
-                    }, 1500);
-                } else {
-                    notification.open({
-                        message: 'Đặt phòng thất bại',
-                        description: res.message,
-                        placement: 'topRight',
-                        type: 'error',
-                    });
-                }
-            }
-        } catch (e) {
-            console.log(e);
-        }
-        setLoading(false);
-    };
 
     const columns = [
         {
@@ -167,18 +115,44 @@ export default function BookingHistory({ jwt }) {
             },
         },
         {
+            title: 'Tình  trạng phòng',
+            dataIndex: 'status',
+            key: 'status',
+            render: (_, record, index) => {
+                switch (record.status) {
+                    case 'not_check_in':
+                        return <Tag color="red">{TranslateBookingStatus(record.status)}</Tag>;
+                    case 'check_in':
+                        return <Tag color="green">{TranslateBookingStatus(record.status)}</Tag>;
+                    case 'check_out':
+                        return <Tag color="#108ee9">{TranslateBookingStatus(record.status)}</Tag>;
+                    case 'rejected':
+                        return <Tag color="#f50">{TranslateBookingStatus(record.status)}</Tag>;
+
+                    default:
+                        return '';
+                }
+            },
+        },
+        {
             title: 'Hành động',
             key: 'action',
-            render: (_, record) => (
-                <Space size="middle">
-                    <Link href={`/booking-history/${record.id}`}>
-                        <Button>Chi tiết</Button>
-                    </Link>
-                    <Link href={`/booking-history/${record.id}`}>
-                        <Button>Chỉnh sửa</Button>
-                    </Link>
-                </Space>
-            ),
+            render: (_, record) => {
+                const isEnableEdit = checkEnableEdit(record.status);
+                return (
+                    <Space size="middle">
+                        {isEnableEdit ? (
+                            <Link href={`/booking-history/${record.id}`}>
+                                <Button>Chỉnh sửa</Button>
+                            </Link>
+                        ) : (
+                            <Link href={`/booking-history/${record.id}`}>
+                                <Button>Chi tiết</Button>
+                            </Link>
+                        )}
+                    </Space>
+                );
+            },
         },
     ];
 

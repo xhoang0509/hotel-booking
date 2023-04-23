@@ -42,7 +42,7 @@ export default function ResetPassword() {
             await new Promise((resolver) => setTimeout(resolver, 1000));
             router.push('/account/login');
         },
-        [jwt]
+        [jwt, router]
     );
 
     const validateConfirmPassword = ({ getFieldValue }) => ({

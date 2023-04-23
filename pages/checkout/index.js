@@ -12,6 +12,7 @@ import paymentApi from '@/services/payment';
 import { CheckCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Col, Form, Input, Row, Select, Tag, notification } from 'antd';
 import { serialize } from 'cookie';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -36,6 +37,7 @@ export default function Checkout({ jwt }) {
 
     useEffect(() => {
         fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const fetchData = useCallback(async () => {
@@ -57,7 +59,7 @@ export default function Checkout({ jwt }) {
             setLocation({});
         }
         setFetching(false);
-    }, [user, jwt]);
+    }, []);
 
     const handleChange = (value) => {
         setPaymentMethod(value);
@@ -103,6 +105,8 @@ export default function Checkout({ jwt }) {
                             placement: 'topRight',
                             type: 'success',
                         });
+                        localStorage.removeItem(LocalStorage.checkout);
+                        router.push('/booking-history');
                     } else {
                         notification.open({
                             message: 'Đặt phòng thất bại',
@@ -158,14 +162,14 @@ export default function Checkout({ jwt }) {
                                         <p className="font-bold">
                                             {formatDateVN(local.checkInOutDate[0])}
                                         </p>
-                                        <p>14:00 – 23:00</p>
+                                        <p>08:00 – 23:00</p>
                                     </Col>
                                     <Col span={12}>
                                         <p>Trả phòng</p>
                                         <p className="font-bold">
                                             {formatDateVN(local.checkInOutDate[1])}
                                         </p>
-                                        <p>00:00 – 12:00</p>
+                                        <p>08:00 – 23:00</p>
                                     </Col>
                                 </Row>
                                 <div>
@@ -234,6 +238,7 @@ export default function Checkout({ jwt }) {
                                     <img
                                         src={location.thumbnail}
                                         className="w-[200px] h-[200px] mr-4"
+                                        alt={location.name}
                                     />
                                     <div className="mb-2">
                                         <div>
@@ -349,6 +354,7 @@ export default function Checkout({ jwt }) {
                                                     src={image}
                                                     key={index}
                                                     className="w-[200px] h-[200px] m-2"
+                                                    alt="room name"
                                                 />
                                             );
                                         })}
@@ -393,6 +399,7 @@ export default function Checkout({ jwt }) {
                                             <img
                                                 src={location.qr_banking}
                                                 className="w-[300px] h-[300px] mt-6"
+                                                alt={location.name}
                                             />
                                             <Checkbox onChange={handleCheckBox}>
                                                 Xác nhận đã thanh toán

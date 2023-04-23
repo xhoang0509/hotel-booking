@@ -6,7 +6,7 @@ const NotFoundPage = () => {
     const router = useRouter();
     const handleRedirect = useCallback(() => {
         router.push('/');
-    }, []);
+    }, [router]);
 
     return (
         <Result

@@ -26,7 +26,7 @@ export default function City() {
 
     const handleClick = useCallback(() => {
         router.push('/search');
-    }, []);
+    }, [router]);
 
     return (
         <div className="flex flex-wrap">

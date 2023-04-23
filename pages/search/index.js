@@ -20,6 +20,7 @@ export default function Search({ jwt }) {
     const locationRef = useRef([]);
     useEffect(() => {
         fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const fetchData = useCallback(async () => {

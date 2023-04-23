@@ -73,7 +73,8 @@ export default function Verify() {
             console.log(e.message);
         }
         setLoadingRequestOTP(false);
-    }, []);
+    }, [form]);
+
     return (
         <WebLayout>
             <div className="flex flex-col items-center mt-12">

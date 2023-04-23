@@ -60,7 +60,7 @@ export default function SearchCategory() {
 
     const handleCategoryClick = useCallback(() => {
         router.push('/search');
-    }, []);
+    }, [router]);
 
     return (
         <React.Fragment>

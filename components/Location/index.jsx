@@ -1,20 +1,23 @@
+import { formattedPrice } from '@/helpers/price.helper';
 import userApi from '@/services/user';
+import { Tag, notification } from 'antd';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { HeartIcon, HeartRedIcon } from '../Icons/HeartIcon';
 import Star from '../Star';
-import { Tag, Typography, notification } from 'antd';
-import { formattedPrice } from '@/helpers/price.helper';
 
 export default function Location({ jwt, location, favorites }) {
     const router = useRouter();
     const user = useSelector((state) => state.user);
 
-    const handleRouter = useCallback((id) => {
-        router.push(`/hotel?id=${id}`);
-    }, []);
+    const handleRouter = useCallback(
+        (id) => {
+            router.push(`/hotel?id=${id}`);
+        },
+        [router]
+    );
 
     const handleAddFavorite = useCallback(
         async (id) => {
@@ -52,7 +55,7 @@ export default function Location({ jwt, location, favorites }) {
                 console.log(e);
             }
         },
-        [jwt]
+        [jwt, user.id]
     );
 
     const isFavorite =
@@ -60,9 +63,12 @@ export default function Location({ jwt, location, favorites }) {
             ? favorites.findIndex((favorite) => favorite.locationId === location.id)
             : -1;
 
-    const handleDetailClick = useCallback((id) => {
-        router.push(`/hotel?id=${id}`);
-    }, []);
+    const handleDetailClick = useCallback(
+        (id) => {
+            router.push(`/hotel?id=${id}`);
+        },
+        [router]
+    );
 
     return (
         <div>
@@ -74,6 +80,7 @@ export default function Location({ jwt, location, favorites }) {
                         height={200}
                         onClick={() => handleRouter(location.id)}
                         className="cursor-pointer"
+                        alt="location thumnail"
                     />
                     {isFavorite === -1 && (
                         <div onClick={() => handleAddFavorite(location.id)}>
