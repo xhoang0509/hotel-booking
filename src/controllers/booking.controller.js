@@ -83,9 +83,7 @@ async function getBookingByUser(req, res) {
         const bookingDB = await bookings.findAll({
             where: { userId: id },
             include: [users, locations],
-            order: [
-                ['createdAt', 'DESC'],
-            ],
+            order: [['createdAt', 'DESC']],
         });
         result.bookings = bookingDB;
         result.status = true;
@@ -135,7 +133,10 @@ async function update(req, res) {
         });
         if (booking) {
             const { checkInDate, checkOutDate } = req.body;
-            const booking = await bookings.update({ checkInDate, checkOutDate }, { where: { id: id } });
+            const booking = await bookings.update(
+                { checkInDate, checkOutDate },
+                { where: { id: id } }
+            );
             result.booking = booking;
             result.message = 'Cập nhật thông tin thành công!';
             result.status = true;

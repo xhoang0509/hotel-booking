@@ -1,5 +1,11 @@
 const { Router } = require('express');
-const { booking, getAll, update, getOne, getBookingByUser } = require('../controllers/booking.controller');
+const {
+    booking,
+    getAll,
+    update,
+    getOne,
+    getBookingByUser,
+} = require('../controllers/booking.controller');
 const { authApi } = require('../middlewares/requiresAuth.middleware');
 const bookingRouter = new Router();
 

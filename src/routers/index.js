@@ -8,6 +8,7 @@ const ruleRouter = require('./rule.router');
 const locationRouter = require('./location.router');
 const bookingRouter = require('./booking.router');
 const paymentRouter = require('./payment.router');
+const analyticRouter = require('./analytic.router');
 
 const routers = new Router();
 
@@ -20,5 +21,6 @@ routers.use('/city', cityRouter);
 routers.use('/location', locationRouter);
 routers.use('/booking', bookingRouter);
 routers.use('/payment', paymentRouter);
+routers.use('/analytic', analyticRouter);
 
 module.exports = routers;
