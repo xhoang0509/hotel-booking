@@ -440,10 +440,17 @@ module.exports = {
                                 key: 'id',
                             },
                         },
-                        locationId: {
+                        roomId: {
                             type: Sequelize.DataTypes.INTEGER(11),
                             references: {
                                 model: 'rooms',
+                                key: 'id',
+                            },
+                        },
+                        locationId: {
+                            type: Sequelize.DataTypes.INTEGER(11),
+                            references: {
+                                model: 'locations',
                                 key: 'id',
                             },
                         },

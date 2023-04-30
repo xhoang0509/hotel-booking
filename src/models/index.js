@@ -54,4 +54,6 @@ db['users'].hasMany(db['bookings'], { foreignKey: 'userId' });
 db['bookings'].belongsTo(db['locations'], { foreignKey: 'locationId' });
 db['locations'].hasMany(db['bookings'], { foreignKey: 'locationId' });
 
+db['bookings'].belongsTo(db['rooms'], { foreignKey: 'roomId' });
+db['rooms'].hasMany(db['bookings'], { foreignKey: 'roomId' });
 module.exports = db;

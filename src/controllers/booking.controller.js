@@ -1,6 +1,7 @@
 const writeLog = require('../logger');
 
 const bookings = require('../models').bookings;
+const rooms = require('../models').rooms;
 const users = require('../models').users;
 const locations = require('../models').locations;
 
@@ -13,6 +14,7 @@ async function booking(req, res) {
     try {
         const {
             userId,
+            roomId,
             locationId,
             firstName,
             lastName,
@@ -23,9 +25,10 @@ async function booking(req, res) {
             paymentMethod,
             paymentStatus,
         } = req.body;
-        if (userId && locationId) {
+        if (userId && roomId) {
             const booking = await bookings.create({
                 userId,
+                roomId,
                 locationId,
                 firstName,
                 lastName,
@@ -39,7 +42,7 @@ async function booking(req, res) {
             result.booking = booking;
             result.status = true;
         } else {
-            result.message = 'Missing userId or locationId';
+            result.message = 'Missing userId or roomId';
         }
     } catch (e) {
         writeLog(__filename, 'booking', e.message, 'FAILED');
@@ -82,7 +85,7 @@ async function getBookingByUser(req, res) {
         const { id } = req.params;
         const bookingDB = await bookings.findAll({
             where: { userId: id },
-            include: [users, locations],
+            include: [users, locations, rooms],
             order: [['createdAt', 'DESC']],
         });
         result.bookings = bookingDB;
