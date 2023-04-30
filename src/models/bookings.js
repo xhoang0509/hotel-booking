@@ -6,6 +6,9 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true,
         },
+        bookingId: {
+            type: DataTypes.TEXT,
+        },
         userId: {
             type: DataTypes.INTEGER(11),
             references: {

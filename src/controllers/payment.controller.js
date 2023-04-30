@@ -20,7 +20,7 @@ async function createPaymentUrl(req, res, next) {
             req.connection.socket.remoteAddress;
 
         let vnpUrl = vnp_Url;
-        let returnUrl = 'http://localhost:4000/booking-history';
+        let returnUrl = `${process.env.CLIENT_URL}/booking-history`;
 
         const now = new Date();
         const year = now.getFullYear();
@@ -56,7 +56,6 @@ async function createPaymentUrl(req, res, next) {
         }
 
         vnp_Params = sortObject(vnp_Params);
-        console.log({ vnp_Params });
         var signData = querystring.stringify(vnp_Params, { encode: false });
         var hmac = crypto.createHmac('sha512', secretKey);
         var signed = hmac.update(new Buffer(signData, 'utf-8')).digest('hex');

@@ -26,7 +26,7 @@ function createPdfFile(data) {
         doc.info.Creator = 'Datphong.com';
 
         // Add bill header
-        doc.fontSize(18).text(`Hóa đơn đặt phòng #${data.id}`, { align: 'center' });
+        doc.fontSize(18).text(`Hóa đơn đặt phòng #${data.bookingId}`, { align: 'center' });
         doc.moveDown();
 
         // Add customer details
@@ -50,7 +50,7 @@ function createPdfFile(data) {
         // Add billing details
         doc.fontSize(14).text('Thông tin hóa đơn', { underline: true });
         doc.moveDown();
-        doc.fontSize(12).text(`Booking ID: #${id}`);
+        doc.fontSize(12).text(`Booking ID: #${data.bookingId}`);
         doc.fontSize(12).text(`Ngày: ${createdAt.toLocaleDateString()}`);
         doc.fontSize(12).text(`Thời gian: ${createdAt.toLocaleTimeString()}`);
         doc.fontSize(12).text(`Số tiền: ${formattedPriceEN(price)} VND`);
