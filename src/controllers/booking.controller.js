@@ -211,6 +211,49 @@ async function checkRoom(req, res) {
     }
 }
 
+async function checkInOut(req, res) {
+    let code = 200;
+    let result = {
+        status: false,
+        message: '',
+    };
+    try {
+        const { id } = req.params;
+        const { type } = req.body;
+        const bookingDB = await bookings.findOne({ where: { id: id } });
+        if (bookingDB) {
+            if (type === 'check_in') {
+                bookingDB.status = 'check_in';
+                await bookingDB.save();
+                result.status = true;
+                result.message = 'Check in phòng thành công!';
+            } else if (type === 'check_out') {
+                bookingDB.status = 'check_out';
+                await bookingDB.save();
+                const room = await rooms.findOne({ where: { id: bookingDB.roomId } });
+                let userBookings = room.userBookings || [];
+                userBookings = userBookings.filter(
+                    (booking) => booking.bookingId !== bookingDB.bookingId
+                );
+                room.userBookings = JSON.stringify(userBookings);
+                await room.save();
+                result.status = true;
+                result.message = 'Check out phòng thành công!';
+            }
+        } else {
+            result.status = false;
+            result.message = 'Booking not found!';
+        }
+    } catch (e) {
+        writeLog(__filename, 'checkRoom', e.message, 'FAILED');
+        code = 500;
+        result.status = false;
+        result.message = e.message;
+    } finally {
+        res.status(code).json(result);
+    }
+}
+
 module.exports = {
     booking,
     getAll,
@@ -218,4 +261,5 @@ module.exports = {
     update,
     getBookingByUser,
     checkRoom,
+    checkInOut,
 };
