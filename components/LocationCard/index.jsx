@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import LocationIcon from '../Icons/Location';
 import { useRouter } from 'next/router';
+import { formattedPrice } from '@/helpers/price.helper';
 
 function LocationCard({ location }) {
     const router = useRouter();
@@ -10,6 +11,10 @@ function LocationCard({ location }) {
         },
         [router]
     );
+
+    const handleRedirect = (id) => {
+        router.push(`/hotel?id=${id}`);
+    };
 
     return (
         <div className="bg-[#F2F2F2]">
@@ -28,10 +33,7 @@ function LocationCard({ location }) {
             <div className="w-full h-[1px] bg-[#ccc]"></div>
             <div className="flex items-center">
                 <LocationIcon className="w-[16px] h-[16px] inline-block" />
-                <p className="text-xs p-2">
-                    Hà Nội, Việt Nam <br />
-                    4,8 km từ trung tâm
-                </p>
+                <p className="text-xs p-2">{location.address}</p>
             </div>
             <div className="w-full h-[1px] bg-[#ccc]"></div>
             <div className="p-2 flex">
@@ -47,14 +49,21 @@ function LocationCard({ location }) {
             <div className="mx-4 my-8 text-sm mb-12">
                 <p className="text-end font-light text-xs">1 đêm, 2 người lớn</p>
                 <p className="text-end">
-                    <span className="text-red mr-2 line-through">VND 1.620.000</span>
-                    <span className="text-xl">VND 972.000 </span>
+                    <span className="text-red mr-2 line-through">
+                        {formattedPrice(location.oldPrice)}
+                    </span>
+                    <span className="text-xl">{formattedPrice(location.newPrice)}</span>
                 </p>
                 <p className="text-end font-light text-xs">Đã bao gồm thuế và phí</p>
             </div>
             <div className="w-full h-[1px] bg-[#ccc]"></div>
             <div className="m-2">
-                <button className="bg-primary text-white w-full p-2">Xem chỗ nghỉ</button>
+                <button
+                    className="bg-primary text-white w-full p-2"
+                    onClick={() => handleRedirect(location.id)}
+                >
+                    Xem chỗ nghỉ
+                </button>
             </div>
         </div>
     );

@@ -31,7 +31,6 @@ export default function Search({ jwt }) {
         }
         if (user && user.id) {
             const resFavorite = await userApi.getFavorite(user.id, jwt);
-            console.log('resFavorite: ', resFavorite);
             if (resFavorite.status) {
                 setFavorites(resFavorite.favorites);
             }

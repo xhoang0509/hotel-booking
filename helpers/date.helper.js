@@ -20,3 +20,16 @@ export function diffDay(dateI1, dateI2) {
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
 }
+
+export function getDayMonthYear(dateInput) {
+    const date = new Date(dateInput);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+}
+
+export function getYear(dataInput) {
+    const date = new Date(dataInput);
+    return date.getFullYear();
+}

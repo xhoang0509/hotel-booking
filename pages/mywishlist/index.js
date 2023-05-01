@@ -34,7 +34,6 @@ export default function MyWishList({ jwt }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    console.log('favorites: ', favorites);
     return (
         <WebLayout>
             {fetching && <div>Fetching...</div>}

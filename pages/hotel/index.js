@@ -9,7 +9,7 @@ import locationApi from '@/services/location';
 import userApi from '@/services/user';
 import { HeartOutlined, InfoCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { Breadcrumb, Col, DatePicker, Divider, Input, Row, notification } from 'antd';
+import { Breadcrumb, Col, DatePicker, Divider, Input, Row, Skeleton, notification } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
@@ -30,7 +30,6 @@ export default function Hotel({ jwt }) {
     const fetchData = useCallback(async () => {
         setLoading(true);
         try {
-            console.log('id: ', id);
             const res = await locationApi.getOne(id);
             if (res.status) {
                 setLocation(res.location);
@@ -116,7 +115,13 @@ export default function Hotel({ jwt }) {
                 ]}
                 className="mb-4"
             />
-            {loading && <div>loading...</div>}
+            {loading && (
+                <>
+                    <Skeleton />
+                    <Skeleton />
+                    <Skeleton />
+                </>
+            )}
             {!loading && !location && <NotFoundLocation />}
             {!loading && location && (
                 <>
@@ -249,6 +254,7 @@ export default function Hotel({ jwt }) {
                         price={price}
                         location={location}
                         roomId={roomId}
+                        jwt={jwt}
                     />
                 </>
             )}

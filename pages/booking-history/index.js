@@ -6,6 +6,7 @@ import { formattedPrice } from '@/helpers/price.helper';
 import { SAGA_GET_USER_DATA_ASYNC } from '@/redux/actions/user.action';
 import { wrapper } from '@/redux/store';
 import bookingApi from '@/services/booking';
+import fileApi from '@/services/file';
 import { Button, Space, Table, Tag, notification } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -16,18 +17,10 @@ import { END } from 'redux-saga';
 export default function BookingHistory({ jwt }) {
     const router = useRouter();
     const user = useSelector((state) => state.user);
-    const [info, setInfo] = useState({
-        userId: user.id,
-        lastName: user.lastName,
-        firstName: user.firstName,
-        email: user.email,
-    });
-    const [local, setLocal] = useState({});
     const [fetching, setFetching] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [paymentMethod, setPaymentMethod] = useState('cash');
-    const [paymentStatus, setPaymentStatus] = useState(false);
     const [bookings, setBookings] = useState([]);
+    const [pdfUrl, setPdfUrl] = useState('');
 
     useEffect(() => {
         fetchData();
@@ -40,13 +33,45 @@ export default function BookingHistory({ jwt }) {
             const res = await bookingApi.getBookingsByUser(user.id, jwt);
             if (res.status) {
                 setBookings(res.bookings);
-                console.log(res.bookings);
             }
         } catch (e) {
             console.log(e);
         }
         setFetching(false);
     }, [user, jwt]);
+
+    const handleExportPdf = async (id) => {
+        try {
+            const res = await fileApi.createPdf(id, jwt);
+            if (res.status) {
+                notification.open({
+                    message: 'Xuất file thành công!',
+                    description: '',
+                    placement: 'topRight',
+                    type: 'success',
+                });
+            }
+        } catch (e) {}
+    };
+
+    const handleSendPdf = async (id) => {
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/file/${id}/pdf`, {
+                method: 'GET',
+                headers: { Authorization: `Bearer ${jwt}` },
+            });
+            const blob = res.blob();
+            const url = URL.createObjectURL(blob);
+            window.open(url);
+        } catch (e) {
+            notification.open({
+                message: 'Lỗi tải file',
+                description: e.message,
+                placement: 'topRight',
+                type: 'error',
+            });
+        }
+    };
 
     const columns = [
         {
@@ -128,7 +153,6 @@ export default function BookingHistory({ jwt }) {
                         return <Tag color="#108ee9">{TranslateBookingStatus(record.status)}</Tag>;
                     case 'rejected':
                         return <Tag color="#f50">{TranslateBookingStatus(record.status)}</Tag>;
-
                     default:
                         return '';
                 }
@@ -140,17 +164,31 @@ export default function BookingHistory({ jwt }) {
             render: (_, record) => {
                 const isEnableEdit = checkEnableEdit(record.status);
                 return (
-                    <Space size="middle">
+                    <div className="flex flex-col items-start">
                         {isEnableEdit ? (
                             <Link href={`/booking-history/${record.id}`}>
-                                <Button>Chỉnh sửa</Button>
+                                <Button size="small">Chỉnh sửa</Button>
                             </Link>
                         ) : (
                             <Link href={`/booking-history/${record.id}`}>
-                                <Button>Chi tiết</Button>
+                                <Button size="small">Chi tiết</Button>
                             </Link>
                         )}
-                    </Space>
+                        <Button
+                            size="small"
+                            className="mt-2"
+                            onClick={() => handleExportPdf(record.id)}
+                        >
+                            Tạo HĐ
+                        </Button>
+                        <Button
+                            size="small"
+                            className="mt-2"
+                            onClick={() => handleSendPdf(record.id)}
+                        >
+                            Tải xuống HĐ
+                        </Button>
+                    </div>
                 );
             },
         },

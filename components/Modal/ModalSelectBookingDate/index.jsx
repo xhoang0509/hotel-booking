@@ -1,12 +1,13 @@
-import { Button, Checkbox, DatePicker, Form, Modal } from 'antd';
+import { Button, Checkbox, DatePicker, Form, Modal, notification } from 'antd';
 import { useState } from 'react';
 import moment from 'moment';
 import { LocalStorage } from '@/constants/storage.const';
 import { useRouter } from 'next/router';
+import bookingApi from '@/services/booking';
 
 const { RangePicker } = DatePicker;
 
-function ModalSelectBookingDate({ isModalOpen, handleCancel, price, location, roomId }) {
+function ModalSelectBookingDate({ isModalOpen, handleCancel, price, location, roomId, jwt }) {
     const router = useRouter();
     const [form] = Form.useForm();
     const [range, setRange] = useState([]);
@@ -16,17 +17,39 @@ function ModalSelectBookingDate({ isModalOpen, handleCancel, price, location, ro
     };
 
     const onFinish = async (values) => {
-        localStorage.setItem(
-            LocalStorage.checkout,
-            JSON.stringify({
-                checkInOutDate: values.checkInOutDate,
-                price,
-                locationId: location.id,
+        const data = {
+            checkInOutDate: values.checkInOutDate,
+            price,
+            roomId,
+            locationId: location.id,
+        };
+        const res = await bookingApi.checkRoom(
+            {
+                checkInDate: values.checkInOutDate[0],
+                checkOutDate: values.checkInOutDate[1],
                 roomId,
-            })
+            },
+            jwt
         );
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-        router.push('/checkout');
+        if (res.status) {
+            notification.open({
+                message: 'Thêm phòng đặt thành công',
+                description: '',
+                placement: 'topRight',
+                type: 'success',
+            });
+
+            localStorage.setItem(LocalStorage.checkout, JSON.stringify(data));
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+            router.push('/checkout');
+        } else {
+            notification.open({
+                message: 'Đặt phòng thất bại!',
+                description: res.message,
+                placement: 'topRight',
+                type: 'error',
+            });
+        }
     };
 
     const onFinishFailed = (errorInfo) => {

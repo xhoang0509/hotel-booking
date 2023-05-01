@@ -3,16 +3,17 @@ import Star from '@/components/Star';
 import { LocalStorage } from '@/constants/storage.const';
 import { authUser } from '@/helpers/auth.helper';
 import { diffDay, formatDateVN } from '@/helpers/date.helper';
+import { generateRandomNumber } from '@/helpers/id.helper';
 import { diffPrice, formattedPrice, savePercent } from '@/helpers/price.helper';
 import { SAGA_GET_USER_DATA_ASYNC } from '@/redux/actions/user.action';
 import { wrapper } from '@/redux/store';
 import bookingApi from '@/services/booking';
 import locationApi from '@/services/location';
 import paymentApi from '@/services/payment';
+import roomApi from '@/services/room';
 import { CheckCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Col, Form, Input, Row, Select, Tag, notification } from 'antd';
+import { Button, Checkbox, Col, Form, Input, Row, Select, Skeleton, Tag, notification } from 'antd';
 import { serialize } from 'cookie';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -43,20 +44,22 @@ export default function Checkout({ jwt }) {
     const fetchData = useCallback(async () => {
         setFetching(true);
         const local = JSON.parse(localStorage.getItem(LocalStorage.checkout)) || {};
-        if (local.locationId) {
+        if (local.roomId && local.locationId) {
             setLocal(local);
-            const res = await locationApi.getOne(local.locationId);
-            if (res.status) {
-                setLocation(res.location);
-                if (res.location.rooms && res.location.rooms.length > 0) {
-                    const room = res.location.rooms.filter((room) => room.id === local.roomId);
-                    if (room && room.length > 0) {
-                        setRoom(room[0]);
-                    }
-                }
+            const [resLocation, resRoom] = await Promise.all([
+                locationApi.getOne(local.locationId),
+                roomApi.getOne(local.roomId),
+            ]);
+
+            if (resLocation.status) {
+                setLocation(resLocation.location);
+            }
+            if (resRoom.status) {
+                setRoom(resRoom.room);
             }
         } else {
             setLocation({});
+            router.push('/search');
         }
         setFetching(false);
     }, []);
@@ -72,28 +75,30 @@ export default function Checkout({ jwt }) {
     const handleBooking = async () => {
         setLoading(true);
         try {
-            if (local && local.locationId) {
+            if (local && local.roomId) {
+                const bookingId = generateRandomNumber();
                 const data = {
                     paymentMethod,
                     paymentStatus,
                     ...info,
                     price: local.price.newPrice,
+                    roomId: local.roomId,
                     locationId: local.locationId,
                     checkInDate: local.checkInOutDate[0],
                     checkOutDate: local.checkInOutDate[1],
+                    bookingId,
                 };
-                console.log('data: ', data);
                 if (paymentMethod === 'vnpay') {
-                    console.log('vnpay');
                     const body = {
                         amount: local.price.newPrice,
                         bankCode: '',
-                        orderDescription: 'Datphong.com thanh toan',
+                        orderDescription: bookingId,
                         orderType: 170000,
                         language: 'vn',
                     };
                     const res = await paymentApi.create(body, jwt);
                     if (res.status) {
+                        await bookingApi.booking(data, jwt);
                         window.location = res.redirectUrl;
                     }
                 } else {
@@ -126,7 +131,7 @@ export default function Checkout({ jwt }) {
     return (
         <WebLayout>
             {(fetching || !Object.keys(local).length > 0 || !Object.keys(location).length) && (
-                <div>Loading....</div>
+                <Skeleton />
             )}
             {!fetching && Object.keys(local).length > 0 && Object.keys(location).length && (
                 <>

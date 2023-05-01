@@ -24,6 +24,12 @@ const bookingApi = {
             headers: { Authorization: `Bearer ${token}` },
         });
     },
+
+    checkRoom(data, token) {
+        return axiosClient.post(`/booking/checkroom`, data, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+    },
 };
 
 export default bookingApi;
