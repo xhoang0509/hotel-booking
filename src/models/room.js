@@ -48,6 +48,13 @@ module.exports = (sequelize, DataTypes) => {
                 key: 'id',
             },
         },
+        userBookings: {
+            type: DataTypes.TEXT,
+            defaultValue: '',
+            get() {
+                return JSON.parse(this.getDataValue('userBookings'));
+            },
+        },
     });
     return Room;
 };

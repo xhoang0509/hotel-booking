@@ -30,7 +30,6 @@ async function send(req, res) {
                     },
                 };
             } else {
-                console.log('Email sent: ' + res.response);
                 result = {
                     code: 200,
                     data: {

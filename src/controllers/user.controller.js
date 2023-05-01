@@ -377,7 +377,6 @@ async function verify(req, res) {
 async function requestOtp(req, res) {
     try {
         const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-        console.log('ip :', JSON.stringify(ip));
         const { email } = req.body;
         const user = await users.findOne({ where: { email: email } });
         if (user) {

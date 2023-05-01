@@ -1,3 +1,4 @@
+const moment = require('moment');
 function getAge(birthDateString) {
     const birthDate = new Date(birthDateString);
     const now = new Date();
@@ -12,6 +13,36 @@ function getAge(birthDateString) {
     return age;
 }
 
+function checkExistRoom(checkIn, checkOut, bookings = []) {
+    if (bookings && bookings.length) {
+        const checkInDate = new Date(checkIn).getTime();
+        const checkOutDate = new Date(checkOut).getTime();
+
+        for (let i = 0; i < bookings.length; i++) {
+            let booking = bookings[i];
+            let existingCheckIn = new Date(booking.checkInDate).getTime();
+            let existingCheckOut = new Date(booking.checkOutDate).getTime();
+            let now = Date.now();
+
+            if (checkInDate < now || checkOut < now) {
+                return false;
+            }
+
+            if (
+                (checkInDate >= existingCheckIn && checkInDate < existingCheckOut) ||
+                (checkOutDate > existingCheckIn && checkOutDate <= existingCheckOut) ||
+                (checkInDate <= existingCheckIn && checkOutDate >= existingCheckOut)
+            ) {
+                return false;
+            }
+        }
+        return true;
+    } else {
+        return true;
+    }
+}
+
 module.exports = {
     getAge,
+    checkExistRoom,
 };

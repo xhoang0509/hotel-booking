@@ -1,5 +1,5 @@
+const { checkExistRoom } = require('../helper/Date.helper');
 const writeLog = require('../logger');
-
 const bookings = require('../models').bookings;
 const rooms = require('../models').rooms;
 const users = require('../models').users;
@@ -26,23 +26,44 @@ async function booking(req, res) {
             paymentMethod,
             paymentStatus,
         } = req.body;
-        if (userId && roomId) {
-            const booking = await bookings.create({
-                userId,
-                roomId,
-                locationId,
-                bookingId,
-                firstName,
-                lastName,
-                email,
-                price,
-                checkInDate,
-                checkOutDate,
-                paymentMethod,
-                paymentStatus,
-            });
-            result.booking = booking;
-            result.status = true;
+        if (userId && roomId && checkInDate && checkOutDate && price) {
+            const room = await rooms.findOne({ where: { id: roomId } });
+            if (room) {
+                const isExitsRoom = checkExistRoom(checkInDate, checkOutDate, room.userBookings);
+                if (isExitsRoom) {
+                    const data = {
+                        bookingId: bookingId,
+                        checkInDate: checkInDate,
+                        checkOutDate: checkOutDate,
+                    };
+
+                    const bookingsDB = room.userBookings || [];
+                    bookingsDB.push(data);
+                    room.userBookings = JSON.stringify(bookingsDB);
+                    await room.save();
+
+                    const booking = await bookings.create({
+                        userId,
+                        roomId,
+                        locationId,
+                        bookingId,
+                        firstName,
+                        lastName,
+                        email,
+                        price,
+                        checkInDate,
+                        checkOutDate,
+                        paymentMethod,
+                        paymentStatus,
+                    });
+
+                    result.booking = booking;
+                    result.status = true;
+                } else {
+                    result.status = false;
+                    result.message = 'Room existed!';
+                }
+            }
         } else {
             result.message = 'Missing userId or roomId';
         }
@@ -158,10 +179,43 @@ async function update(req, res) {
     res.status(code).json(result);
 }
 
+async function checkRoom(req, res) {
+    let code = 200;
+    let result = {
+        status: false,
+        message: '',
+    };
+    try {
+        const { roomId, checkInDate, checkOutDate } = req.body;
+        const roomDB = await rooms.findOne({ where: { id: roomId } });
+        if (roomDB) {
+            const isExistRoom = checkExistRoom(checkInDate, checkOutDate, roomDB.userBookings);
+            if (isExistRoom) {
+                result.status = true;
+                result.message = 'OK';
+            } else {
+                result.status = false;
+                result.message = 'Phòng đã hết vào ngày ngày!';
+            }
+        } else {
+            result.status = false;
+            result.message = 'Room not found!';
+        }
+    } catch (e) {
+        writeLog(__filename, 'checkRoom', e.message, 'FAILED');
+        code = 500;
+        result.status = false;
+        result.message = e.message;
+    } finally {
+        res.status(code).json(result);
+    }
+}
+
 module.exports = {
     booking,
     getAll,
     getOne,
     update,
     getBookingByUser,
+    checkRoom,
 };
