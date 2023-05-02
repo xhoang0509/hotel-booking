@@ -84,8 +84,8 @@ async function getAll(req, res) {
     };
     try {
         const bookingDB = await bookings.findAll({
-            include: users,
-            include: locations,
+            include: [users, locations],
+            order: [['createdAt', 'DESC']],
         });
         result.bookings = bookingDB;
         result.status = true;
