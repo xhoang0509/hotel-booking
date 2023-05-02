@@ -130,7 +130,7 @@ export default function BookingId({ jwt }) {
                             <Typography.Title level={5}>Thông tin phòng</Typography.Title>
                             <Divider />
                             <p className="mb-1">Tên phòng: {data.location.name}</p>
-                            <p className="mb-1 flex items-center">
+                            <p className="mb-1">
                                 <span className="mr-4">Hỉnh ảnh:</span>
                                 <img src={data.location.thumbnail} />
                             </p>

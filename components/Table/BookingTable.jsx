@@ -136,6 +136,8 @@ function BookingTable({ bookings, jwt }) {
                     color = 'cyan';
                 } else if (record.status === 'check_out') {
                     color = 'green';
+                } else if (record.status === 'rejected') {
+                    color = '#f50';
                 }
                 return <Tag color={color}>{translateBookingStatus(_)}</Tag>;
             },
