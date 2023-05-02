@@ -1,4 +1,4 @@
-export function PaymentMethod(paymentMethod = '') {
+export function paymentMethod(paymentMethod = '') {
     if (paymentMethod) {
         switch (paymentMethod) {
             case 'cash':

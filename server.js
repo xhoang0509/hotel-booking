@@ -10,7 +10,6 @@ const handle = app.getRequestHandler();
 app.prepare().then(() => {
     const server = express();
 
-    console.log('log by server');
     server.all('*', (req, res) => {
         return handle(req, res);
     });
