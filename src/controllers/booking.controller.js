@@ -1,5 +1,6 @@
 const { checkExistRoom } = require('../helper/Date.helper');
 const writeLog = require('../logger');
+const BookingService = require('../services/booking.service');
 const bookings = require('../models').bookings;
 const rooms = require('../models').rooms;
 const users = require('../models').users;
@@ -42,6 +43,7 @@ async function booking(req, res) {
                     room.userBookings = JSON.stringify(bookingsDB);
                     await room.save();
 
+                    const user = await users.findOne({ where: { id: userId } });
                     const booking = await bookings.create({
                         userId,
                         roomId,
@@ -59,6 +61,7 @@ async function booking(req, res) {
 
                     result.booking = booking;
                     result.status = true;
+                    BookingService.sendMail(user, checkInDate, checkOutDate, price);
                 } else {
                     result.status = false;
                     result.message = 'Room existed!';
@@ -239,6 +242,18 @@ async function checkInOut(req, res) {
                 await room.save();
                 result.status = true;
                 result.message = 'Check out phòng thành công!';
+            } else if (type === 'rejected') {
+                bookingDB.status = 'rejected';
+                await bookingDB.save();
+                const room = await rooms.findOne({ where: { id: bookingDB.roomId } });
+                let userBookings = room.userBookings || [];
+                userBookings = userBookings.filter(
+                    (booking) => booking.bookingId !== bookingDB.bookingId
+                );
+                room.userBookings = JSON.stringify(userBookings);
+                await room.save();
+                result.status = true;
+                result.message = 'Hủy đặt phòng thành công!';
             }
         } else {
             result.status = false;

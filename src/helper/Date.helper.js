@@ -1,4 +1,5 @@
 const moment = require('moment');
+
 function getAge(birthDateString) {
     const birthDate = new Date(birthDateString);
     const now = new Date();
@@ -42,7 +43,14 @@ function checkExistRoom(checkIn, checkOut, bookings = []) {
     }
 }
 
+function formatDateVN(dateInput) {
+    const date = moment(dateInput);
+    const formattedDate = `${date.format('DD [tháng] M YYYY')}`;
+    return formattedDate;
+}
+
 module.exports = {
     getAge,
     checkExistRoom,
+    formatDateVN,
 };
