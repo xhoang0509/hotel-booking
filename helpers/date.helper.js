@@ -33,3 +33,12 @@ export function getYear(dataInput) {
     const date = new Date(dataInput);
     return date.getFullYear();
 }
+
+export function caculateDay(date_1, date_2) {
+    const date1 = new Date(date_1);
+    const date2 = new Date(date_2);
+
+    const diffInMilliseconds = Math.abs(date2 - date1); // Calculate difference in milliseconds
+    const diffInDays = Math.ceil(diffInMilliseconds / (24 * 60 * 60 * 1000)); // Convert difference to days
+    return diffInDays;
+}

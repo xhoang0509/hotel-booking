@@ -7,7 +7,7 @@ import { SAGA_GET_USER_DATA_ASYNC } from '@/redux/actions/user.action';
 import { wrapper } from '@/redux/store';
 import bookingApi from '@/services/booking';
 import fileApi from '@/services/file';
-import { Button, Space, Table, Tag, notification } from 'antd';
+import { Button, Modal, Space, Table, Tag, notification } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
@@ -18,9 +18,36 @@ export default function BookingHistory({ jwt }) {
     const router = useRouter();
     const user = useSelector((state) => state.user);
     const [fetching, setFetching] = useState(false);
-    const [loading, setLoading] = useState(false);
     const [bookings, setBookings] = useState([]);
-    const [pdfUrl, setPdfUrl] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [id, setId] = useState(null);
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+    const handleOk = async () => {
+        const res = await bookingApi.checkInOut(id, { type: 'rejected' }, jwt);
+        if (res.status) {
+            notification.open({
+                message: res.message,
+                description: '',
+                placement: 'topRight',
+                type: 'success',
+            });
+            setIsModalOpen(false);
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+            router.reload();
+        } else {
+            notification.open({
+                message: res.message,
+                description: '',
+                placement: 'topRight',
+                type: 'error',
+            });
+        }
+    };
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
 
     useEffect(() => {
         fetchData();
@@ -71,6 +98,11 @@ export default function BookingHistory({ jwt }) {
                 type: 'error',
             });
         }
+    };
+
+    const handleReject = (id) => {
+        showModal();
+        setId(id);
     };
 
     const columns = [
@@ -188,6 +220,15 @@ export default function BookingHistory({ jwt }) {
                         >
                             Tải xuống HĐ
                         </Button>
+                        {record.status === 'not_check_in' && (
+                            <Button
+                                size="small"
+                                className="mt-2 bg-btn-danger text-white"
+                                onClick={() => handleReject(record.id)}
+                            >
+                                Hủy phòng
+                            </Button>
+                        )}
                     </div>
                 );
             },
@@ -199,6 +240,20 @@ export default function BookingHistory({ jwt }) {
             <div>
                 <div className="mb-4 font-bold text-2xl">Lịch sử đặt phòng</div>
                 <Table columns={columns} dataSource={bookings} />
+                <Modal
+                    title="Xác nhận hủy phòng đặt!"
+                    open={isModalOpen}
+                    onOk={handleOk}
+                    onCancel={handleCancel}
+                    footer={[
+                        <Button onClick={handleCancel}>Hủy</Button>,
+                        <Button onClick={handleOk} className="bg-sub-primary text-white">
+                            Xác nhận
+                        </Button>,
+                    ]}
+                >
+                    <p>Hành động này không thể phục hồi</p>
+                </Modal>
             </div>
         </WebLayout>
     );
