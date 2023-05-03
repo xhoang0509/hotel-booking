@@ -1,8 +1,8 @@
 import axiosClient from '../axiosClient';
 
 const locationApi = {
-    getAll() {
-        return axiosClient.get('/location');
+    getAll(page) {
+        return axiosClient.get(`/location?page=${page}`);
     },
 
     getOne(id) {

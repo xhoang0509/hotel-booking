@@ -5,7 +5,7 @@ import { wrapper } from '@/redux/store';
 import locationApi from '@/services/location';
 import userApi from '@/services/user';
 import { SearchOutlined } from '@ant-design/icons';
-import { Breadcrumb, Col, DatePicker, Input, Row, Select } from 'antd';
+import { Breadcrumb, Col, DatePicker, Input, Pagination, Row, Select } from 'antd';
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -18,24 +18,37 @@ export default function Search({ jwt }) {
     const [favorites, setFavorites] = useState([]);
     const [search, setSearch] = useState('');
     const locationRef = useRef([]);
-    useEffect(() => {
-        fetchData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    const [count, setCount] = useState(0);
+    const [page, setPage] = useState(1);
+    const [total, setTotal] = useState(1);
 
-    const fetchData = useCallback(async () => {
-        const res = await locationApi.getAll();
-        if (res.status) {
-            setLocations(res.locations);
-            locationRef.current = res.locations;
-        }
-        if (user && user.id) {
-            const resFavorite = await userApi.getFavorite(user.id, jwt);
-            if (resFavorite.status) {
-                setFavorites(resFavorite.favorites);
-            }
-        }
-    }, [user, jwt]);
+    useEffect(() => {
+        fetchData(page);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [page]);
+
+    const fetchData = useCallback(
+        async (page) => {
+            setLoading(true);
+            try {
+                const res = await locationApi.getAll(page);
+                if (res.status) {
+                    setLocations(res.locations);
+                    setCount(res.total);
+                    setTotal(res.totalPage);
+                    locationRef.current = res.locations;
+                }
+                if (user && user.id) {
+                    const resFavorite = await userApi.getFavorite(user.id, jwt);
+                    if (resFavorite.status) {
+                        setFavorites(resFavorite.favorites);
+                    }
+                }
+            } catch (e) {}
+            setLoading(false);
+        },
+        [user, jwt]
+    );
 
     const handleChange = (value) => {
         console.log(`selected ${value}`);
@@ -55,6 +68,10 @@ export default function Search({ jwt }) {
         if (event.key === 'Enter') {
             handleSerch();
         }
+    };
+
+    const handlePageChange = (page, pageSize) => {
+        setPage(page);
     };
 
     return (
@@ -101,9 +118,7 @@ export default function Search({ jwt }) {
                     </div>
                 </Col>
                 <Col className="w-[74%]">
-                    <div className="font-bold text-lg mb-4">
-                        Hà Nội: tìm thấy {locations.length} chỗ nghỉ
-                    </div>
+                    <div className="font-bold text-lg mb-4">Hà Nội: tìm thấy {count} chỗ nghỉ</div>
                     <div className="mb-4">
                         <div className="text-sm mb-2">Sắp xếp theo: </div>
                         <Select
@@ -146,17 +161,26 @@ export default function Search({ jwt }) {
                             ]}
                         />
                     </div>
-                    {!loading &&
-                        locations.map((location) => {
-                            return (
-                                <Location
-                                    key={location.id}
-                                    location={location}
-                                    jwt={jwt}
-                                    favorites={favorites}
-                                />
-                            );
-                        })}
+                    {!loading && (
+                        <>
+                            {locations.map((location) => {
+                                return (
+                                    <Location
+                                        key={location.id}
+                                        location={location}
+                                        jwt={jwt}
+                                        favorites={favorites}
+                                    />
+                                );
+                            })}
+                            <Pagination
+                                defaultCurrent={page}
+                                total={total * 10}
+                                className="text-center"
+                                onChange={handlePageChange}
+                            />
+                        </>
+                    )}
 
                     {!loading && locations.length === 0 && (
                         <div>Không tìm thấy chỗ nghỉ phù hợp</div>
