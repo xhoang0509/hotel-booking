@@ -38,8 +38,12 @@ async function sendPdf(req, res) {
         const { id } = req.params;
         const filePath = path.join(__dirname, `../public/pdf/bill-${id}.pdf`);
         if (fs.existsSync(filePath)) {
-            res.contentType('application/pdf');
-            res.sendFile(filePath);
+            const file = fs.createReadStream(filePath);
+            const stat = fs.statSync(filePath);
+            res.setHeader('Content-Length', stat.size);
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', 'attachment; filename=quote.pdf');
+            file.pipe(res);
         } else {
             writeLog(__filename, 'sendPdf', 'file not found', 'FAILED');
             res.status(400).json({ status: false, message: 'file not found' });

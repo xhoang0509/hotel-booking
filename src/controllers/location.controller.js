@@ -4,13 +4,26 @@ const locations = require('../models').locations;
 const cities = require('../models').cities;
 const rooms = require('../models').rooms;
 
+const LOCATION_PER_PAGE = 5;
 async function getAll(req, res) {
     try {
+        const page = req.query.page || 1;
+        let offset = 0;
+        if (page) {
+            offset = parseInt(page - 1) * LOCATION_PER_PAGE;
+        }
+        const count = await locations.count();
         const locationsData = await locations.findAll({
             include: cities,
+            limit: LOCATION_PER_PAGE,
+            offset,
         });
+        const totalPage = Math.ceil(count / LOCATION_PER_PAGE);
         res.status(200).json({
             status: true,
+            total: count,
+            page: parseInt(page),
+            totalPage,
             locations: locationsData,
         });
     } catch (e) {

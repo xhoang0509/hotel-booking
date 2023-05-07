@@ -33,12 +33,6 @@ module.exports = (sequelize, DataTypes) => {
         newPrice: {
             type: DataTypes.BIGINT,
         },
-        checkInDate: {
-            type: DataTypes.BIGINT,
-        },
-        checkOutDate: {
-            type: DataTypes.DATE,
-        },
         convenients: {
             type: DataTypes.TEXT,
             get() {

@@ -24,12 +24,6 @@ module.exports = (sequelize, DataTypes) => {
         newPrice: {
             type: DataTypes.FLOAT,
         },
-        checkInDate: {
-            type: DataTypes.DATE,
-        },
-        checkOutDate: {
-            type: DataTypes.DATE,
-        },
         images: {
             type: DataTypes.TEXT,
             get() {
