@@ -20,14 +20,14 @@ cd src
 npx sequelize-cli db:migrate; npx sequelize-cli db:seed:all
 ```
 
-# create migration
+### create migration
 
 ```bash
 cd src
 npx sequelize-cli migration:generate --name migration-skeleton
 ```
 
-# undo migration
+### undo migration
 
 ```bash
 cd src
