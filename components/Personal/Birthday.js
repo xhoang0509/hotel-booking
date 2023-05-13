@@ -1,5 +1,5 @@
 import { getDateDetail } from '@/helpers/date.helper';
-import { Button, Col, DatePicker, Form, Row, Typography } from 'antd';
+import { Button, Col, DatePicker, Form, Row, Typography, notification } from 'antd';
 import dayjs from 'dayjs';
 import { useCallback, useMemo, useState } from 'react';
 import { saveUser } from './../../redux/reducers/user.reducer';
@@ -26,7 +26,15 @@ export default function Birthday({ isEdit, setIsEdit, jwt, user, dispatch }) {
                 setLoading(true);
                 await new Promise((resolve) => setTimeout(resolve, 1500));
                 const res = await userApi.update({ birthday }, user.id, jwt);
-                dispatch(saveUser({ birthday }));
+                if (res.status) {
+                    notification.open({
+                        message: 'Cập nhật thông tin khách hàng thành công!',
+                        description: '',
+                        placement: 'topRight',
+                        type: 'success',
+                    });
+                    dispatch(saveUser({ birthday }));
+                }
             } catch (e) {
                 console.log(e);
             }

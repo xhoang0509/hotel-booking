@@ -1,4 +1,4 @@
-import { Row } from 'antd';
+import { Row, notification } from 'antd';
 import { Col } from 'antd';
 import { Typography, Form, Input, Button } from 'antd';
 import { useState, useCallback } from 'react';
@@ -19,7 +19,15 @@ export default function Phone({ isEdit, setIsEdit, jwt }) {
                 setLoading(true);
                 await new Promise((resolve) => setTimeout(resolve, 500));
                 const res = await userApi.update(values, user.id, jwt);
-                dispatch(saveUser({ ...values }));
+                if (res.status) {
+                    notification.open({
+                        message: 'Cập nhật thông tin khách hàng thành công!',
+                        description: '',
+                        placement: 'topRight',
+                        type: 'success',
+                    });
+                    dispatch(saveUser({ ...values }));
+                }
             } catch (e) {
                 console.log(e);
             }

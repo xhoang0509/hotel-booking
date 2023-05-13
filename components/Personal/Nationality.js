@@ -1,5 +1,5 @@
 import { saveUser } from '@/redux/reducers/user.reducer';
-import { Button, Col, Form, Row, Select, Typography } from 'antd';
+import { Button, Col, Form, Row, Select, Typography, notification } from 'antd';
 import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { contries, getContry } from '../../constants/contries.const';
@@ -19,7 +19,15 @@ export default function Nationality({ isEdit, setIsEdit, jwt }) {
                 setLoading(true);
                 await new Promise((resolve) => setTimeout(resolve, 500));
                 const res = await userApi.update({ nationality }, user.id, jwt);
-                dispatch(saveUser({ nationality }));
+                if (res.status) {
+                    notification.open({
+                        message: 'Cập nhật thông tin khách hàng thành công!',
+                        description: '',
+                        placement: 'topRight',
+                        type: 'success',
+                    });
+                    dispatch(saveUser({ nationality }));
+                }
             } catch (e) {
                 console.log(e);
             }

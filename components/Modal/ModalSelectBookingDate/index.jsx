@@ -109,7 +109,7 @@ function ModalSelectBookingDate({ isModalOpen, handleCancel, price, location, ro
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Yêu chọn ngày!',
+                                    message: 'Yêu cầu chọn ngày!',
                                 },
                             ]}
                         >

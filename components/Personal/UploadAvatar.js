@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { saveUser } from '@/redux/reducers/user.reducer';
 import { CameraOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Modal, Typography, Upload } from 'antd';
+import { Button, Modal, Typography, Upload, notification } from 'antd';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { useCallback, useState } from 'react';
 import { v4 } from 'uuid';
@@ -20,7 +20,15 @@ export default function UploadAvatar({ jwt, dispatch, user }) {
         try {
             setLoading(true);
             const res = await userApi.update({ images: imageUrl }, user.id, jwt);
-            dispatch(saveUser({ images: imageUrl }));
+            if (res.status) {
+                notification.open({
+                    message: 'Cập nhật thông tin khách hàng thành công!',
+                    description: '',
+                    placement: 'topRight',
+                    type: 'success',
+                });
+                dispatch(saveUser({ images: imageUrl }));
+            }
         } catch (e) {
             console.log(e);
         }

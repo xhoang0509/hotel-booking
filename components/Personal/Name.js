@@ -1,5 +1,5 @@
 import { saveUser } from '@/redux/reducers/user.reducer';
-import { Button, Col, Form, Input, Row, Typography } from 'antd';
+import { Button, Col, Form, Input, Row, Typography, notification } from 'antd';
 import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import userApi from './../../services/user/index';
@@ -17,7 +17,15 @@ export default function Name({ isEdit, setIsEdit, jwt }) {
                 setLoading(true);
                 await new Promise((resolve) => setTimeout(resolve, 500));
                 const res = await userApi.update(values, user.id, jwt);
-                dispatch(saveUser({ ...values }));
+                if (res.status) {
+                    dispatch(saveUser({ ...values }));
+                    notification.open({
+                        message: 'Cập nhật thông tin khách hàng thành công!',
+                        description: '',
+                        placement: 'topRight',
+                        type: 'success',
+                    });
+                }
             } catch (e) {
                 console.log(e);
             }

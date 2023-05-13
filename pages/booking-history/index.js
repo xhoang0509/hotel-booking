@@ -91,12 +91,17 @@ export default function BookingHistory({ jwt }) {
             const url = URL.createObjectURL(blob);
             window.open(url);
         } catch (e) {
-            notification.open({
-                message: 'Lỗi tải file',
-                description: e.message,
-                placement: 'topRight',
-                type: 'error',
-            });
+            if (
+                e.message ===
+                "Failed to execute 'createObjectURL' on 'URL': Overload resolution failed."
+            ) {
+                notification.open({
+                    message: 'Yêu cầu tạo file trước khi tải xuống!',
+                    description: '',
+                    placement: 'topRight',
+                    type: 'error',
+                });
+            }
         }
     };
 
@@ -198,11 +203,11 @@ export default function BookingHistory({ jwt }) {
                 return (
                     <div className="flex flex-col items-start">
                         {isEnableEdit ? (
-                            <Link href={`/booking-history/${record.id}`}>
+                            <Link href={`/booking-history/${record.id}?type=edit`}>
                                 <Button size="small">Chỉnh sửa</Button>
                             </Link>
                         ) : (
-                            <Link href={`/booking-history/${record.id}`}>
+                            <Link href={`/booking-history/${record.id}?type=view`}>
                                 <Button size="small">Chi tiết</Button>
                             </Link>
                         )}

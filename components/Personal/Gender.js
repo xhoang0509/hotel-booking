@@ -1,5 +1,5 @@
 import { saveUser } from '@/redux/reducers/user.reducer';
-import { Button, Col, Form, Row, Select, Typography } from 'antd';
+import { Button, Col, Form, Row, Select, Typography, notification } from 'antd';
 import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { optionsGender } from './../../helpers/gender.helper';
@@ -19,7 +19,15 @@ export default function Gender({ isEdit, setIsEdit, jwt }) {
                 setLoading(true);
                 await new Promise((resolve) => setTimeout(resolve, 1500));
                 const res = await userApi.update({ gender }, user.id, jwt);
-                dispatch(saveUser({ gender }));
+                if (res.status) {
+                    notification.open({
+                        message: 'Cập nhật thông tin khách hàng thành công!',
+                        description: '',
+                        placement: 'topRight',
+                        type: 'success',
+                    });
+                    dispatch(saveUser({ gender }));
+                }
             } catch (e) {
                 console.log(e);
             }

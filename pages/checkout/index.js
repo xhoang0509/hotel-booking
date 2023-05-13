@@ -73,6 +73,24 @@ export default function Checkout({ jwt }) {
     };
 
     const handleBooking = async () => {
+        if (!info.email || !info.firstName || !info.lastName) {
+            notification.open({
+                message: 'Đặt phòng thất bại!',
+                description: 'Yêu cầu nhập đủ thông tin cá nhận.',
+                placement: 'topRight',
+                type: 'error',
+            });
+            return;
+        }
+        if (paymentMethod === 'banking' && !paymentStatus) {
+            notification.open({
+                message: 'Yêu cầu xác nhận đã thanh toán!',
+                description: '',
+                placement: 'topRight',
+                type: 'error',
+            });
+            return;
+        }
         setLoading(true);
         try {
             if (local && local.roomId) {

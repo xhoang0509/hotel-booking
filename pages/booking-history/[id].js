@@ -16,7 +16,7 @@ import { END } from 'redux-saga';
 const dateFormat = 'YYYY-MM-DD';
 function BookingHistoryId({ jwt }) {
     const router = useRouter();
-    const { id } = router.query;
+    const { id, type } = router.query;
     const [loading, setLoading] = useState(false);
     const [booking, setBooking] = useState(null);
     const [checkInDate, setCheckInDate] = useState(null);
@@ -29,6 +29,8 @@ function BookingHistoryId({ jwt }) {
         fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    console.log(type);
 
     const fetchData = useCallback(async () => {
         setLoading(true);
@@ -73,10 +75,17 @@ function BookingHistoryId({ jwt }) {
                     placement: 'topRight',
                     type: 'success',
                 });
+                await new Promise((resolve) => setTimeout(resolve, 2000));
+                router.reload();
+            } else {
+                notification.open({
+                    message: 'Cập nhật thông tin phòng thất bại',
+                    description: 'Phòng đã hết vào ngày này!',
+                    placement: 'topRight',
+                    type: 'error',
+                });
             }
             setErrorMessage('');
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-            router.reload();
         } catch (e) {
             console.log(e);
         }
@@ -132,6 +141,7 @@ function BookingHistoryId({ jwt }) {
                                                     )}
                                                     format={dateFormat}
                                                     onChange={handleCheckInDateChange}
+                                                    disabled={type === 'view' ? true : false}
                                                 />
                                             </Form.Item>
                                         </div>
@@ -154,6 +164,7 @@ function BookingHistoryId({ jwt }) {
                                                     )}
                                                     format={dateFormat}
                                                     onChange={handleCheckOutDateChange}
+                                                    disabled={type === 'view' ? true : false}
                                                 />
                                             </Form.Item>
                                         </div>
@@ -163,17 +174,19 @@ function BookingHistoryId({ jwt }) {
                                             </span>
                                             {PaymentMethod(booking.paymentMethod)}
                                         </div>
-                                        <Form.Item>
-                                            <div className="text-red mb-4">{errorMessage}</div>
-                                            <Button
-                                                onClick={handleEdit}
-                                                danger
-                                                loading={isLoading}
-                                                htmlType="submit"
-                                            >
-                                                Chỉnh sửa
-                                            </Button>
-                                        </Form.Item>
+                                        {type === 'edit' && (
+                                            <Form.Item>
+                                                <div className="text-red mb-4">{errorMessage}</div>
+                                                <Button
+                                                    onClick={handleEdit}
+                                                    danger
+                                                    loading={isLoading}
+                                                    htmlType="submit"
+                                                >
+                                                    Chỉnh sửa
+                                                </Button>
+                                            </Form.Item>
+                                        )}
                                     </div>
                                 </Form>
                             </Col>
