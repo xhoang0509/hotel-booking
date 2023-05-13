@@ -42,7 +42,7 @@ async function sendPdf(req, res) {
             const stat = fs.statSync(filePath);
             res.setHeader('Content-Length', stat.size);
             res.setHeader('Content-Type', 'application/pdf');
-            res.setHeader('Content-Disposition', 'attachment; filename=quote.pdf');
+            res.setHeader('Content-Disposition', `attachment; filename=bill-${id}.pdf`);
             file.pipe(res);
         } else {
             writeLog(__filename, 'sendPdf', 'file not found', 'FAILED');

@@ -156,26 +156,33 @@ async function update(req, res) {
     };
     try {
         const { id } = req.params;
+        const { checkInDate, checkOutDate } = req.body;
         const booking = await bookings.findOne({
             where: { id: id },
             include: [users, locations],
         });
+        const room = await rooms.findOne({ where: { id: booking.roomId } });
         if (booking) {
-            const { checkInDate, checkOutDate } = req.body;
-            const booking = await bookings.update(
-                { checkInDate, checkOutDate },
-                { where: { id: id } }
-            );
-            result.booking = booking;
-            result.message = 'Cập nhật thông tin thành công!';
-            result.status = true;
+            const isExitsRoom = checkExistRoom(checkInDate, checkOutDate, room.userBookings);
+            if (isExitsRoom) {
+                const booking = await bookings.update(
+                    { checkInDate, checkOutDate },
+                    { where: { id: id } }
+                );
+                result.booking = booking;
+                result.message = 'Cập nhật thông tin thành công!';
+                result.status = true;
+            } else {
+                result.status = false;
+                result.message = "Room existed, can't update";
+            }
         } else {
             code = 401;
             result.message = 'Booking not found';
             result.status = false;
         }
     } catch (e) {
-        writeLog(__filename, 'getOne', e.message, 'FAILED');
+        writeLog(__filename, 'update', e.message, 'FAILED');
         code = 500;
         result.message = e.message;
     }

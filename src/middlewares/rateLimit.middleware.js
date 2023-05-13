@@ -9,7 +9,7 @@ const limiter = (seconds = default10MinutesLimit, maxRequest = 1) =>
         legacyHeaders: false, // Disable the `X-RateLimit-*` headers
         message: {
             status: false,
-            message: 'Too many requests, please try again later.',
+            message: 'Quá nhiều yêu cầu. Vui lòng thử lại sau!',
             statusCode: 429,
         },
     });

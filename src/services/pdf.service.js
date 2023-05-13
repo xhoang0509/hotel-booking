@@ -4,13 +4,16 @@ const writeLog = require('../logger');
 const { getAge } = require('../helper/Date.helper');
 const { formattedPriceEN } = require('../helper/Price.helper');
 const path = require('path');
+const { formatDateVN } = require('../helper/Date.helper');
 
 const fontFile = path.join(__dirname, '../public/font/open-sans/OpenSans-Regular.ttf');
 const vietnameseFont = fs.readFileSync(fontFile);
 
 function createPdfFile(data) {
     try {
-        const { id, user, price, createdAt, room } = data;
+        const { id, user, price, createdAt, room, checkInDate, checkOutDate } = data;
+        console.log('checkInDate: ', checkInDate);
+        console.log('checkOutDate: ', checkOutDate);
         const { firstName, lastName, birthday, email, phone } = user;
         const age = birthday ? getAge(birthday) : '';
         const doc = new PDFDocument({
@@ -45,10 +48,16 @@ function createPdfFile(data) {
         doc.fontSize(12).text('Số giường: ' + room.bed);
         doc.fontSize(12).text('Chi tiết giường: ' + room.bedDetail);
         doc.fontSize(12).text('Mô tả: ' + room.description);
+        doc.fillColor('red')
+            .fontSize(12)
+            .text('Ngày nhận phòng: ' + formatDateVN(checkInDate));
+        doc.fillColor('red')
+            .fontSize(12)
+            .text('Ngày trả phòng: ' + formatDateVN(checkOutDate));
         doc.moveDown();
 
         // Add billing details
-        doc.fontSize(14).text('Thông tin hóa đơn', { underline: true });
+        doc.fillColor('black').fontSize(14).text('Thông tin hóa đơn', { underline: true });
         doc.moveDown();
         doc.fontSize(12).text(`Booking ID: #${data.bookingId}`);
         doc.fontSize(12).text(`Ngày: ${createdAt.toLocaleDateString()}`);
