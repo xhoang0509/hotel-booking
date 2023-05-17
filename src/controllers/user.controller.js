@@ -301,6 +301,23 @@ async function postFavorite(req, res) {
     }
 }
 
+async function deleteFavorite(req, res) {
+    try {
+        const { id } = req.params;
+        const resJSON = await favorites.destroy({ where: { id: id } });
+        res.status(200).json({
+            status: true,
+            message: 'OK',
+        });
+    } catch (e) {
+        writeLog(__filename, 'user.controller.postFavorite', e.message, 'FAILED');
+        res.status(500).json({
+            status: false,
+            message: 'INTERNAL_SERVER_ERROR',
+        });
+    }
+}
+
 async function getFavorite(req, res) {
     try {
         const { id } = req.params;
@@ -505,6 +522,7 @@ module.exports = {
     getAll,
     booking,
     getFavorite,
+    deleteFavorite,
     postFavorite,
     verify,
     requestOtp,

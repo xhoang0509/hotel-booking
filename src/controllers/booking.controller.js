@@ -161,14 +161,26 @@ async function update(req, res) {
             where: { id: id },
             include: [users, locations],
         });
-        const room = await rooms.findOne({ where: { id: booking.roomId } });
         if (booking) {
-            const isExitsRoom = checkExistRoom(checkInDate, checkOutDate, room.userBookings);
+            const { bookingId } = booking;
+            const room = await rooms.findOne({ where: { id: booking.roomId } });
+            const { userBookings } = room;
+            const newUserBookings = userBookings.filter(
+                (booking) => booking.bookingId !== bookingId
+            );
+            const isExitsRoom = checkExistRoom(checkInDate, checkOutDate, newUserBookings);
             if (isExitsRoom) {
                 const booking = await bookings.update(
                     { checkInDate, checkOutDate },
                     { where: { id: id } }
                 );
+                newUserBookings.push({
+                    bookingId,
+                    checkInDate,
+                    checkOutDate,
+                });
+                room.userBookings = JSON.stringify(newUserBookings);
+                await room.save();
                 result.booking = booking;
                 result.message = 'Cập nhật thông tin thành công!';
                 result.status = true;

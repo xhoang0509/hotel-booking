@@ -32,6 +32,21 @@ async function getAll(req, res) {
     }
 }
 
+async function getFull(req, res) {
+    try {
+        const locationsData = await locations.findAll({
+            include: cities,
+        });
+        res.status(200).json({
+            status: true,
+            locations: locationsData,
+        });
+    } catch (e) {
+        writeLog(__filename, 'location.controller.getAll', e.message, 'FAILED');
+        res.status(500).json({ status: false, message: 'INTERNAL_SERVER_ERROR' });
+    }
+}
+
 async function getOne(req, res) {
     try {
         const { id } = req.params;
@@ -61,11 +76,37 @@ async function getOne(req, res) {
 
 async function create(req, res) {
     try {
-        const { name, image } = req.body;
-        const category = await locations.create({ name, image });
+        const {
+            name,
+            address,
+            images,
+            thumbnail,
+            description,
+            phone,
+            oldPrice,
+            newPrice,
+            convenients,
+            notes,
+            cityId,
+            qr_banking,
+        } = req.body;
+        const location = await locations.create({
+            name,
+            address,
+            images,
+            thumbnail,
+            description,
+            phone,
+            oldPrice,
+            newPrice,
+            convenients,
+            notes,
+            cityId,
+            qr_banking,
+        });
         res.status(200).json({
             status: true,
-            category,
+            location,
         });
     } catch (e) {
         writeLog(__filename, 'location.controller.create', e.message, 'FAILED');
@@ -100,6 +141,7 @@ async function update(req, res) {
 
 module.exports = {
     getAll,
+    getFull,
     getOne,
     update,
     create,

@@ -12,6 +12,7 @@ const {
     requestOtp,
     forgotPassword,
     resetPassowrd,
+    deleteFavorite,
 } = require('../controllers/user.controller');
 const { authApi } = require('../middlewares/requiresAuth.middleware');
 const limiter = require('../middlewares/rateLimit.middleware');
@@ -27,6 +28,7 @@ userRouter.put('/update/:id', authApi, (req, res) => update(req, res));
 userRouter.post('/booking', authApi, (req, res) => booking(req, res));
 userRouter.get('/favorite/:id', authApi, (req, res) => getFavorite(req, res));
 userRouter.post('/favorite', authApi, (req, res) => postFavorite(req, res));
+userRouter.post('/favorite/:id', authApi, (req, res) => deleteFavorite(req, res));
 userRouter.post('/request-otp', limiter(5 * 60 * 1000, 1), (req, res) => requestOtp(req, res));
 userRouter.post('/forgot-password', limiter(5 * 60 * 1000, 1), (req, res) =>
     forgotPassword(req, res)
