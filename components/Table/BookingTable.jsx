@@ -1,4 +1,4 @@
-import { checkEnableEdit, translateBookingStatus } from '@/helper/booking.helper';
+import { checkEnableEdit, checkPayment, translateBookingStatus } from '@/helper/booking.helper';
 import { formatDateVN } from '@/helper/date.helper';
 import { paymentMethod } from '@/helper/payment.helper';
 import { formattedPrice } from '@/helper/price.helper';
@@ -116,8 +116,8 @@ function BookingTable({ bookings, jwt }) {
             dataIndex: 'paymentStatus',
             key: 'paymentStatus',
             render: (_, record) => {
-                const isEnable = checkEnableEdit(_);
-                if (isEnable) {
+                const isPayment = checkPayment(_);
+                if (isPayment) {
                     return <Tag color="#108ee9">Đã thanh toán</Tag>;
                 } else {
                     return <Tag color="#f50">Chưa thanh toán</Tag>;

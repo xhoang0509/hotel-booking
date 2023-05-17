@@ -14,6 +14,8 @@ import { END } from 'redux-saga';
 import Image from 'next/image';
 import { authAdmin } from '@/helper/auth.helper';
 
+import noImage from '@/public/images/no-image.png';
+
 export default function AccountId({ jwt }) {
     const router = useRouter();
     const { id } = router.query;
@@ -32,7 +34,11 @@ export default function AccountId({ jwt }) {
 
     const onFinish = async (values) => {
         if (id === 'add') {
-            const res = await categoryApi.create(values, jwt);
+            const data = {
+                name: values.name,
+                images: imageUrl ? imageUrl : '',
+            };
+            const res = await categoryApi.create(data, jwt);
             if (res.status) {
                 notification.open({
                     message: 'Create user successfully',
@@ -51,7 +57,7 @@ export default function AccountId({ jwt }) {
             }
         } else {
             const res = await categoryApi.update(
-                { name: values.name, image: imageUrl ? imageUrl : data.image },
+                { name: values.name, images: imageUrl ? imageUrl : data.images },
                 id,
                 jwt
             );
@@ -164,7 +170,15 @@ export default function AccountId({ jwt }) {
                                     }
                                 >
                                     <Image
-                                        src={imageUrl ? imageUrl : data.image}
+                                        src={
+                                            id !== 'add'
+                                                ? imageUrl
+                                                    ? imageUrl
+                                                    : data.images
+                                                : imageUrl
+                                                ? imageUrl
+                                                : noImage
+                                        }
                                         className="w-[200px] h-auto"
                                         width={'200'}
                                         height={'300'}

@@ -21,3 +21,11 @@ export function checkEnableEdit(status) {
     }
     return true;
 }
+
+export function checkPayment(status) {
+    if (status === '1') {
+        return true;
+    } else if (status === '0') {
+        return false;
+    }
+}

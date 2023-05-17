@@ -2,13 +2,25 @@ import BackPage from '@/components/BackPage';
 import LayoutApp from '@/components/Layout';
 import { storage } from '@/firebase/storage';
 import { authAdmin } from '@/helper/auth.helper';
+import { formatDateVN } from '@/helper/date.helper';
 import { paymentMethod } from '@/helper/payment.helper';
 import { formattedPrice } from '@/helper/price.helper';
 import { SAGA_GET_ADMIN_DATA_ASYNC } from '@/redux/actions/admin.action';
 import { wrapper } from '@/redux/store';
 import bookingApi from '@/services/booking';
 import categoryApi from '@/services/category';
-import { Button, Col, Divider, Form, Input, Row, Typography, message, notification } from 'antd';
+import {
+    Button,
+    Col,
+    Divider,
+    Form,
+    Input,
+    Row,
+    Tag,
+    Typography,
+    message,
+    notification,
+} from 'antd';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -123,7 +135,11 @@ export default function BookingId({ jwt }) {
                             </p>
                             <p className="mb-1">
                                 Trạng thái:{' '}
-                                {data.paymentStatus ? 'Đã thanh toán' : 'Chưa thanh toán'}
+                                {data.paymentStatus === '1' ? (
+                                    <Tag color="#108ee9">Đã thanh toán</Tag>
+                                ) : (
+                                    <Tag color="#f50">Chưa thanh toán</Tag>
+                                )}
                             </p>
                         </Col>
                         <Col span={12}>
@@ -136,6 +152,18 @@ export default function BookingId({ jwt }) {
                             </p>
                             <p className="mb-1">Địa chỉ: {data.location.address}</p>
                             <p className="mb-1">Số điện thoại: {data.location.phone}</p>
+                        </Col>
+                    </Row>
+                    <Row gutter={24}>
+                        <Col span={12}>
+                            <Divider />
+                            <p className="mb-1">Ngày đặt: {formatDateVN(data.createdAt)}</p>
+                            <p className="mb-1 text-primary font-bold">
+                                Ngày nhận phòng: {formatDateVN(data.checkInDate)}
+                            </p>
+                            <p className="mb-1 text-primary font-bold">
+                                Ngày trả phòng: {formatDateVN(data.checkOutDate)}
+                            </p>
                         </Col>
                     </Row>
                 </>

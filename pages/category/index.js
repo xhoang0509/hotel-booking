@@ -34,12 +34,9 @@ export default function Category({ jwt }) {
             title: 'Hỉnh ảnh',
             dataIndex: 'images',
             key: 'images',
-            render: (text, record) => <img src={text} />,
-        },
-        {
-            title: 'Số lượng',
-            dataIndex: 'phone',
-            key: 'phone',
+            render: (text, record) => {
+                return <img src={text} className="max-w-[300px]" />;
+            },
         },
         {
             title: 'Hành động',

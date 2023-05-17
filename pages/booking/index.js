@@ -5,6 +5,7 @@ import { SAGA_GET_ADMIN_DATA_ASYNC } from '@/redux/actions/admin.action';
 import { wrapper } from '@/redux/store';
 import adminApi from '@/services/admin';
 import bookingApi from '@/services/booking';
+import fileApi from '@/services/file';
 import {
     Button,
     Col,
@@ -107,6 +108,47 @@ export default function Booking({ jwt }) {
         setName('');
     };
 
+    const handleCreateExcel = async () => {
+        const res = await fileApi.createBookingExcel(jwt);
+        if (res.status) {
+            notification.open({
+                message: 'Tạo file excel thành công!',
+                description: '',
+                placement: 'topRight',
+                type: 'success',
+            });
+        }
+    };
+
+    const handleExcel = async () => {
+        fetch('http://localhost:6969/file/booking/excel', {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${jwt}`,
+            },
+            responseType: 'blob',
+        })
+            .then((response) => response.blob())
+            .then((blob) => {
+                // Tạo một URL tạm thời cho file blob
+                const url = window.URL.createObjectURL(blob);
+                // Tạo một thẻ <a> ẩn và click vào nó để tải file
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'booking.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                // Xóa URL tạm thời sau khi tải xong
+                window.URL.revokeObjectURL(url);
+                // Xóa thẻ <a> đã tạo
+                document.body.removeChild(a);
+            })
+            .catch((error) => {
+                console.error('Error downloading file:', error);
+            });
+    };
+
     return (
         <LayoutApp>
             {fetching && <Skeleton />}
@@ -155,6 +197,11 @@ export default function Booking({ jwt }) {
                             </Form.Item>
                         </Form>
                     </div>
+                    <Divider />
+                    <Button onClick={handleCreateExcel} className="mr-2">
+                        Tạo Excel
+                    </Button>
+                    <Button onClick={handleExcel}>Xuất Excel</Button>
                     <Divider />
                     <BookingTable bookings={bookings} jwt={jwt} />
                     <Modal
