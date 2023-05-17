@@ -2,7 +2,7 @@ import axiosClient from '../axiosClient';
 
 const locationApi = {
     getAll(token) {
-        return axiosClient.get('/location', {
+        return axiosClient.get('/location/all', {
             headers: { Authorization: `Bearer ${token}` },
         });
     },

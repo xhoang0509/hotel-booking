@@ -1,20 +1,34 @@
 import BackPage from '@/components/BackPage';
 import LayoutApp from '@/components/Layout';
-import { dateFormat } from '@/constants/date.const';
-import { genders, getGender } from '@/constants/gender.const';
+import { storage } from '@/firebase/storage';
 import { authAdmin } from '@/helper/auth.helper';
 import { SAGA_GET_ADMIN_DATA_ASYNC } from '@/redux/actions/admin.action';
 import { wrapper } from '@/redux/store';
-import adminApi from '@/services/admin';
-import ruleApi from '@/services/rule';
-import { Button, Col, DatePicker, Form, Input, Row, Select, Typography, notification } from 'antd';
-import dayjs from 'dayjs';
+import cityApi from '@/services/city';
+import { default as categoryApi, default as locationApi } from '@/services/location';
+import { UploadOutlined } from '@ant-design/icons';
+import {
+    Button,
+    Col,
+    Form,
+    Input,
+    Row,
+    Select,
+    Typography,
+    Upload,
+    message,
+    notification,
+} from 'antd';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { END } from 'redux-saga';
+import { v4 } from 'uuid';
 
-export default function AccountId({ jwt }) {
+const { TextArea } = Input;
+
+export default function LocationId({ jwt }) {
     const router = useRouter();
     const { id } = router.query;
     const isEdit = useMemo(() => {
@@ -24,51 +38,50 @@ export default function AccountId({ jwt }) {
             return true;
         }
     }, [id]);
-    const [rules, setRules] = useState([]);
+
     const [fetching, setFetching] = useState(true);
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState('');
-    const admin = useSelector((state) => state.admin);
-
-    useEffect(() => {
-        const ruleAdmin = isAdmin(admin);
-        if (!ruleAdmin) {
-            router.push('/');
-        }
-    }, [admin]);
+    const [imageUrl, setImageUrl] = useState('');
+    const [cities, setCities] = useState([]);
 
     const onFinish = async (values) => {
+        console.log('values: ', values);
         if (id === 'add') {
-            const res = await adminApi.register(values);
-            if (res.data.status) {
+            const res = await locationApi.create(values, jwt);
+            if (res.status) {
                 notification.open({
                     message: 'Create user successfully',
-                    description: res.data.message,
+                    description: res.message,
                     placement: 'topRight',
                     type: 'success',
                 });
-                router.push('/account');
+                router.push('/location');
             } else {
                 notification.open({
                     message: 'Create user failed',
-                    description: res.data.message,
+                    description: res.message,
                     placement: 'topRight',
                     type: 'error',
                 });
             }
         } else {
-            const res = await adminApi.update(values, id, jwt);
+            const res = await locationApi.update(
+                { name: values.name, image: imageUrl ? imageUrl : data.image },
+                id,
+                jwt
+            );
             if (res.status) {
                 notification.open({
-                    message: 'Update user successfully',
+                    message: 'Chỉnh sửa thành công!',
                     description: res.message,
                     placement: 'topRight',
                     type: 'success',
                 });
-                router.push('/account');
+                router.push('/location');
             } else {
                 notification.open({
-                    message: 'Update user failed',
+                    message: 'Chỉnh sửa thất bại!',
                     description: res.message,
                     placement: 'topRight',
                     type: 'error',
@@ -83,33 +96,26 @@ export default function AccountId({ jwt }) {
     useEffect(() => {
         fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [jwt]);
+    }, []);
 
     const fetchData = useCallback(async () => {
         setLoading(true);
         try {
-            let res = await ruleApi.getAll(jwt);
-            if (res.status) {
-                let rules = res.data.rules.map((rule) => {
+            if (id !== 'add') {
+                let res = await locationApi.getOne(id, jwt);
+                if (res.status) {
+                    setData(res.location);
+                }
+            }
+            const resCity = await cityApi.getAll(jwt);
+            if (resCity.status) {
+                const options = resCity.cities.map((city) => {
                     return {
-                        value: rule.id,
-                        label: rule.name,
+                        value: city.id,
+                        label: city.name,
                     };
                 });
-                setRules(rules);
-            }
-            if (id !== 'add') {
-                let resAccount = await adminApi.getOne(id, jwt);
-                if (resAccount.status) {
-                    const admin = JSON.parse(JSON.stringify(resAccount.admin));
-                    if (admin.birthday) {
-                        admin.birthday = dayjs(admin.birthday, dateFormat);
-                    } else {
-                        admin.birthday = dayjs('2000-01-01', dateFormat);
-                    }
-                    admin.gender = getGender(admin.gender);
-                    setData(admin);
-                }
+                setCities(options);
             }
         } catch (e) {
             console.log(e);
@@ -118,14 +124,34 @@ export default function AccountId({ jwt }) {
         setFetching(false);
     }, [jwt, id]);
 
+    const handleUpload = useCallback((info) => {
+        if (info.file.status === 'uploading') {
+            setLoading(true);
+            return;
+        }
+        if (info.file.status === 'done') {
+            message.success(`${info.file.name} file uploaded successfully`);
+            const imageRef = ref(storage, `images/${info.file.name + v4()}`);
+            uploadBytes(imageRef, info.file.originFileObj).then((snapshot) => {
+                getDownloadURL(snapshot.ref).then((url) => {
+                    setImageUrl(url);
+                });
+            });
+            setLoading(false);
+        } else if (info.file.status === 'error') {
+            message.error(`${info.file.name} file upload failed.`);
+            setLoading(false);
+        }
+    }, []);
+
     return (
         <LayoutApp>
             {fetching && <div>Fetching</div>}
             {!fetching && (
                 <>
-                    <BackPage href="/account" />
+                    <BackPage href="/location" />
                     <Typography.Title level={4} className="pb-4">
-                        {id !== 'add' ? 'Chỉnh sửa nhân viên' : 'Thêm nhân viên mới'}
+                        {isEdit ? 'Chỉnh sửa địa điểm' : 'Thêm địa điểm'}
                     </Typography.Title>
                     <Form
                         name="basic"
@@ -138,22 +164,8 @@ export default function AccountId({ jwt }) {
                         <Row gutter={24} className="mb-4">
                             <Col span={6}>
                                 <Form.Item
-                                    label="Họ"
-                                    name="lastName"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: 'Họ không được để trống!',
-                                        },
-                                    ]}
-                                >
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                            <Col span={6}>
-                                <Form.Item
                                     label="Tên"
-                                    name="firstName"
+                                    name="name"
                                     rules={[
                                         {
                                             required: true,
@@ -166,71 +178,37 @@ export default function AccountId({ jwt }) {
                             </Col>
                             <Col span={6}>
                                 <Form.Item
-                                    label="Chức vụ"
-                                    name="ruleId"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: 'Chức vụ không được để trống!',
-                                        },
-                                    ]}
-                                >
-                                    <Select
-                                        defaultValue={
-                                            rules && rules.length > 0 ? rules[0].value : ''
-                                        }
-                                        options={rules}
-                                    />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                        <Row gutter={24} className="mb-4">
-                            <Col span={6}>
-                                <Form.Item
-                                    label="Email"
-                                    name="email"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: 'Email không được để trống!',
-                                        },
-                                    ]}
-                                >
-                                    <Input disabled={isEdit} />
-                                </Form.Item>
-                            </Col>
-                            <Col span={6}>
-                                <Form.Item
-                                    label="Mật khẩu"
-                                    name="password"
+                                    label="Hỉnh ảnh"
+                                    name="image"
                                     rules={
-                                        !isEdit && [
+                                        !imageUrl && [
                                             {
                                                 required: true,
-                                                message: 'Mật khẩu không được để trống!',
+                                                message: 'Hình ảnh không được để trống!',
                                             },
                                         ]
                                     }
                                 >
-                                    <Input.Password disabled={isEdit} />
+                                    <Image
+                                        src={imageUrl ? imageUrl : data.thumbnail}
+                                        className="w-[200px] h-auto"
+                                        width={'200'}
+                                        height={'300'}
+                                        alt="image"
+                                    />
                                 </Form.Item>
-                            </Col>
-                            <Col span={6}>
-                                <Form.Item
-                                    label="Số điện thoại"
-                                    name="phone"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: 'Số điện thoại không được để trống!',
-                                        },
-                                    ]}
+                                <Upload
+                                    name="category_image"
+                                    showUploadList={false}
+                                    onChange={handleUpload}
+                                    action=""
+                                    accept="image/*"
                                 >
-                                    <Input />
-                                </Form.Item>
+                                    <Button icon={<UploadOutlined />}>Tải lên</Button>
+                                </Upload>
                             </Col>
                         </Row>
-                        <Row gutter={24} className="mb-4">
+                        <Row gutter={24}>
                             <Col span={6}>
                                 <Form.Item
                                     label="Địa chỉ"
@@ -247,34 +225,62 @@ export default function AccountId({ jwt }) {
                             </Col>
                             <Col span={6}>
                                 <Form.Item
-                                    label="Ngày sinh"
-                                    name="birthday"
+                                    label="Địa chỉ"
+                                    name="address"
                                     rules={[
                                         {
                                             required: true,
-                                            message: 'Ngày sinh không được để trống!',
+                                            message: 'Địa chỉ không được để trống!',
                                         },
                                     ]}
                                 >
-                                    <DatePicker
-                                        defaultValue={dayjs('2000-01-01', dateFormat)}
-                                        format={dateFormat}
-                                        className="w-full"
-                                    />
+                                    <Input />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={24}>
+                            <Col span={6}>
+                                <Form.Item
+                                    label="Mô tả"
+                                    name="description"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Mô tả không được để trống!',
+                                        },
+                                    ]}
+                                >
+                                    <TextArea />
                                 </Form.Item>
                             </Col>
                             <Col span={6}>
                                 <Form.Item
-                                    label="Giới tính"
-                                    name="gender"
+                                    label="Số điện thoại"
+                                    name="phone"
                                     rules={[
                                         {
                                             required: true,
-                                            message: 'Giới tính không được để trống!',
+                                            message: 'Số điện thoại không được để trống!',
                                         },
                                     ]}
                                 >
-                                    <Select defaultValue={'Nam'} options={genders} />
+                                    <Input />
+                                </Form.Item>
+                            </Col>
+                            <Col span={6}>
+                                <Form.Item
+                                    label="Thành phố"
+                                    name="cityId"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Số điện thoại không được để trống!',
+                                        },
+                                    ]}
+                                >
+                                    {cities && cities.length > 0 && (
+                                        <Select options={cities} defaultValue={cities[0].value} />
+                                    )}
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -329,6 +335,7 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
             },
         };
     }
+
     return {
         props: {
             jwt: token,

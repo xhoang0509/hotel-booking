@@ -1,3 +1,4 @@
+import { isAdmin } from '@/helper/rule.helper';
 import {
     DashboardOutlined,
     DesktopOutlined,
@@ -9,20 +10,25 @@ import {
 import { Layout, Menu } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useSelector } from 'react-redux';
 const { Sider } = Layout;
 
 export default function Navigation() {
-    const router = useRouter();
-    const items = [
+    const admin = useSelector((state) => state.admin);
+    const ruleAdmin = isAdmin(admin.rule);
+
+    let items = [
         {
             key: 1,
             label: <Link href="/">Tổng quan</Link>,
             icon: <DashboardOutlined />,
+            rule: 'all',
         },
         {
             key: 2,
             label: <Link href="/profile">Thông tin tài khoản</Link>,
             icon: <DesktopOutlined />,
+            rule: 'all',
         },
         {
             key: 3,
@@ -40,6 +46,7 @@ export default function Navigation() {
                     icon: <UserAddOutlined />,
                 },
             ],
+            rule: 'admin',
         },
         {
             key: 6,
@@ -52,6 +59,7 @@ export default function Navigation() {
                     icon: <UserOutlined />,
                 },
             ],
+            rule: 'all',
         },
         {
             key: 7,
@@ -71,6 +79,7 @@ export default function Navigation() {
                     label: <Link href="/location">Địa điểm</Link>,
                 },
             ],
+            rule: 'all',
         },
         {
             key: 11,
@@ -78,20 +87,21 @@ export default function Navigation() {
             icon: <EnvironmentOutlined />,
             children: [
                 {
-                    key: 8,
+                    key: 11,
                     label: <Link href="/booking">Tất cả phòng đặt</Link>,
                 },
-                {
-                    key: 9,
-                    label: <Link href="/city">Thành phố</Link>,
-                },
-                {
-                    key: 10,
-                    label: <Link href="/location">Địa điểm</Link>,
-                },
             ],
+            rule: 'all',
         },
     ];
+
+    items = items.filter((item) => {
+        if (ruleAdmin) {
+            return true;
+        } else {
+            return item.rule === 'all';
+        }
+    });
 
     return (
         <Sider

@@ -1,18 +1,19 @@
-import { PlusOutlined } from '@ant-design/icons';
 import LayoutApp from '@/components/Layout';
-import React, { useCallback, useEffect, useState } from 'react';
-import { wrapper } from '@/redux/store';
-import { SAGA_GET_ADMIN_DATA_ASYNC } from '@/redux/actions/admin.action';
-import { END } from 'redux-saga';
-import { Typography, Space, Table, Tag, Button, Skeleton, Modal, notification } from 'antd';
-import { useRouter } from 'next/router';
-import adminApi from '@/services/admin';
-import { getGender } from '@/constants/gender.const';
-import { getDateDetail } from '@/constants/date.const';
-import Link from 'next/link';
 import { getStatusLabel } from '@/constants/adminStatus.const';
+import { getDateDetail } from '@/constants/date.const';
+import { getGender } from '@/constants/gender.const';
 import { authAdmin } from '@/helper/auth.helper';
-import writeLog from '@/logger';
+import { isAdmin } from '@/helper/rule.helper';
+import { SAGA_GET_ADMIN_DATA_ASYNC } from '@/redux/actions/admin.action';
+import { wrapper } from '@/redux/store';
+import adminApi from '@/services/admin';
+import { PlusOutlined } from '@ant-design/icons';
+import { Button, Modal, Skeleton, Space, Table, Tag, Typography, notification } from 'antd';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useCallback, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { END } from 'redux-saga';
 
 export default function Account({ jwt }) {
     const router = useRouter();
@@ -20,6 +21,14 @@ export default function Account({ jwt }) {
     const [admins, setAdmins] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [adminId, setAdminId] = useState('');
+    const admin = useSelector((state) => state.admin);
+
+    useEffect(() => {
+        const ruleAdmin = isAdmin(admin);
+        if (!ruleAdmin) {
+            router.push('/');
+        }
+    }, [admin]);
 
     const columns = [
         {

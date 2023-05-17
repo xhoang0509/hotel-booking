@@ -308,8 +308,11 @@ export default function Profile() {
                             dataSource={data}
                             split={false}
                             className="conversations-list"
-                            renderItem={(item) => (
-                                <List.Item actions={[<Button type="link">REPLY</Button>]}>
+                            renderItem={(item, index) => (
+                                <List.Item
+                                    key={index}
+                                    actions={[<Button type="link">REPLY</Button>]}
+                                >
                                     <List.Item.Meta
                                         avatar={
                                             <Avatar

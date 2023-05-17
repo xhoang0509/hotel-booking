@@ -236,7 +236,7 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
 
     return {
         props: {
-            jwt,
+            jwt: token,
         },
     };
 });

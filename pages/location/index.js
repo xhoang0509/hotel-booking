@@ -96,7 +96,7 @@ export default function Location({ jwt }) {
 
     const handleEditClick = useCallback(
         (id) => {
-            router.push(`/city/${id}`);
+            router.push(`/location/${id}`);
         },
         [router]
     );
@@ -142,7 +142,7 @@ export default function Location({ jwt }) {
                     <Button
                         icon={<PlusOutlined />}
                         className="flex items-center text-white mb-4 bg-btn-primary"
-                        onClick={() => router.push('/city/add')}
+                        onClick={() => router.push('/location/add')}
                     >
                         Thêm địa điểm mới
                     </Button>

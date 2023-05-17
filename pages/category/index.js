@@ -25,7 +25,7 @@ export default function Category({ jwt }) {
             dataIndex: 'name',
             key: 'name',
             render: (text, record) => (
-                <Link href={`/account/${record.id}`} className="font-bold">
+                <Link href={`/category/${record.id}`} className="font-bold">
                     {`${record.name}`}
                 </Link>
             ),
@@ -34,15 +34,7 @@ export default function Category({ jwt }) {
             title: 'Hỉnh ảnh',
             dataIndex: 'images',
             key: 'images',
-            render: (text, record) => (
-                <Image
-                    src={text}
-                    alt=""
-                    className="w-[200px] h-auto"
-                    width={'200'}
-                    height={'300'}
-                />
-            ),
+            render: (text, record) => <img src={text} />,
         },
         {
             title: 'Số lượng',

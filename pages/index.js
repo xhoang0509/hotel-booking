@@ -14,8 +14,8 @@ export default function Home({ jwt }) {
             <LayoutApp>
                 <Summary jwt={jwt} />
                 <SummaryChart />
-                <ProjectAndTimelint />
-                <Banner />
+                {/* <ProjectAndTimelint /> */}
+                {/* <Banner /> */}
             </LayoutApp>
         </>
     );

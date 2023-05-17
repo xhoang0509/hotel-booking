@@ -187,13 +187,14 @@ function BookingTable({ bookings, jwt }) {
                 onOk={handleOk}
                 onCancel={handleCancel}
                 footer={[
-                    <Button onClick={handleCancel} danger>
+                    <Button onClick={handleCancel} danger key={1}>
                         Hủy
                     </Button>,
                     <Button
                         className="bg-btn-primary text-white"
                         loading={isConfirmLoading}
                         onClick={handleOk}
+                        key={2}
                     >
                         Xác nhận
                     </Button>,
