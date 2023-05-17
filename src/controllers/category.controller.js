@@ -35,8 +35,8 @@ async function getOne(req, res) {
 
 async function create(req, res) {
     try {
-        const { name, image } = req.body;
-        const category = await categories.create({ name, image });
+        const { name, images } = req.body;
+        const category = await categories.create({ name, images });
         res.status(200).json({
             status: true,
             category,
@@ -50,12 +50,12 @@ async function create(req, res) {
 async function update(req, res) {
     try {
         const { id } = req.params;
-        const { name, image } = req.body;
+        const { name, images } = req.body;
         const category = await categories.findOne({
             where: { id: id },
         });
         if (category) {
-            await categories.update({ name, image }, { where: { id: id } });
+            await categories.update({ name, images }, { where: { id: id } });
             res.status(200).json({
                 status: true,
                 message: 'Updated category!',

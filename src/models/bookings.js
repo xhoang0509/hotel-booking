@@ -49,6 +49,7 @@ module.exports = (sequelize, DataTypes) => {
         paymentMethod: {
             type: DataTypes.STRING,
         },
+        // 0: fasle 1: true
         paymentStatus: {
             type: DataTypes.STRING,
         },
