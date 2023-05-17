@@ -35,6 +35,14 @@ const userApi = {
         });
     },
 
+    deleteFavorite(id, data, token) {
+        return axiosClient.post(`/user/favorite/${id}`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+    },
+
     verify(data) {
         return axiosClient.post('/user/verify', data);
     },

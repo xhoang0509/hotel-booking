@@ -49,7 +49,14 @@ export default function MyWishList({ jwt }) {
                     <Divider />
                     <div className="flex flex-wrap gap-[10px]">
                         {favorites.map((favorite, index) => {
-                            return <LocationCard key={index} location={favorite.location} />;
+                            return (
+                                <LocationCard
+                                    key={index}
+                                    idFavorite={favorite.id}
+                                    location={favorite.location}
+                                    jwt={jwt}
+                                />
+                            );
                         })}
                     </div>
                 </div>

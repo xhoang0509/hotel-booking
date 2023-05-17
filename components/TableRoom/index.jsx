@@ -71,9 +71,9 @@ function TableRoom({ rooms, onBooking, setPrice, setRoomId }) {
                     return (
                         <div>
                             {record.userBookings.length > 0 &&
-                                record.userBookings.map((booking) => {
+                                record.userBookings.map((booking, index) => {
                                     return (
-                                        <Tag className="mt-2" color={color}>
+                                        <Tag className="mt-2" color={color} key={index}>
                                             {getDayMonthYear(booking.checkInDate)}-
                                             {getDayMonthYear(booking.checkOutDate)}
                                         </Tag>

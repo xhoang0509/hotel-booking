@@ -251,8 +251,10 @@ export default function BookingHistory({ jwt }) {
                     onOk={handleOk}
                     onCancel={handleCancel}
                     footer={[
-                        <Button onClick={handleCancel}>Hủy</Button>,
-                        <Button onClick={handleOk} className="bg-sub-primary text-white">
+                        <Button onClick={handleCancel} key={1}>
+                            Hủy
+                        </Button>,
+                        <Button onClick={handleOk} className="bg-sub-primary text-white" key={2}>
                             Xác nhận
                         </Button>,
                     ]}

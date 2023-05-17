@@ -118,7 +118,9 @@ export default function Search({ jwt }) {
                     </div>
                 </Col>
                 <Col className="w-[74%]">
-                    <div className="font-bold text-lg mb-4">Hà Nội: tìm thấy {count} chỗ nghỉ</div>
+                    <div className="font-bold text-lg mb-4">
+                        Nha trang: tìm thấy {count} chỗ nghỉ
+                    </div>
                     <div className="mb-4">
                         <div className="text-sm mb-2">Sắp xếp theo: </div>
                         <Select
