@@ -76,41 +76,35 @@ async function getOne(req, res) {
 
 async function create(req, res) {
     try {
-        const {
-            name,
-            address,
-            images,
-            thumbnail,
-            description,
-            phone,
-            oldPrice,
-            newPrice,
-            convenients,
-            notes,
-            cityId,
-            qr_banking,
-        } = req.body;
-        const location = await locations.create({
-            name,
-            address,
-            images,
-            thumbnail,
-            description,
-            phone,
-            oldPrice,
-            newPrice,
-            convenients,
-            notes,
-            cityId,
-            qr_banking,
-        });
-        res.status(200).json({
-            status: true,
-            location,
-        });
+        const data = {
+            name: req.body.name,
+            address: req.body.address,
+            images: req.body.images ? JSON.stringify(req.body.images) : '',
+            thumbnail: req.body.thumbnail,
+            description: req.body.description,
+            phone: req.body.phone,
+            oldPrice: req.body.oldPrice,
+            newPrice: req.body.newPrice,
+            convenients: req.body.convenients ? JSON.stringify([req.body.convenients]) : '[]',
+            notes: req.body.notes ? JSON.stringify([req.body.notes]) : '',
+            cityId: req.body.cityId,
+            qr_banking: req.body.qr_banking ? req.body.qr_banking : '',
+        };
+        const location = await locations.create(data);
+        if (location) {
+            res.status(200).json({
+                status: true,
+                message: 'OK',
+            });
+        } else {
+            res.status(200).json({
+                status: false,
+                message: '',
+            });
+        }
     } catch (e) {
         writeLog(__filename, 'location.controller.create', e.message, 'FAILED');
-        res.status(500).json({ status: false, message: 'INTERNAL_SERVER_ERROR' });
+        res.status(500).json({ status: false, message: 'INTERNAL_SERVER_ERROR ' + e.message });
     }
 }
 
