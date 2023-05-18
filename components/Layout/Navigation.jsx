@@ -78,16 +78,20 @@ export default function Navigation() {
                     key: 10,
                     label: <Link href="/location">Địa điểm</Link>,
                 },
+                {
+                    key: 11,
+                    label: <Link href="/room">Phòng</Link>,
+                },
             ],
             rule: 'all',
         },
         {
-            key: 11,
+            key: 12,
             label: <span>Quản lý phòng đặt</span>,
             icon: <EnvironmentOutlined />,
             children: [
                 {
-                    key: 11,
+                    key: 13,
                     label: <Link href="/booking">Tất cả phòng đặt</Link>,
                 },
             ],

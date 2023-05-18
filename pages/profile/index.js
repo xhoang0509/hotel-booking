@@ -1,8 +1,6 @@
 import LayoutApp from '@/components/Layout';
-import React, { useState } from 'react';
-import { wrapper } from '@/redux/store';
 import { SAGA_GET_ADMIN_DATA_ASYNC } from '@/redux/actions/admin.action';
-import { END } from 'redux-saga';
+import { wrapper } from '@/redux/store';
 import {
     FacebookOutlined,
     InstagramOutlined,
@@ -23,7 +21,10 @@ import {
     Upload,
     message,
 } from 'antd';
+import { useState } from 'react';
+import { END } from 'redux-saga';
 
+import { authAdmin } from '@/helper/auth.helper';
 import BgProfile from '@/public/images/bg-profile.jpg';
 import profilavatar from '@/public/images/face-1.jpg';
 import convesionImg5 from '@/public/images/face-2.jpg';
@@ -34,9 +35,7 @@ import convesionImg4 from '@/public/images/face-6.jpeg';
 import project1 from '@/public/images/home-decor-1.jpeg';
 import project2 from '@/public/images/home-decor-2.jpeg';
 import project3 from '@/public/images/home-decor-3.jpeg';
-import noImage from '@/public/images/no-image.png';
 import { useSelector } from 'react-redux';
-import { authAdmin } from '@/helper/auth.helper';
 
 export default function Profile() {
     const admin = useSelector((state) => state.admin);
@@ -206,7 +205,7 @@ export default function Profile() {
                 }
             ></Card>
 
-            <Row gutter={[24, 0]}>
+            {/* <Row gutter={[24, 0]}>
                 <Col span={24} md={8} className="mb-24 ">
                     <Card
                         bordered={false}
@@ -385,7 +384,7 @@ export default function Profile() {
                         </Upload>
                     </Col>
                 </Row>
-            </Card>
+            </Card> */}
         </LayoutApp>
     );
 }

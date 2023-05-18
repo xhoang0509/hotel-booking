@@ -4,13 +4,12 @@ import { storage } from '@/firebase/storage';
 import { authAdmin } from '@/helper/auth.helper';
 import { SAGA_GET_ADMIN_DATA_ASYNC } from '@/redux/actions/admin.action';
 import { wrapper } from '@/redux/store';
-import cityApi from '@/services/city';
 import locationApi from '@/services/location';
+import roomApi from '@/services/room';
 import { UploadOutlined } from '@ant-design/icons';
 import {
     Button,
     Col,
-    Divider,
     Form,
     Input,
     Row,
@@ -27,9 +26,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { END } from 'redux-saga';
 import { v4 } from 'uuid';
 
-const { TextArea } = Input;
-
-export default function LocationId({ jwt }) {
+export default function RoomId({ jwt }) {
     const router = useRouter();
     const { id } = router.query;
     const isEdit = useMemo(() => {
@@ -44,30 +41,30 @@ export default function LocationId({ jwt }) {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState('');
     const [imageUrl, setImageUrl] = useState('');
-    const [cities, setCities] = useState([]);
+    const [locations, setLocations] = useState([]);
 
     const onFinish = async (values) => {
-        const data = { ...values, images: [imageUrl], thumbnail: imageUrl };
+        const data = { ...values, images: [imageUrl] };
         if (id === 'add') {
-            const res = await locationApi.create(data, jwt);
+            const res = await roomApi.create(data, jwt);
             if (res.status) {
                 notification.open({
-                    message: 'Tạo địa điểm thành công',
+                    message: 'Tạo phòng thành công!',
                     description: res.message,
                     placement: 'topRight',
                     type: 'success',
                 });
-                router.push('/location');
+                router.push('/room');
             } else {
                 notification.open({
-                    message: 'Tạo địa điểm thất bại',
+                    message: 'Tạo phòng thất bại!',
                     description: res.message,
                     placement: 'topRight',
                     type: 'error',
                 });
             }
         } else {
-            const res = await locationApi.update(data, id, jwt);
+            const res = await roomApi.update(data, id, jwt);
             if (res.status) {
                 notification.open({
                     message: 'Chỉnh sửa thành công!',
@@ -75,7 +72,7 @@ export default function LocationId({ jwt }) {
                     placement: 'topRight',
                     type: 'success',
                 });
-                router.push('/location');
+                router.push('/room');
             } else {
                 notification.open({
                     message: 'Chỉnh sửa thất bại!',
@@ -96,28 +93,27 @@ export default function LocationId({ jwt }) {
     }, []);
 
     const fetchData = useCallback(async () => {
-        setLoading(true);
+        setFetching(true);
         try {
             if (id !== 'add') {
-                let res = await locationApi.getOne(id, jwt);
+                let res = await roomApi.getOne(id, jwt);
                 if (res.status) {
                     setData(res.location);
                 }
             }
-            const resCity = await cityApi.getAll(jwt);
-            if (resCity.status) {
-                const options = resCity.cities.map((city) => {
+            const resLocation = await locationApi.getAll(jwt);
+            if (resLocation.status) {
+                const options = resLocation.locations.map((city) => {
                     return {
                         value: city.id,
                         label: city.name,
                     };
                 });
-                setCities(options);
+                setLocations(options);
             }
         } catch (e) {
             console.log(e);
         }
-        setLoading(false);
         setFetching(false);
     }, [jwt, id]);
 
@@ -148,7 +144,7 @@ export default function LocationId({ jwt }) {
                 <>
                     <BackPage href="/location" />
                     <Typography.Title level={4} className="pb-4">
-                        {isEdit ? 'Chỉnh sửa địa điểm' : 'Thêm địa điểm'}
+                        {isEdit ? 'Chỉnh sửa phòng' : 'Thêm phòng'}
                     </Typography.Title>
                     <Form
                         name="basic"
@@ -205,39 +201,37 @@ export default function LocationId({ jwt }) {
                                 </Upload>
                             </Col>
                         </Row>
-                        <Row>
-                            {data.images && data.images.length > 0 && (
-                                <div>
-                                    Tất cả hình ảnh:
-                                    <Divider />
-                                    {data.images.map((image, index) => {
-                                        return (
-                                            <img
-                                                key={index}
-                                                src={image}
-                                                className="max-w-[200px] m-2 inline-block"
-                                            />
-                                        );
-                                    })}
-                                    <Divider />
-                                </div>
-                            )}
-                        </Row>
                         <Row gutter={24}>
                             <Col span={6}>
                                 <Form.Item
-                                    label="Địa chỉ"
-                                    name="address"
+                                    label="Số gường"
+                                    name="bed"
                                     rules={[
                                         {
                                             required: true,
-                                            message: 'Địa chỉ không được để trống!',
+                                            message: 'Số gường không được để trống!',
                                         },
                                     ]}
                                 >
                                     <Input />
                                 </Form.Item>
                             </Col>
+                            <Col span={6}>
+                                <Form.Item
+                                    label="Chi tiết giường"
+                                    name="bedDetail"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Chi tiết giường không được để trống!',
+                                        },
+                                    ]}
+                                >
+                                    <Input />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={24}>
                             <Col span={6}>
                                 <Form.Item
                                     label="Giá cũ"
@@ -269,70 +263,22 @@ export default function LocationId({ jwt }) {
                         </Row>
                         <Row gutter={24}>
                             <Col span={6}>
-                                <Form.Item label="Mô tả" name="description">
-                                    <TextArea rows={4} />
-                                </Form.Item>
-                            </Col>
-                            <Col span={6}>
                                 <Form.Item
-                                    label="Số điện thoại"
-                                    name="phone"
+                                    label="Địa điểm"
+                                    name="locationId"
                                     rules={[
                                         {
                                             required: true,
-                                            message: 'Số điện thoại không được để trống!',
+                                            message: 'Địa điểm không được để trống!',
                                         },
                                     ]}
                                 >
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                            <Col span={6}>
-                                <Form.Item
-                                    label="Thành phố"
-                                    name="cityId"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: 'Thành phố không được để trống!',
-                                        },
-                                    ]}
-                                >
-                                    {cities && cities.length > 0 && (
-                                        <Select options={cities} defaultValue={cities[0].value} />
+                                    {locations && locations.length > 0 && (
+                                        <Select
+                                            options={locations}
+                                            defaultValue={locations[0].value}
+                                        />
                                     )}
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                        <Row gutter={24}>
-                            <Col span={12}>
-                                <Form.Item
-                                    label="Ghi chú"
-                                    name="notes"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: 'Mô tả không được để trống!',
-                                        },
-                                    ]}
-                                >
-                                    <TextArea rows={4} />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                        <Row gutter={24}>
-                            <Col span={12}>
-                                <Form.Item
-                                    label="Tiện ghi"
-                                    name="convenients"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: 'Tiện ghi không được để trống!',
-                                        },
-                                    ]}
-                                >
-                                    <Input />
                                 </Form.Item>
                             </Col>
                         </Row>

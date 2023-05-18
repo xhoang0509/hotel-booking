@@ -3,7 +3,7 @@ import { authAdmin } from '@/helper/auth.helper';
 import { SAGA_GET_ADMIN_DATA_ASYNC } from '@/redux/actions/admin.action';
 import { wrapper } from '@/redux/store';
 import adminApi from '@/services/admin';
-import locationApi from '@/services/location';
+import roomApi from '@/services/room';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Modal, Skeleton, Space, Table, Tag, Typography, notification } from 'antd';
 import Image from 'next/image';
@@ -12,16 +12,18 @@ import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { END } from 'redux-saga';
 
-export default function Location({ jwt }) {
+import { formattedPrice } from '@/helper/price.helper';
+import noImage from '@/public/images/no-image.png';
+export default function Room({ jwt }) {
     const router = useRouter();
     const [fetching, setFetching] = useState(false);
-    const [locations, setLocations] = useState([]);
+    const [rooms, setRooms] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [adminId, setAdminId] = useState('');
 
     const columns = [
         {
-            title: 'Tên',
+            title: 'Tên phòng',
             dataIndex: 'name',
             key: 'name',
             render: (text, record) => (
@@ -31,38 +33,44 @@ export default function Location({ jwt }) {
             ),
         },
         {
+            title: 'Số gường',
+            dataIndex: 'bed',
+            key: 'bed',
+        },
+        {
             title: 'Hỉnh ảnh',
-            dataIndex: 'thumbnail',
-            key: 'thumbnail',
-            render: (text, record) => (
-                <Image
-                    src={text}
-                    alt="image"
-                    className="w-[200px] h-auto"
-                    width={'200'}
-                    height={'300'}
-                />
-            ),
-        },
-        {
-            title: 'Điên thoại liên hệ',
-            dataIndex: 'phone',
-            key: 'phone',
-        },
-        {
-            title: 'Thành phố',
-            dataIndex: 'city',
-            key: 'city',
-            render: (_, record) => {
-                return <Tag color="green">{record.city.name}</Tag>;
+            dataIndex: 'image',
+            key: 'image',
+            render: (text, record) => {
+                if (record.images && record.images.length > 0) {
+                    return (
+                        <Image
+                            src={record.images[0]}
+                            alt="image"
+                            className="w-[200px] h-auto"
+                            width={'200'}
+                            height={'300'}
+                        />
+                    );
+                } else {
+                    <img src={noImage} className="max-w-[200px]" />;
+                }
             },
         },
         {
-            title: 'Số phòng',
-            dataIndex: 'numberRoom',
-            key: 'numberRoom',
+            title: 'Giá phòng',
+            dataIndex: 'newPrice',
+            key: 'newPrice',
             render: (_, record) => {
-                return <Tag color="red">3</Tag>;
+                return <Tag color="green">{formattedPrice(_)}</Tag>;
+            },
+        },
+        {
+            title: 'Địa điểm',
+            dataIndex: 'city',
+            key: 'city',
+            render: (_, record) => {
+                return <Link href={`/location/${record.location.id}`}>{record.location.name}</Link>;
             },
         },
         {
@@ -84,9 +92,9 @@ export default function Location({ jwt }) {
     const fetchData = useCallback(async () => {
         setFetching(true);
         try {
-            const res = await locationApi.getAll(jwt);
+            const res = await roomApi.getAll(jwt);
             if (res.status) {
-                setLocations(res.locations);
+                setRooms(res.rooms);
             }
         } catch (error) {
             console.log(error);
@@ -96,14 +104,10 @@ export default function Location({ jwt }) {
 
     const handleEditClick = useCallback(
         (id) => {
-            router.push(`/location/${id}`);
+            router.push(`/room/${id}`);
         },
         [router]
     );
-
-    const showModal = () => {
-        setIsModalOpen(true);
-    };
 
     const handleOk = useCallback(async () => {
         try {
@@ -128,25 +132,20 @@ export default function Location({ jwt }) {
         setIsModalOpen(false);
     };
 
-    const handleDisableClick = useCallback((id) => {
-        setAdminId(id);
-        showModal();
-    }, []);
-
     return (
         <LayoutApp>
             {fetching && <Skeleton />}
             {!fetching && (
                 <>
-                    <Typography.Title level={4}>Tất cả địa điểm</Typography.Title>
+                    <Typography.Title level={4}>Tất cả phòng</Typography.Title>
                     <Button
                         icon={<PlusOutlined />}
                         className="flex items-center text-white mb-4 bg-btn-primary"
-                        onClick={() => router.push('/location/add')}
+                        onClick={() => router.push('/room/add')}
                     >
-                        Thêm địa điểm mới
+                        Thêm phòng mới
                     </Button>
-                    <Table columns={columns} dataSource={locations} />
+                    <Table columns={columns} dataSource={rooms} />
                     <Modal
                         title="Vô hiệu hóa"
                         open={isModalOpen}

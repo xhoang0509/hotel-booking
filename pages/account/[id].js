@@ -42,7 +42,7 @@ export default function AccountId({ jwt }) {
             const res = await adminApi.register(values);
             if (res.data.status) {
                 notification.open({
-                    message: 'Create user successfully',
+                    message: 'Tạo tài khoản thành công!',
                     description: res.data.message,
                     placement: 'topRight',
                     type: 'success',
@@ -50,7 +50,7 @@ export default function AccountId({ jwt }) {
                 router.push('/account');
             } else {
                 notification.open({
-                    message: 'Create user failed',
+                    message: 'Tạo tài khoản thất bại!',
                     description: res.data.message,
                     placement: 'topRight',
                     type: 'error',

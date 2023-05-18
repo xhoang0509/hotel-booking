@@ -35,7 +35,7 @@ export default function CityId({ jwt }) {
             const res = await cityApi.create(values, jwt);
             if (res.status) {
                 notification.open({
-                    message: 'Create user successfully',
+                    message: 'Tạo thành phố thành công',
                     description: res.message,
                     placement: 'topRight',
                     type: 'success',
@@ -43,7 +43,7 @@ export default function CityId({ jwt }) {
                 router.push('/city');
             } else {
                 notification.open({
-                    message: 'Create user failed',
+                    message: 'Tạo thành phố thất bại',
                     description: res.message,
                     placement: 'topRight',
                     type: 'error',
