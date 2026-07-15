@@ -45,7 +45,7 @@
     "devDependencies": {
         "eslint": "^8.37.0",
         "eslint-plugin-spellcheck": "^0.0.20",
-        "nodemon": "^2.0.21",
+        "nodemon": "^3.1.14",
         "prettier": "^2.8.4"
     }
 }
