@@ -21,7 +21,7 @@
     },
     "homepage": "https://github.com/xhoang0509/datn-api#readme",
     "dependencies": {
-        "bcrypt": "^5.1.0",
+        "bcrypt": "^6.0.0",
         "body-parser": "^2.3.0",
         "cookie-parser": "^1.4.6",
         "cors": "^2.8.5",
