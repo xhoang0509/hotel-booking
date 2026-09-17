@@ -4,7 +4,7 @@ We are thrilled to welcome you to {{company_name}}! Your account has been succes
 
 With your new account, you now have access to all of the features and benefits that {{company_name}} has to offer. This includes the ability to book room.
 
-If you have any questions about your account or need any assistance, please don't hesitate to reach out to our customer support team. They are available email contact: scroll0509@gmail.com.
+If you have any questions about your account or need any assistance, please don't hesitate to reach out to our customer support team. They are available email contact: info@datphong.com.
 
 Thank you for choosing {{company_name}} and we look forward to helping you booking room!
 

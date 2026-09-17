@@ -18,16 +18,26 @@ jobs:
       contains(github.event.pull_request.labels.*.name, 'autorelease: pending') ||
       contains(github.event.pull_request.labels.*.name, 'dependencies')
     steps:
-      - name: Approve PR
+      - name: Dependabot metadata
+        if: github.actor == 'dependabot[bot]'
+        id: metadata
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Auto-approve and Auto-merge Dependabot PRs
+        if: github.actor == 'dependabot[bot]'
         run: |
-          gh pr review "$PR_URL" --approve --body "🤖 Automated verification passed. Auto-approving PR for automated merge."
+          gh pr review "$PR_URL" --approve -b "🤖 Dependabot bump approved." || echo "Already approved or cannot approve"
+          gh pr merge "$PR_URL" --auto --squash || echo "Auto-merge flag set or pending"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Enable Auto-Merge
+      - name: Auto-merge Release-Please PRs
+        if: github.actor != 'dependabot[bot]'
         run: |
-          gh pr merge --auto --squash "$PR_URL" || echo "Note: Ensure 'Allow auto-merge' is enabled in repo settings"
+          gh pr merge "$PR_URL" --auto --squash || echo "Auto-merge flag set or pending"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
