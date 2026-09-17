@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
+    transpilePackages: ['@ant-design/icons', '@ant-design/colors', '@ant-design/fast-color'],
     images: {
         remotePatterns: [
             {
