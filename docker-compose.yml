@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: datn_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: datn
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    container_name: datn_api
+    restart: always
+    environment:
+      PORT: 6969
+      DB_HOST: mysql
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      DB_NAME: datn
+      JWT_SECRET_KEY: "JWT_SECRET_KEY_123@#"
+    ports:
+      - '6969:6969'
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  client:
+    build:
+      context: ./apps/client
+      dockerfile: Dockerfile
+    container_name: datn_client
+    restart: always
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_SERVER_URL: http://localhost:6969
+      NEXT_PUBLIC_APP_URL: http://localhost:4000
+    ports:
+      - '4000:4000'
+    depends_on:
+      - api
+
+  cms:
+    build:
+      context: ./apps/cms
+      dockerfile: Dockerfile
+    container_name: datn_cms
+    restart: always
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_SERVER_URL: http://localhost:6969
+      NEXT_PUBLIC_APP_URL: http://localhost:5000
+    ports:
+      - '5000:5000'
+    depends_on:
+      - api
+
+volumes:
+  mysql_data:
