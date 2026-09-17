@@ -1,0 +1,59 @@
+'use strict';
+
+const fs = require('fs');
+const path = require('path');
+const Sequelize = require('sequelize');
+const basename = path.basename(__filename);
+const env = process.env.ENVIRONMENT || 'development';
+const config = require(__dirname + '/../config/config.js')[env];
+const db = {};
+
+let sequelize;
+if (config.use_env_variable) {
+    sequelize = new Sequelize(process.env[config.use_env_variable], config);
+} else {
+    sequelize = new Sequelize(config.database, config.username, config.password, config);
+}
+
+fs.readdirSync(__dirname)
+    .filter((file) => {
+        return file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js';
+    })
+    .forEach((file) => {
+        const model = require(path.join(__dirname, '', file))(sequelize, Sequelize);
+        db[model.name] = model;
+    });
+
+Object.keys(db).forEach((modelName) => {
+    if (db[modelName].associate) {
+        db[modelName].associate(db);
+    }
+});
+
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+
+db['countries'].belongsTo(db['categories'], { foreignKey: 'categoryId' });
+db['categories'].hasMany(db['countries'], { foreignKey: 'categoryId' });
+
+db['cities'].belongsTo(db['countries'], { foreignKey: 'countryId' });
+db['countries'].hasMany(db['cities'], { foreignKey: 'countryId' });
+
+db['locations'].belongsTo(db['cities'], { foreignKey: 'cityId' });
+db['cities'].hasMany(db['locations'], { foreignKey: 'cityId' });
+
+db['rooms'].belongsTo(db['locations'], { foreignKey: 'locationId' });
+db['locations'].hasMany(db['rooms'], { foreignKey: 'locationId' });
+
+db['admins'].belongsTo(db['rules'], { foreignKey: 'ruleId' });
+db['rules'].hasMany(db['admins'], { foreignKey: 'ruleId' });
+
+db['bookings'].belongsTo(db['users'], { foreignKey: 'userId' });
+db['users'].hasMany(db['bookings'], { foreignKey: 'userId' });
+
+db['bookings'].belongsTo(db['locations'], { foreignKey: 'locationId' });
+db['locations'].hasMany(db['bookings'], { foreignKey: 'locationId' });
+
+db['bookings'].belongsTo(db['rooms'], { foreignKey: 'roomId' });
+db['rooms'].hasMany(db['bookings'], { foreignKey: 'roomId' });
+module.exports = db;

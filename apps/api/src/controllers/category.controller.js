@@ -1,0 +1,80 @@
+const writeLog = require('../logger');
+
+const categories = require('../models').categories;
+const countries = require('../models').countries;
+
+async function getAll(req, res) {
+    try {
+        const categoriesData = await categories.findAll({ include: countries });
+        res.status(200).json({
+            status: true,
+            categories: categoriesData,
+        });
+    } catch (e) {
+        writeLog(__filename, 'category.controller.getAll', e.message, 'FAILED');
+        res.status(500).json({ status: false, message: 'INTERNAL_SERVER_ERROR' });
+    }
+}
+
+async function getOne(req, res) {
+    try {
+        const { id } = req.params;
+        const category = await categories.findOne({
+            where: { id: id },
+            include: countries,
+        });
+        res.status(200).json({
+            status: true,
+            category,
+        });
+    } catch (e) {
+        writeLog(__filename, 'category.controller.getOne', e.message, 'FAILED');
+        res.status(500).json({ status: false, message: 'INTERNAL_SERVER_ERROR' });
+    }
+}
+
+async function create(req, res) {
+    try {
+        const { name, images } = req.body;
+        const category = await categories.create({ name, images });
+        res.status(200).json({
+            status: true,
+            category,
+        });
+    } catch (e) {
+        writeLog(__filename, 'category.controller.create', e.message, 'FAILED');
+        res.status(500).json({ status: false, message: 'INTERNAL_SERVER_ERROR' });
+    }
+}
+
+async function update(req, res) {
+    try {
+        const { id } = req.params;
+        const { name, images } = req.body;
+        const category = await categories.findOne({
+            where: { id: id },
+        });
+        if (category) {
+            await categories.update({ name, images }, { where: { id: id } });
+            res.status(200).json({
+                status: true,
+                message: 'Updated category!',
+            });
+        } else {
+            res.status(401).json({
+                status: false,
+                message: 'Category not found!',
+            });
+        }
+    } catch (e) {
+        writeLog(__filename, 'category.controller.update', e.message, 'FAILED');
+        res.status(500).json({ status: false, message: 'INTERNAL_SERVER_ERROR' });
+    }
+}
+
+module.exports = {
+    getAll,
+    getOne,
+    update,
+    create,
+};

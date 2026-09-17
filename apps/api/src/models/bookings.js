@@ -1,0 +1,73 @@
+'use strict';
+module.exports = (sequelize, DataTypes) => {
+    const UserLocation = sequelize.define('bookings', {
+        id: {
+            type: DataTypes.INTEGER(11),
+            primaryKey: true,
+            autoIncrement: true,
+        },
+        bookingId: {
+            type: DataTypes.TEXT,
+        },
+        userId: {
+            type: DataTypes.INTEGER(11),
+            references: {
+                model: 'users',
+                key: 'id',
+            },
+        },
+        roomId: {
+            type: DataTypes.INTEGER(11),
+            references: {
+                model: 'rooms',
+                key: 'id',
+            },
+        },
+        locationId: {
+            type: DataTypes.INTEGER(11),
+            references: {
+                model: 'locations',
+                key: 'id',
+            },
+        },
+        price: DataTypes.INTEGER(11),
+        price: {
+            type: DataTypes.DOUBLE,
+        },
+        discount: {
+            type: DataTypes.DOUBLE,
+        },
+        point: {
+            type: DataTypes.DOUBLE,
+        },
+        checkInDate: {
+            type: DataTypes.DATE,
+        },
+        checkOutDate: {
+            type: DataTypes.DATE,
+        },
+        paymentMethod: {
+            type: DataTypes.STRING,
+        },
+        // 0: fasle 1: true
+        paymentStatus: {
+            type: DataTypes.STRING,
+        },
+        firstName: {
+            type: DataTypes.TEXT,
+        },
+        lastName: {
+            type: DataTypes.TEXT,
+        },
+        email: {
+            type: DataTypes.TEXT,
+        },
+        email: {
+            type: DataTypes.TEXT,
+        },
+        status: {
+            type: DataTypes.TEXT,
+        },
+    });
+    return UserLocation;
+};

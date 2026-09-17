@@ -1,0 +1,54 @@
+'use strict';
+module.exports = (sequelize, DataTypes) => {
+    const Room = sequelize.define('rooms', {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true,
+        },
+        name: {
+            type: DataTypes.TEXT,
+        },
+        bed: {
+            type: DataTypes.INTEGER,
+        },
+        bedDetail: {
+            type: DataTypes.TEXT,
+        },
+        description: {
+            type: DataTypes.TEXT,
+        },
+        oldPrice: {
+            type: DataTypes.FLOAT,
+        },
+        newPrice: {
+            type: DataTypes.FLOAT,
+        },
+        images: {
+            type: DataTypes.TEXT,
+            get() {
+                return JSON.parse(this.getDataValue('images'));
+            },
+        },
+        options: {
+            type: DataTypes.TEXT,
+        },
+        point: DataTypes.INTEGER,
+        locationId: {
+            type: DataTypes.INTEGER(11),
+            allowNull: false,
+            references: {
+                model: 'locations',
+                key: 'id',
+            },
+        },
+        userBookings: {
+            type: DataTypes.TEXT,
+            defaultValue: '',
+            get() {
+                return JSON.parse(this.getDataValue('userBookings'));
+            },
+        },
+    });
+    return Room;
+};
