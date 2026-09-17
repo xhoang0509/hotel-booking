@@ -1,0 +1,234 @@
+import WebLayout from '@/components/Layout/WebLayout';
+import { wrapper } from '@/redux/store';
+import userApi from '@/services/user';
+import { Button, Form, Input, Modal, notification, Typography } from 'antd';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useCallback, useState } from 'react';
+
+export default function Login({ user }) {
+    const router = useRouter();
+    const [notActive, setNotActive] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [form] = Form.useForm();
+    const [loadingLogin, setLoadingLogin] = useState(false);
+
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleOk = useCallback(async () => {
+        form.validateFields()
+            .then(async () => {
+                setLoading(true);
+                const formData = form.getFieldsValue();
+                try {
+                    const res = await userApi.forgotPassword({ email: formData.email });
+                    if (res) {
+                        if (res.status) {
+                            notification.open({
+                                message: 'Gửi yêu cầu quên mật khẩu thành công!',
+                                description: res.message,
+                                placement: 'topRight',
+                                type: 'success',
+                            });
+                            setIsModalOpen(false);
+                        } else {
+                            notification.open({
+                                message: 'Gửi yêu cầu quên mật khẩu thất bại!',
+                                description: res.message,
+                                placement: 'topRight',
+                                type: 'error',
+                            });
+                            setIsModalOpen(false);
+                        }
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
+                setLoading(false);
+            })
+            .catch((errorInfo) => {
+                console.log('Form validation failed:', errorInfo);
+            });
+    }, [form]);
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
+    const onFinish = async (values) => {
+        setLoadingLogin(true);
+        try {
+            let res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(values),
+            });
+            res = await res.json();
+            if (res && res.status) {
+                notification.open({
+                    message: 'Đăng nhập thành công',
+                    description: 'Bạn đã đăng nhập thành công!',
+                    placement: 'topRight',
+                    type: 'success',
+                });
+                router.push('/account');
+            } else {
+                let description = res.message;
+                if (res.message === 'User not active!') {
+                    description = 'Tài khoản chưa kích hoạt!';
+                    setNotActive(true);
+                }
+                notification.open({
+                    message: 'Đăng nhập thất bại',
+                    description: description,
+                    placement: 'topRight',
+                    type: 'error',
+                });
+            }
+        } catch (e) {
+            console.log(e);
+        }
+        setLoadingLogin(false);
+    };
+    const onFinishFailed = (errorInfo) => {
+        console.log('Failed:', errorInfo);
+    };
+
+    return (
+        <WebLayout>
+            <div className="flex flex-col items-center mt-12">
+                <Typography.Title level={4}>Đăng nhập</Typography.Title>
+                <Form
+                    name="basic"
+                    labelCol={{
+                        span: 8,
+                    }}
+                    wrapperCol={{
+                        span: 20,
+                    }}
+                    initialValues={{
+                        remember: true,
+                    }}
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+                    layout="vertical"
+                >
+                    <Form.Item
+                        className="mt-4"
+                        label="Email"
+                        name="email"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Vui lòng nhập email!',
+                            },
+                            {
+                                type: 'email',
+                                message: 'Vui lòng nhập đúng định dạng email!',
+                            },
+                        ]}
+                    >
+                        <Input className="w-80" />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Mật khẩu"
+                        name="password"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Vui lòng nhập mật khẩu!',
+                            },
+                            {
+                                min: 6,
+                                message: 'Mật khẩu tối thiểu 6 ký tự!',
+                            },
+                        ]}
+                    >
+                        <Input.Password className="w-80" />
+                    </Form.Item>
+                    <Form.Item>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            className="mt-4 w-80 bg-[#4096FF] h-8 px-4"
+                            loading={loading}
+                        >
+                            Đăng nhập
+                        </Button>
+                    </Form.Item>
+                </Form>
+                <Typography>
+                    Chưa có tài khoản ? <Link href="/account/register">Đăng ký</Link>
+                </Typography>
+                <Typography>
+                    Quên mật khẩu của bạn{' '}
+                    <span onClick={showModal} className="text-link cursor-pointer">
+                        tại đây
+                    </span>
+                </Typography>
+                {notActive && (
+                    <Typography>
+                        Kích hoạt tài khoản của bạn <Link href="/account/verify">Tại đây</Link>
+                    </Typography>
+                )}
+            </div>
+            <Modal
+                title="Quên mật khẩu"
+                open={isModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                footer={[
+                    <Button key="back" onClick={handleCancel}>
+                        Hủy
+                    </Button>,
+                    <Button
+                        key="submit"
+                        type="primary"
+                        loading={loading}
+                        onClick={handleOk}
+                        className="bg-sub-primary"
+                    >
+                        Yêu cầu
+                    </Button>,
+                ]}
+            >
+                <p>Link đặt lại mật khẩu sẽ được gửi vào gmail của bạn.</p>
+                <div className="mt-4">
+                    <Form form={form} layout="vertical" name="resetPassword">
+                        <Form.Item
+                            name="email"
+                            label="Email"
+                            rules={[
+                                { required: true, message: 'Email không được để trống' },
+                                { type: 'email', message: 'Email không đúng định dạng' },
+                            ]}
+                            wrapperCol={{ span: 18 }}
+                        >
+                            <Input />
+                        </Form.Item>
+                    </Form>
+                </div>
+            </Modal>
+        </WebLayout>
+    );
+}
+
+export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ req, res }) => {
+    const jwt = req.cookies['bookingJWT'];
+    if (jwt) {
+        return {
+            redirect: {
+                destination: '/account',
+                permanent: false,
+            },
+        };
+    }
+    return {
+        props: {},
+    };
+});
