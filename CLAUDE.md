@@ -4,25 +4,45 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-`datn` is a hotel booking and reservation system (DATPHONG.COM) composed of three independent sub-projects:
-- **`datn-api`**: Express.js REST API with MySQL/Sequelize ORM, JWT authentication, and VNPay integration. Default port: `6969`.
-- **`datn-client`**: Customer-facing web portal built with Next.js (v13 pages router), custom Express server, Redux Toolkit + Redux-Saga, Ant Design, and Tailwind CSS. Default port: `4000`.
-- **`datn-cms`**: Admin/CMS management portal built with Next.js (v13 pages router), custom Express server, Redux Toolkit + Redux-Saga, Ant Design, and ApexCharts. Default port: `5000`.
+`datn` is an enterprise-grade hotel booking and reservation platform (DATPHONG.COM) structured as a unified monorepo powered by **Turborepo** and **pnpm workspaces**:
 
-## Common Commands
+- **`apps/api`**: Express.js REST API with MySQL/Sequelize ORM, JWT authentication, email notifications, and VNPay payment gateway integration. Default port: `6969`.
+- **`apps/client`**: Customer-facing web portal built with Next.js (v13 pages router), custom Express server, Redux Toolkit + Redux-Saga, Ant Design, and Tailwind CSS. Default port: `4000`.
+- **`apps/cms`**: Admin/CMS management portal built with Next.js (v13 pages router), custom Express server, Redux Toolkit + Redux-Saga, Ant Design, and ApexCharts. Default port: `5000`.
 
-Each sub-application is managed independently from its respective subdirectory.
+## Monorepo & Root Commands
 
-### datn-api
+Root commands are orchestrated via Turborepo (`pnpm`):
 
-Navigate to `datn-api/`:
-- **Run dev**: `npm start` (runs `nodemon src/index.js`)
-- **Lint**: `npm run lint` (`eslint src/.`)
-- **Format**: `npm run format` (`prettier --write .`)
-- **Run via Docker**: `docker-compose up -d`
+- **Run all apps in dev mode**: `pnpm dev`
+- **Run specific app in dev mode**:
+  - API only: `pnpm dev:api` (or `pnpm --filter api dev`)
+  - Client only: `pnpm dev:client` (or `pnpm --filter client dev`)
+  - CMS only: `pnpm dev:cms` (or `pnpm --filter cms dev`)
+- **Build all apps**: `pnpm build`
+- **Lint all apps**: `pnpm lint`
+- **Format code**: `pnpm format`
+- **Run all via Docker Compose**: `docker compose up -d`
+- **Stop Docker Compose**: `docker compose down`
+
+---
+
+## App Details & Subdirectory Commands
+
+### `apps/api`
+
+Backend REST API service.
+
+- **Path**: `apps/api/`
+- **Port**: `6969`
+- **Dev command**: `pnpm --filter api dev` (or inside directory: `npm start` / `nodemon src/index.js`)
+- **Lint**: `pnpm --filter api lint` (`eslint src/.`)
+- **Format**: `pnpm --filter api format` (`prettier --write .`)
 
 #### Database Migrations & Seeds (Sequelize CLI)
-Run from `datn-api/src/`:
+
+Run inside `apps/api/src/` (or prefix with `pnpm --filter api exec`):
+
 - **Fresh database setup**:
   ```bash
   npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all
@@ -31,28 +51,39 @@ Run from `datn-api/src/`:
 - **Create migration**: `npx sequelize-cli migration:generate --name <migration-name>`
 - **Undo last migration**: `npx sequelize-cli db:migrate:undo`
 
-### datn-client
+---
 
-Navigate to `datn-client/`:
-- **Run dev**: `npm run dev` (starts custom Express server via `node server.js` on port `4000`)
-- **Build**: `npm run build`
-- **Run production**: `npm start`
-- **Lint**: `npm run lint`
-- **Format**: `npm run format`
+### `apps/client`
 
-### datn-cms
+Public hotel booking client application.
 
-Navigate to `datn-cms/`:
-- **Run dev**: `npm run dev` (starts custom Express server via `node server.js` on port `5000`)
-- **Build**: `npm run build`
-- **Run production**: `npm start`
-- **Lint**: `npm run lint`
-- **Format**: `npm run format`
+- **Path**: `apps/client/`
+- **Port**: `4000`
+- **Dev command**: `pnpm --filter client dev` (starts custom Express server via `node server.js` on port `4000`)
+- **Build**: `pnpm --filter client build`
+- **Lint**: `pnpm --filter client lint`
+- **Format**: `pnpm --filter client format`
+
+---
+
+### `apps/cms`
+
+Hotel management and administration portal.
+
+- **Path**: `apps/cms/`
+- **Port**: `5000`
+- **Dev command**: `pnpm --filter cms dev` (starts custom Express server via `node server.js` on port `5000`)
+- **Build**: `pnpm --filter cms build`
+- **Lint**: `pnpm --filter cms lint`
+- **Format**: `pnpm --filter cms format`
+
+---
 
 ## Architecture & Conventions
 
-### `datn-api`
-- **Entry point**: `src/index.js` sets up CORS (allowing ports 3000, 4000, 5000, 6969), cookies, session, and routes.
+### `apps/api`
+
+- **Entry point**: `src/index.js` sets up CORS (allowing ports 3000, 4000, 5000, 6969), cookie parser, express sessions, and router mounting.
 - **Routing**: `src/routers/index.js` aggregates resource routers:
   - `user.router.js`: Authentication, profile, user management
   - `booking.router.js`: Booking reservations and status updates
@@ -62,12 +93,25 @@ Navigate to `datn-cms/`:
   - `payment.router.js`: VNPay integration and payment verification
   - `analytic.router.js`: Revenue and booking analytics
   - `file.router.js` & `email.router.js`: File uploads and notification services
-- **Database & Models**: Sequelize ORM in `src/models/` configured via `src/config/config.js` and `src/.sequelizerc`.
+- **Database & Models**: Sequelize ORM models in `src/models/` configured via `src/config/config.js` and `src/.sequelizerc`.
 - **Controllers & Services**: Business logic resides in `src/controllers/` and `src/services/`.
 
-### `datn-client` & `datn-cms`
+### `apps/client` & `apps/cms`
+
 - **Custom Server**: Both use custom `server.js` wrapping Next.js with Express to bind specific ports (`4000` for client, `5000` for CMS).
 - **Routing**: Next.js Pages Router in `pages/` directory (`_app.js`, `_document.js`, and file-based route folders).
 - **State Management**: Redux Toolkit configured alongside `redux-saga` for async side effects with `next-redux-wrapper`.
 - **UI Components**: Ant Design (v5) and Tailwind CSS with custom styling in `styles/` and modular UI in `components/`.
-- **API Integration**: Axios clients in `services/` communicate with `datn-api` on `http://localhost:6969`.
+- **API Integration**: Axios clients in `services/` communicate with `apps/api` on `http://localhost:6969`.
+
+---
+
+## Automated Releases & Conventional Commits
+
+This repo uses Release-Please on GitHub Actions. Follow Conventional Commits:
+
+- `feat: <description>` -> Minor version bump
+- `fix: <description>` -> Patch version bump
+- `docs: <description>` -> Documentation only
+- `chore: <description>` -> Maintenance / dependency updates
+- `BREAKING CHANGE: <description>` -> Major version bump
