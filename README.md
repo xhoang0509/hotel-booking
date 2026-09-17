@@ -1,7 +1,7 @@
 # DATPHONG.COM — Hotel Booking & Management Monorepo
 
-[![CI](https://github.com/hoangnguyen3/datn/actions/workflows/ci.yml/badge.svg)](https://github.com/hoangnguyen3/datn/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/hoangnguyen3/datn?color=blue&label=version)](https://github.com/hoangnguyen3/datn/releases)
+[![CI](https://github.com/xhoang0509/hotel-booking/actions/workflows/ci.yml/badge.svg)](https://github.com/xhoang0509/hotel-booking/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/xhoang0509/hotel-booking?color=blue&label=version)](https://github.com/xhoang0509/hotel-booking/releases)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](https://nodejs.org/)
 [![pnpm](https://img.shields.io/badge/pnpm-workspace-orange.svg)](https://pnpm.io/)
 [![Turborepo](https://img.shields.io/badge/turborepo-monorepo-ef4444.svg)](https://turbo.build/repo)
