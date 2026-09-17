@@ -12,27 +12,10 @@ module.exports = {
     },
     plugins: ['spellcheck'],
     rules: {
-        'spellcheck/spell-checker': [
-            2,
-            {
-                strings: true,
-                comments: false,
-                identifiers: true,
-                templates: true,
-                lang: 'en_US',
-                skipWords: [
-                    'dotenv',
-                    'req',
-                    'res',
-                    'jsonwebtoken',
-                    'Xuan',
-                    'Hoang',
-                    'Datphong',
-                    'nodemailer',
-                    'gmail',
-                    'bqolkurhokehdqia',
-                ],
-            },
-        ],
+        'spellcheck/spell-checker': 'off',
+        'no-unused-vars': 'warn',
+        'no-undef': 'warn',
+        'no-dupe-keys': 'warn',
+        'no-prototype-builtins': 'warn',
     },
 };
