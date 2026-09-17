@@ -10,7 +10,7 @@
         "format": "prettier --write --ignore-path .prettierignore ."
     },
     "dependencies": {
-        "@ant-design/icons": "^5.0.1",
+        "@ant-design/icons": "^6.3.4",
         "@emotion/react": "^11.10.6",
         "@emotion/styled": "^11.10.6",
         "@fortawesome/free-regular-svg-icons": "^6.3.0",
