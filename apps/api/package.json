@@ -36,7 +36,7 @@
         "jsonwebtoken": "^9.0.0",
         "moment": "^2.29.4",
         "mysql2": "^3.2.0",
-        "nodemailer": "^10.0.9",
+        "nodemailer": "^10.0.11",
         "pdfkit": "^0.20.2",
         "qs": "^6.11.1",
         "randomstring": "^1.2.3",
@@ -47,6 +47,6 @@
         "eslint": "^10.10.0",
         "eslint-plugin-spellcheck": "^0.0.20",
         "nodemon": "^3.1.14",
-        "prettier": "^3.9.6"
+        "prettier": "^3.9.9"
     }
 }
