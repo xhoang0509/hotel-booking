@@ -28,7 +28,7 @@
         "eslint-config-next": "16.3.8",
         "express": "^5.2.1",
         "express-session": "^1.17.3",
-        "firebase": "^12.19.0",
+        "firebase": "^13.0.0",
         "font-awesome": "^4.7.0",
         "isomorphic-fetch": "^3.0.0",
         "jsonwebtoken": "^9.0.0",
