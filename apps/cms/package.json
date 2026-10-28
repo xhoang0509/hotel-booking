@@ -23,7 +23,7 @@
         "firebase": "^13.0.0",
         "jsonwebtoken": "^9.0.0",
         "moment": "^2.29.4",
-        "next": "16.4.2",
+        "next": "16.4.3",
         "next-redux-wrapper": "^8.1.0",
         "nprogress": "^0.2.0",
         "react": "19.3.1",
